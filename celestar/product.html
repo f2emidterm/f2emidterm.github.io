@@ -1,0 +1,245 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRODUCT PAGE</title>
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/productstyle.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+</head>
+<body>
+
+    <header>
+        <div class="header-left">
+            <nav>
+                <a href="index.html">HOME</a>
+                <a href="shop.html">SHOP</a>
+                <a href="#">COLLECTION</a>
+                <a href="#">ABOUT US</a>
+            </nav>
+        </div>
+
+        <div class="header-center">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="images/nlogo.png" alt="CELESTAR Logo">
+                </a>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <div class="icons">
+                <span class="material-symbols-outlined">search</span>
+                <span class="material-symbols-outlined">person</span>
+                <span class="material-symbols-outlined">shopping_bag</span>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="product-image">
+            <div class="main-img">
+                <img src="images/product1.jpg" alt="product1">
+            </div>
+            <div class="thumbs"></div>
+        </div>
+
+        <div class="product-info">
+            <h2>PRODUCT NAME</h2>
+            <p>$1000</p>
+
+            <label class="select-label">品項</label>
+            <div class="custom-select">
+                <div class="select-selected">預設</div>
+                <div class="select-items">
+                    <div data-value="預設">預設</div>
+                    <div data-value="款式 A">款式 A</div>
+                    <div data-value="款式 B">款式 B</div>
+                </div>
+            </div>
+
+
+            <hr>
+
+            <div class="quantity-section" style="display:none;">
+                <label>數量</label><br>
+                <div class="quantity">
+                    <button id="minus">−</button>
+                    <span id="qty">1</span>
+                    <button id="plus">+</button>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="total-info" style="display:none;">
+                <p>訂購數量：<span id="totalQty">1</span></p>
+                <p>總額：<span id="totalPrice">20</span></p>
+            </div>
+
+            <div class="buttons">
+                <button id="buy" class="buy-btn">直接購買</button>
+                <button id="cart" class="cart-btn">加入購物車</button>
+            </div>
+        </div>
+    </main>
+
+    <section class="description">
+        <p>商品描述</p>
+        <p>dfshudhfsnfsnfsnfysnyonsnvowsvswbsjsnfnfc</p>
+        <p>hdsionvfsdvsdsdcfsdncfsdncfksdj</p>
+        <p>nfvksdnfksd</p>
+        <p>ncfsdfnsdnfnsd</p>
+    </section>
+
+    <footer>
+        COPYRIGHT © 2025 CELESTAR <br>
+        For academic purposes only; non-profit testing site.<br>
+        Email : JWKJFKAJ@xxxmail.com   CONTACT NUMBER : 09XXX45X5X <br>
+        Address: heven999 | Business Registration Number: 44545adjkz | Business License: 4543Dkjlkf
+    </footer>
+
+    <script>
+        const minusBtn = document.getElementById('minus');
+        const plusBtn = document.getElementById('plus');
+        const qtySpan = document.getElementById('qty');
+        const buyBtn = document.getElementById('buy');
+        const cartBtn = document.getElementById('cart');
+
+        let quantity = 1;
+
+        minusBtn.addEventListener('click', () => {
+            if (quantity > 1) quantity--;
+            qtySpan.textContent = quantity;
+            updateTotal();
+        });
+
+        plusBtn.addEventListener('click', () => {
+            quantity++;
+            qtySpan.textContent = quantity;
+            updateTotal();
+        });
+
+        buyBtn.addEventListener('click', () => {
+            alert('前往結帳頁面');
+        });
+
+        cartBtn.addEventListener('click', () => {
+            alert('已加入購物車');
+        });
+
+        // ==== 下拉選單互動 ====
+        const selectSelected = document.querySelector(".select-selected");
+        const selectItems = document.querySelector(".select-items");
+
+        selectSelected.addEventListener("click", () => {
+            selectSelected.classList.toggle("active");
+            selectItems.classList.toggle("show");
+        });
+
+        window.addEventListener("click", (e) => {
+            if (!e.target.closest(".custom-select")) {
+                selectSelected.classList.remove("active");
+                selectItems.classList.remove("show");
+            }
+        });
+
+        // 取得網址參數
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+
+        // 模擬商品資料庫
+        const products = {
+            1: { name: "BLUE OCEAN HOUR STICKER", price: 20, img: "images/stk1.jpg", thumbs: ["images/stk1.jpg", "images/stk1-1.jpg", "images/stk1-2.jpg"], desc: "blue sticker" },
+            2: { name: "SUNDAY BLUSH STICKER", price: 20, img: "images/stk2.jpg", thumbs: [], desc: "sticker" },
+            3: { name: "LUCKY GREEN STICKER", price: 20, img: "images/stk3.jpg", thumbs: [], desc: "sticker" },
+            4: { name: "LEMON MOOD STICKER", price: 20, img: "images/stk4.jpg", thumbs: [], desc: "sticker" },
+            5: { name: "STRAWBERRY VIBES STICKER", price: 20, img: "images/stk5.jpg", thumbs: [], desc: "sticker" },
+            6: { name: "MONOTONE DIARY STICKER", price: 20, img: "images/stk6.jpg", thumbs: [], desc: "sticker" },
+            7: { name: "APPLE FLAVOR HAIRPIN", price: 120, img: "images/acc1.png", thumbs: ["images/acc1.png", "images/acc1-1.png"], desc: "apple accessory" },
+            8: { name: "STARFISH RING", price: 200, img: "images/acc2.png", thumbs: [], desc: "accessory" }
+        };
+
+        // 根據 ID 取得商品資料
+        const product = products[productId];
+
+        // 顯示資料
+        if (product) {
+            document.querySelector(".product-info h2").textContent = product.name;
+            document.querySelector(".product-info p").textContent = `$${product.price}`;
+            document.querySelector(".main-img img").src = product.img;
+            const mainImg = document.querySelector(".main-img img");
+
+            // 縮圖切換
+            const thumbsContainer = document.querySelector(".thumbs");
+            thumbsContainer.innerHTML = "";
+            if (product.thumbs && product.thumbs.length > 0) {
+                product.thumbs.forEach(src => {
+                    const img = document.createElement("img");
+                    img.src = src;
+                    img.alt = "預覽圖";
+                    thumbsContainer.appendChild(img);
+                    img.addEventListener("click", () => {
+                        mainImg.src = img.src;
+                    });
+                });
+            } else {
+                const emptyDiv = document.createElement("div");
+                emptyDiv.style.width = "80px";
+                emptyDiv.style.height = "80px";
+                emptyDiv.style.backgroundColor = "#eee";
+                emptyDiv.style.border = "1px solid #ccc";
+                thumbsContainer.appendChild(emptyDiv);
+            }
+
+            // 商品描述
+            const descSection = document.querySelector(".description");
+            descSection.innerHTML = `
+        <p>商品描述</p>
+        <p>${product.desc}</p>
+      `;
+
+            // 數量與總額顯示控制
+            const quantitySection = document.querySelector(".quantity-section");
+            const totalInfo = document.querySelector(".total-info");
+            const totalQty = document.getElementById('totalQty');
+            const totalPrice = document.getElementById('totalPrice');
+            let unitPrice = product.price;
+
+            quantitySection.style.display = "none";
+            totalInfo.style.display = "none";
+
+            // 選項行為（自訂select）
+            selectItems.querySelectorAll("div").forEach(option => {
+                option.addEventListener("click", () => {
+                    const value = option.getAttribute("data-value");
+                    selectSelected.textContent = value;
+                    selectSelected.classList.remove("active");
+                    selectItems.classList.remove("show");
+
+                    if (value !== "預設") {
+                        quantitySection.style.display = "flex";
+                        updateTotal();
+                    } else {
+                        quantitySection.style.display = "none";
+                        totalInfo.style.display = "none";
+                    }
+                });
+            });
+
+            // 更新總額
+            function updateTotal() {
+                totalQty.textContent = quantity;
+                totalPrice.textContent = unitPrice * quantity;
+                totalInfo.style.display = "block";
+            }
+
+        } else {
+            document.querySelector("main").innerHTML = "<p>找不到此商品</p>";
+        }
+    </script>
+
+
+</body>
+</html>
