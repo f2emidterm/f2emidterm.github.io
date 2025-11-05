@@ -93,6 +93,7 @@ header {
         /*cursor: pointer;*/
         font-size: 13px;
         transition: all 0.2s ease;
+        color: #333;
     }
 
         .filters button.active,
@@ -201,3 +202,4 @@ footer {
         gap: 20px;
     }
 }
+
