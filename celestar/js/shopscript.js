@@ -10,7 +10,7 @@ const products = [
     { id: 8, name: "STARFISH RING", price: "$200", category: "accessory", img: "images/acc2.png" }
 ];
 
-const perPage = 8;
+const perPage = 16;
 let currentPage = 1;
 let currentCategory = "all";
 
@@ -23,8 +23,8 @@ function renderProducts() {
             ? products
             : products.filter((p) => p.category === currentCategory);
 
-    const start = (currentPage - 1) * 16; // 每頁 16 個
-    const end = start + 16;
+    const start = (currentPage - 1) * perPage; // 每頁 16 個
+    const end = start + perPage;
     const pageItems = filtered.slice(start, end);
 
     // 如果沒有商品，顯示 no products
@@ -110,3 +110,4 @@ function updatePagination() {
 // ---- 初始化 ----
 
 renderProducts();
+
