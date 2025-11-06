@@ -13,7 +13,7 @@ a, button, .icons span, .product-card {
 
 header {
     width: 100%;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #AEAEDE;
     padding: 30px 0;
     display: flex;
     align-items: center;
@@ -186,8 +186,8 @@ footer {
     font-size: 10px;
     color: #666;
     background-color: #EFEEF2;
-    border-top: 50px solid #EFEEF2;
-    padding: 20px 20px;
+    border-top: 1px solid #AEAEDE;
+    padding: 50px 20px 20px 20px;
     margin-top: 50px;
 }
 
@@ -202,4 +202,5 @@ footer {
         gap: 20px;
     }
 }
+
 
