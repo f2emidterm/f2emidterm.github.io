@@ -1,11 +1,11 @@
-// ---- °Ó«~¸ê®Æ ----
+// ---- å•†å“è³‡æ–™ ----
 const products = [
     { id: 1, name: "BLUE OCEAN HOUR STICKER", price: "$20", category: "sticker", img: "images/stk1.jpg" },
     { id: 2, name: "SUNDAY BLUSH STICKER", price: "$20", category: "sticker", img: "images/stk2.jpg" },
     { id: 3, name: "LUCKY GREEN STICKER", price: "$20", category: "sticker", img: "images/stk3.jpg" },
     { id: 4, name: "LEMON MOOD STICKER", price: "$20", category: "sticker", img: "images/stk4.jpg" },
-    { id: 5, name: "STRAWBERRY VIBES STICKER", price: "$10", category: "sticker", img: "images/stk5.jpg" },
-    { id: 6, name: "MONOTONE DIARY STICKER", price: "$10", category: "sticker", img: "images/stk6.jpg" },
+    { id: 5, name: "STRAWBERRY VIBES STICKER", price: "$20", category: "sticker", img: "images/stk5.jpg" },
+    { id: 6, name: "MONOTONE DIARY STICKER", price: "$20", category: "sticker", img: "images/stk6.jpg" },
     { id: 7, name: "APPLE FLAVOR HAIRPIN", price: "$120", category: "accessory", img: "images/acc1.png" },
     { id: 8, name: "STARFISH RING", price: "$200", category: "accessory", img: "images/acc2.png" }
 ];
@@ -23,11 +23,11 @@ function renderProducts() {
             ? products
             : products.filter((p) => p.category === currentCategory);
 
-    const start = (currentPage - 1) * 16; // ¨C­¶ 16 ­Ó
+    const start = (currentPage - 1) * 16; // æ¯é  16 å€‹
     const end = start + 16;
     const pageItems = filtered.slice(start, end);
 
-    // ¦pªG¨S¦³°Ó«~¡AÅã¥Ü no products
+    // å¦‚æœæ²’æœ‰å•†å“ï¼Œé¡¯ç¤º no products
     if (pageItems.length === 0) {
         const noDiv = document.createElement("div");
         noDiv.className = "no-products";
@@ -36,7 +36,7 @@ function renderProducts() {
         return;
     }
 
-    // ´è¬V°Ó«~
+    // æ¸²æŸ“å•†å“
     pageItems.forEach((p) => {
         const card = document.createElement("div");
         card.className = "product-card";
@@ -53,7 +53,7 @@ function renderProducts() {
         grid.appendChild(card);
     });
 
-    // ¸Éº¡³Ñ¾l®æ¤l¦¨¦Ç¦â¤è®Ø
+    // è£œæ»¿å‰©é¤˜æ ¼å­æˆç°è‰²æ–¹æ¡†
     const fillCount = 16 - pageItems.length;
     for (let i = 0; i < fillCount; i++) {
         const card = document.createElement("div");
@@ -68,7 +68,7 @@ function renderProducts() {
 }
 
 
-// ---- ¿z¿ï¥\¯à ----
+// ---- ç¯©é¸åŠŸèƒ½ ----
 document.querySelectorAll(".filters button").forEach((btn) => {
     btn.addEventListener("click", () => {
         document.querySelectorAll(".filters button").forEach((b) => b.classList.remove("active"));
@@ -79,7 +79,7 @@ document.querySelectorAll(".filters button").forEach((btn) => {
     });
 });
 
-// ---- ¤À­¶±±¨î ----
+// ---- åˆ†é æ§åˆ¶ ----
 document.getElementById("page1").addEventListener("click", () => {
     currentPage = 1;
     updatePagination();
@@ -107,5 +107,6 @@ function updatePagination() {
     renderProducts();
 }
 
-// ---- ªì©l¤Æ ----
+// ---- åˆå§‹åŒ– ----
+
 renderProducts();
