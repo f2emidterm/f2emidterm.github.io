@@ -54,7 +54,7 @@ function renderProducts() {
     });
 
     // 補滿剩餘格子成灰色方框
-    const fillCount = 16 - pageItems.length;
+    const fillCount = perPage - pageItems.length;
     for (let i = 0; i < fillCount; i++) {
         const card = document.createElement("div");
         card.className = "product-card";
@@ -110,4 +110,5 @@ function updatePagination() {
 // ---- 初始化 ----
 
 renderProducts();
+
 
