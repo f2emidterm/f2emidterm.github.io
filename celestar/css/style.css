@@ -14,13 +14,13 @@ a, button, .icons span, .product-card {
 
 header {
     width: 100%;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #AEAEDE;
     padding: 30px 0;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-    background-color: #efedf1;
+    background-color: #EFEEF2;
     position: fixed;
     top: 0;
     left: 0;
@@ -85,6 +85,8 @@ header {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding-bottom:50px ;
+    border-bottom: solid 1px #AEAEDE;
 }
 
 .banner-imgs {
@@ -217,7 +219,8 @@ footer {
     font-size: 10px;
     color: #666;
     background-color: #EFEEF2;
-    border-top: 50px solid #EFEEF2;
-    padding: 20px 20px;
+    border-top: 1px solid #AEAEDE;
+    padding: 50px 20px 20px 20px;
     margin-top: 50px;
 }
+
