@@ -116,7 +116,7 @@
                 selectSelected.classList.remove("active");
                 selectItems.classList.remove("show");
 
-                if (value !== "預設") {
+                if (value !== "請選擇款式") {
                     quantitySection.style.display = "flex";
                     updateTotal();
                 } else {
@@ -136,4 +136,5 @@
     } else {
         document.querySelector("main").innerHTML = "<p>找不到此商品</p>";
     }
+
 });
