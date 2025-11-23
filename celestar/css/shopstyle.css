@@ -77,12 +77,19 @@ header {
     width: auto;
 }
 
+.products-bg {
+    background-image: url("../images/bg2.svg");
+    background-size: cover;
+    padding: 10px 0;
+    overflow: hidden;
+}
+
 .filters {
     display: flex;
     justify-content: flex-start;
     gap: 10px;
-    max-width: 1000px; 
-    margin: 30px auto; 
+    max-width: 1000px;
+    margin: 30px auto;
     padding: 30px 20px;
 }
 
@@ -119,6 +126,7 @@ header {
     .product-card:hover {
         transform: translateY(-4px);
     }
+
     .product-card a {
         color: inherit;
         text-decoration: none;
@@ -133,10 +141,10 @@ header {
 .product-img {
     width: 100%;
     aspect-ratio: 1 / 1;
-    background-color: #f0f0f0; 
-    border: 1px solid #3f4046; 
+    background-color: #f0f0f0;
+    border: 1px solid #3f4046;
     /* border-radius: 4px; */
-    overflow: hidden; 
+    overflow: hidden;
     margin-bottom: 10px;
     display: flex;
     align-items: center;
@@ -202,5 +210,3 @@ footer {
         gap: 20px;
     }
 }
-
-
