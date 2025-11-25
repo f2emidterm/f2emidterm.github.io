@@ -94,7 +94,7 @@ header {
     /*max-width: 1000px;
     width: 100%;*/
     width: 100vw;
-    height: 100vh;
+    height: 150vh;
     /*height: 595px;*/
     margin: 0 auto;
     padding: 0 0;
@@ -234,3 +234,4 @@ footer {
     padding: 50px 20px 20px 20px;
     margin-top: 10px;
 }
+
