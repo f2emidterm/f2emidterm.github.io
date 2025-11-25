@@ -94,8 +94,9 @@ dots.forEach(dot => {
 });
 
 function startAutoSlide() {
-    timer = setInterval(nextSlide, 3000); // 每 3 秒切換
+    timer = setInterval(nextSlide, 7000); // 每 3 秒切換
 }
 
 startAutoSlide();
 renderProducts();
+
