@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="_圖層_1" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 2267.72 2040.94">
+  <!-- Generator: Adobe Illustrator 29.8.3, SVG Export Plug-In . SVG Version: 2.1.1 Build 3)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: none;
+      }
+
+      .st1 {
+        fill: #f9f9f9;
+      }
+
+      .st2 {
+        fill: url(#_新增圖樣);
+      }
+
+      .st3 {
+        fill: #dce2e8;
+      }
+    </style>
+    <pattern id="_新增圖樣" data-name=" 新增圖樣" x="0" y="0" width="160" height="160" patternTransform="translate(69.86 18004.69)" patternUnits="userSpaceOnUse" viewBox="0 0 160 160">
+      <g>
+        <rect class="st0" width="160" height="160"/>
+        <g>
+          <rect class="st0" width="160" height="160"/>
+          <g>
+            <rect class="st0" width="160" height="160"/>
+            <g>
+              <rect class="st1" x="80" y="120" width="160" height="80"/>
+              <polygon class="st3" points="151.91 151.91 157.13 135.09 167.3 149.47 184.91 149.24 174.38 163.36 180.03 180.03 163.36 174.38 149.24 184.91 149.47 167.3 135.09 157.13 151.91 151.91"/>
+            </g>
+            <g>
+              <rect class="st1" x="-80" y="120" width="160" height="80"/>
+              <polygon class="st3" points="-8.09 151.91 -2.87 135.09 7.3 149.47 24.91 149.24 14.38 163.36 20.03 180.03 3.36 174.38 -10.76 184.91 -10.53 167.3 -24.91 157.13 -8.09 151.91"/>
+            </g>
+            <g>
+              <rect class="st1" y="40" width="160" height="80"/>
+              <polygon class="st3" points="71.91 71.91 77.13 55.09 87.3 69.47 104.91 69.24 94.38 83.36 100.03 100.03 83.36 94.38 69.24 104.91 69.47 87.3 55.09 77.13 71.91 71.91"/>
+            </g>
+            <g>
+              <rect class="st1" x="80" y="-40" width="160" height="80"/>
+              <polygon class="st3" points="151.91 -8.09 157.13 -24.91 167.3 -10.53 184.91 -10.76 174.38 3.36 180.03 20.03 163.36 14.38 149.24 24.91 149.47 7.3 135.09 -2.87 151.91 -8.09"/>
+            </g>
+            <g>
+              <rect class="st1" x="-80" y="-40" width="160" height="80"/>
+              <polygon class="st3" points="-8.09 -8.09 -2.87 -24.91 7.3 -10.53 24.91 -10.76 14.38 3.36 20.03 20.03 3.36 14.38 -10.76 24.91 -10.53 7.3 -24.91 -2.87 -8.09 -8.09"/>
+            </g>
+          </g>
+        </g>
+      </g>
+    </pattern>
+  </defs>
+  <polygon class="st2" points="2267.72 43.45 2267.72 2040.94 0 2040.94 0 43.45 2267.72 43.45"/>
+</svg>
