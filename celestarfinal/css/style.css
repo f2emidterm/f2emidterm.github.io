@@ -213,8 +213,10 @@ header {
     overflow: visible;
 }
 
+.left-arrow,
+.right-arrow,
 .carousel-arrow {
-    display: none;
+    display: none !important; 
 }
 
 .products-scroller {
@@ -485,7 +487,7 @@ footer {
 
 
     .carousel-arrow {
-        display: block;
+        display: block !important;
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
@@ -495,11 +497,11 @@ footer {
     }
 
     .left-arrow {
-        left: 5px;
+        left: 5px;display: block !important;
     }
 
     .right-arrow {
-        right: 5px;
+        right: 5px;display: block !important;
     }
 
     .product-name {
@@ -518,3 +520,4 @@ footer {
         font-size: 20px;
     }
 }
+
