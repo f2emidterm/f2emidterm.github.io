@@ -1,4 +1,4 @@
-// ---- �ӫ~��� ----
+// ---- �ӫ~��� ----
 const products = [
     { id: 1, name: "BLUE OCEAN HOUR STICKER", price: "$20", category: "sticker", img: "images/stk1.jpg" },
     { id: 2, name: "SUNDAY BLUSH STICKER", price: "$20", category: "sticker", img: "images/stk2.jpg" },
@@ -27,7 +27,7 @@ function renderProducts() {
     const end = start + perPage;
     const pageItems = filtered.slice(start, end);
 
-    // �p�G�S���ӫ~�A��� no products
+    // �p�G�S���ӫ~�A��� no products
     if (pageItems.length === 0) {
         const noDiv = document.createElement("div");
         noDiv.className = "no-products";
@@ -36,7 +36,7 @@ function renderProducts() {
         return;
     }
 
-    // ��V�ӫ~
+    // ��V�ӫ~
     pageItems.forEach((p) => {
         const card = document.createElement("div");
         card.className = "product-card";
@@ -53,7 +53,7 @@ function renderProducts() {
         grid.appendChild(card);
     });
 
-    // �ɺ��Ѿl��l���Ǧ���
+    // �ɺ��Ѿl��l���Ǧ���
     const fillCount = perPage - pageItems.length;
     for (let i = 0; i < fillCount; i++) {
         const card = document.createElement("div");
@@ -94,8 +94,102 @@ dots.forEach(dot => {
 });
 
 function startAutoSlide() {
-    timer = setInterval(nextSlide, 3000); // �C 3 ������
+    timer = setInterval(nextSlide, 3000); // �C 3 ������
+}
+
+const backToTopBtn = document.getElementById("backToTopBtn");
+
+window.onscroll = function () { scrollFunction() };
+
+function scrollFunction() {
+    if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+        backToTopBtn.style.display = "block";
+    } else {
+        backToTopBtn.style.display = "none";
+    }
+}
+
+backToTopBtn.addEventListener("click", backToTop);
+
+function backToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+
 }
 
 startAutoSlide();
 renderProducts();
+
+/*rwd*/
+// 獲取漢堡圖標和導航列
+const menuToggle = document.getElementById('menuToggle');
+const mainNav = document.getElementById('mainNav');
+
+// 定義一個類別，用於控制導航列的顯示/隱藏
+const ACTIVE_CLASS = 'nav-open';
+
+if (menuToggle && mainNav) {
+    menuToggle.addEventListener('click', function () {
+        // 點擊時，切換導航列的顯示狀態
+        mainNav.classList.toggle(ACTIVE_CLASS);
+
+        // 可選：切換圖標，讓 "menu" 變成 "close"
+        if (mainNav.classList.contains(ACTIVE_CLASS)) {
+            menuToggle.textContent = 'close';
+        } else {
+            menuToggle.textContent = 'menu';
+        }
+    });
+}
+
+// ===========================================
+// 商品輪播分頁邏輯 (修正為輔助滾動)
+// ===========================================
+
+const productScroller = document.querySelector('.products-scroller'); // 確保選取到滾動容器
+const productArrows = document.querySelectorAll('.carousel-arrow');
+
+// 每頁的寬度 = 滾動容器的寬度
+let pageWidth = productScroller ? productScroller.clientWidth : 0;
+
+function updateProductCarousel(direction) {
+    if (window.innerWidth > 600 || !productScroller) {
+        return;
+    }
+    
+    // 關鍵：計算滾動目標位置
+    const scrollAmount = direction * pageWidth;
+    
+    productScroller.scrollBy({
+        left: scrollAmount,
+        behavior: 'smooth' // 平滑滾動
+    });
+}
+
+// 監聽箭頭點擊事件
+productArrows.forEach(arrow => {
+    arrow.addEventListener('click', () => {
+        const direction = parseInt(arrow.dataset.direction); // -1 或 1
+        updateProductCarousel(direction);
+    });
+});
+
+// 監聽視窗大小變化，更新 pageWidth
+window.addEventListener('resize', () => {
+    if (productScroller) {
+        pageWidth = productScroller.clientWidth;
+    }
+    // 確保 PC 模式下重置滾動位置
+    if (window.innerWidth > 600) {
+        productScroller.scrollTo({ left: 0, behavior: 'instant' });
+    }
+});
+
+// 確保初始頁面正確 (在載入完成後計算寬度)
+window.addEventListener('load', () => {
+    if (productScroller) {
+        pageWidth = productScroller.clientWidth;
+    }
+});
