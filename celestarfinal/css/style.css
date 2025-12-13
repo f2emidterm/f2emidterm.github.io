@@ -317,6 +317,7 @@ footer {
 
     body {
         padding-top: 60px;
+        overflow-x: hidden;
     }
 
     header {
@@ -381,47 +382,40 @@ footer {
     }
 
     .products {
+        display: flex;
+        transition: transform 0.4s ease;
+        will-change: transform;
+        padding: 0 ;
+        margin: 0 ;
+        width: 100% ;
+        box-sizing: border-box;
+    }
+
+    .product-page {
+        flex: 0 0 100%;
+        box-sizing: border-box;
+        padding: 20px;
         display: grid;
-        grid-auto-flow: column;
         grid-template-columns: repeat(2, 1fr);
         grid-template-rows: repeat(2, auto);
-        width: max-content;
-        min-height: 400px;
         gap: 15px;
-        max-width: none;
-        margin: 0; 
-        padding: 0;
-        transform: translateX(0); 
-        transition: transform 0.5s ease-in-out;
-        /* margin: 5px 15px;
-        padding: 0 0px; */
     }
 
     .product-card {
-        width: calc(50vw - 40px - 7.5px);
-        scroll-snap-align: start;
+        width: 100%;
     }
 
     .product-carousel-wrapper {
+        overflow: hidden;
         position: relative;
-        max-width: 100%;
-        padding: 0 40px;
-        margin: 30px 0;
     }
 
-    .products-scroller {
-        overflow-x: auto; 
-        scroll-snap-type: x mandatory; 
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-    }
-    .products-scroller::-webkit-scrollbar { display: none; }
 
     .carousel-arrow {
-        display: block; 
+        display: block;
         position: absolute;
-        top: 50%; 
-        transform: translateY(-50%); 
+        top: 50%;
+        transform: translateY(-50%);
         font-size: 30px;
         color: #3f4046;
         z-index: 10;
