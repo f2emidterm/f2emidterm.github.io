@@ -1,4 +1,4 @@
-﻿body {
+body {
     font-family: "Inter", sans-serif;
     margin: 0;
     background-color: #F9F9F9;
@@ -7,25 +7,28 @@
     cursor: url("../images/starr.png")1 16, auto;
 }
 
-a, button, .icons span, .product-card {
+a,
+button,
+.icons span,
+.product-card {
     cursor: url("../images/starr.png")1 16, pointer;
 }
 
 header {
     width: 100%;
-    border-bottom: 1px solid #AEAEDE;
+    /* border-bottom: 1px solid #AEAEDE; */
     padding: 30px 0;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-    background-color: #efedf1;
+    background-color: #EFEEF2;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     z-index: 1000;
-    background-color: rgba(239, 238, 242, 0.5);
+    background-color: rgba(239, 238, 242, 0.7);
     justify-content: space-between;
 }
 
@@ -36,18 +39,18 @@ header {
     margin-left: 20px;
 }
 
-    .header-left nav a {
-        padding: 0 12px;
-        text-decoration: none;
-        color: #3f4046;
-        font-size: 12px;
-        letter-spacing: 0.5px;
-        font-weight: bold;
-    }
+.header-left nav a {
+    padding: 0 12px;
+    text-decoration: none;
+    color: #3f4046;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    font-weight: bold;
+}
 
-        .header-left nav a:hover {
-            text-decoration: underline;
-        }
+.header-left nav a:hover {
+    text-decoration: underline;
+}
 
 .header-right {
     display: flex;
@@ -93,21 +96,21 @@ header {
     padding: 30px 20px;
 }
 
-    .filters button {
-        background: none;
-        border: 1.25px solid #3f4046;
-        padding: 5px 15px;
-        /*cursor: pointer;*/
-        font-size: 13px;
-        transition: all 0.2s ease;
-        color: #333;
-    }
+.filters button {
+    background-color: white;
+    border: 1.25px solid #3f4046;
+    padding: 5px 15px;
+    /*cursor: pointer;*/
+    font-size: 13px;
+    transition: all 0.2s ease;
+    color: #333;
+}
 
-        .filters button.active,
-        .filters button:hover {
-            background-color: #DFDCE9;
-            color: #3f4046;
-        }
+.filters button.active,
+.filters button:hover {
+    background-color: #DFDCE9;
+    color: #3f4046;
+}
 
 .products {
     display: grid;
@@ -123,20 +126,20 @@ header {
     transition: 0.3s;
 }
 
-    .product-card:hover {
-        transform: translateY(-4px);
-    }
+.product-card:hover {
+    transform: translateY(-4px);
+}
 
-    .product-card a {
-        color: inherit;
-        text-decoration: none;
-        display: block;
-    }
+.product-card a {
+    color: inherit;
+    text-decoration: none;
+    display: block;
+}
 
-        .product-card a:hover .product-img {
-            transform: scale(1.03);
-            transition: transform 0.3s;
-        }
+.product-card a:hover .product-img {
+    transform: scale(1.03);
+    transition: transform 0.3s;
+}
 
 .product-img {
     width: 100%;
@@ -151,11 +154,11 @@ header {
     justify-content: center;
 }
 
-    .product-img img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
+.product-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 
 .product-name {
     font-size: 14px;
@@ -172,21 +175,33 @@ header {
     margin: 40px 0 80px;
 }
 
-    .pagination span {
-        margin: 0 8px;
-        /*cursor: pointer;*/
-        font-size: 13px;
-    }
+.pagination span {
+    margin: 0 8px;
+    /*cursor: pointer;*/
+    font-size: 13px;
+}
 
-    .pagination .active {
-        font-weight: 700;
-    }
+.pagination .active {
+    font-weight: 700;
+}
 
 .no-products {
     grid-column: 1 / -1;
     text-align: center;
     color: #888;
     font-size: 14px;
+}
+
+#pagination span {
+    transition: text-decoration 0.3s; 
+}
+
+#pagination span:hover {
+    text-decoration: underline; 
+}
+
+#pagination span.active:hover {
+    text-decoration: underline; 
 }
 
 footer {
