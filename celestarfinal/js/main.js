@@ -123,26 +123,19 @@ startAutoSlide();
 renderProducts();
 
 /*rwd*/
-// 獲取漢堡圖標和導航列
-const menuToggle = document.getElementById('menuToggle');
-const mainNav = document.getElementById('mainNav');
+const menuBtn = document.querySelector(".menu-btn");
+const mobileMenu = document.querySelector(".mobile-menu");
+const overlay = document.querySelector(".menu-overlay");
 
-// 定義一個類別，用於控制導航列的顯示/隱藏
-const ACTIVE_CLASS = 'nav-open';
+menuBtn.addEventListener("click", () => {
+    mobileMenu.classList.toggle("active");
+    overlay.classList.toggle("active");
+});
 
-if (menuToggle && mainNav) {
-    menuToggle.addEventListener('click', function () {
-        // 點擊時，切換導航列的顯示狀態
-        mainNav.classList.toggle(ACTIVE_CLASS);
-
-        // 可選：切換圖標，讓 "menu" 變成 "close"
-        if (mainNav.classList.contains(ACTIVE_CLASS)) {
-            menuToggle.textContent = 'close';
-        } else {
-            menuToggle.textContent = 'menu';
-        }
-    });
-}
+overlay.addEventListener("click", () => {
+    mobileMenu.classList.remove("active");
+    overlay.classList.remove("active");
+});
 
 // ===========================================
 // 商品輪播分頁邏輯 (修正為輔助滾動)
@@ -197,4 +190,3 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 });
-
