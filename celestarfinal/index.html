@@ -1,5 +1,6 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,7 +13,10 @@
 <body>
     <header>
         <div class="header-left">
-            <nav>
+            <span class="material-symbols-outlined menu-icon" id="menuToggle">
+                menu
+            </span>
+            <nav id="mainNav">
                 <a href="index.html">HOME</a>
                 <a href="shop.html">SHOP</a>
                 <a href="#">COLLECTION</a>
@@ -50,14 +54,41 @@
         </div>
     </section>
 
+
+
     <div class="container">
         <div class="products-bg">
-            <section class="products">
+            <div class="marquee-wrapper">
+                <div class="marquee-content">
+                    <span>別再觀望了！ＧＯ！加入購物車&nbsp;&nbsp;&nbsp;&nbsp;.・゜゜・・゜゜・．
+                        我們現在就去結帳！＞＿＜*:･ﾟ✧*:･ﾟ &nbsp&nbsp滿 $599$ 免運！&nbsp&nbsp
+                        * 全館 7 折起 * &nbsp;&nbsp;聖誕節限時特惠·͙*̩̩͙˚̩̥̩̥*̩̩̥͙
+                    </span>
+                </div>
+            </div>
+
+            <div class="product-carousel-wrapper" id="productCarousel"> <span
+                    class="material-symbols-outlined carousel-arrow left-arrow" data-direction="-1">
+                    chevron_left
+                </span>
+
+                <div class="products-scroller">
+                <section class="products" id="productCarousel">
+                    <div class="product-card"></div>
+                </section>
+                </div>
+
+                <span class="material-symbols-outlined carousel-arrow right-arrow" data-direction="1">
+                    chevron_right
+                </span>
+            </div>
+
+            <!-- <section class="products">
                 <div class="product-card"></div>
-            </section>
+            </section> -->
 
             <div class="see-more">
-                SEE MORE  →
+                SEE MORE →
                 <a href="shop.html">SHOP</a>
             </div>
         </div>
@@ -65,13 +96,19 @@
     <footer>
         COPYRIGHT © 2025 CELESTAR <br>
         For academic purposes only; non-profit testing site.<br>
-        Email : JWKJFKAJ@xxxmail.com   CONTACT NUMBER : 09XXX45X5X <br>
+        Email : JWKJFKAJ@xxxmail.com CONTACT NUMBER : 09XXX45X5X <br>
         Address: heven999 | Business Registration Number: 44545adjkz | Business License: 4543Dkjlkf
     </footer>
+
+
+    <button id="backToTopBtn" title="返回頂部">
+        <span class="material-symbols-outlined">
+            arrow_upward
+        </span>
+    </button>
 
     <script src="js/main.js"></script>
 
 </body>
+
 </html>
-
-
