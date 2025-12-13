@@ -142,51 +142,134 @@ overlay.addEventListener("click", () => {
 // ===========================================
 
 document.addEventListener("DOMContentLoaded", () => {
-
-    // 只在手機版啟用
-    if (!window.matchMedia("(max-width: 600px)").matches) return;
-
-    const products = document.querySelector(".products");
-    const cards = Array.from(products.children);
+    // 1. 選取關鍵元素
+    const productsContainer = document.querySelector(".products");
     const leftArrow = document.querySelector(".left-arrow");
     const rightArrow = document.querySelector(".right-arrow");
 
-    if (!products || cards.length <= 4) return;
+    // 如果找不到容器，直接結束
+    if (!productsContainer) return;
 
-    /* ===== 1️⃣ 建立 page（每 4 個一頁）===== */
-    const pages = [];
-    for (let i = 0; i < cards.length; i += 4) {
-        const page = document.createElement("div");
-        page.className = "product-page";
+    // 2. 狀態變數
+    let isMobileCarouselActive = false; // 標記目前是否為手機輪播模式
+    let currentPage = 0;                // 當前頁碼
+    let totalPages = 0;                 // 總頁數
 
-        cards.slice(i, i + 4).forEach(card => page.appendChild(card));
-        pages.push(page);
+    // 3. 更新輪播位置的函式
+    function updateSlide() {
+        // 只在手機模式下執行位移
+        if (!isMobileCarouselActive) {
+            productsContainer.style.transform = "";
+            productsContainer.style.transition = "";
+            return;
+        }
+
+        // 移動邏輯：頁碼 * -100%
+        // 注意：這裡假設 .products 寬度設為 100% * 頁數 (在 CSS 中設定 display: flex; width: 200% 等)
+        // 或者使用我們之前的 CSS 設定 (width: max-content 或 200%)
+        productsContainer.style.transition = "transform 0.4s ease-in-out";
+        productsContainer.style.transform = `translateX(-${currentPage * 100}%)`;
     }
 
-    products.innerHTML = "";
-    pages.forEach(p => products.appendChild(p));
+    // 4. 初始化手機版輪播 (打包卡片)
+    function initMobileCarousel() {
+        // 如果已經是啟用狀態，或者沒有卡片，就不重複執行
+        if (isMobileCarouselActive) return;
 
-    /* ===== 2️⃣ 初始化狀態 ===== */
-    let currentPage = 0;
-    const total = pages.length;
+        // 獲取所有原始卡片
+        const originalCards = Array.from(productsContainer.children);
+        
+        // 如果卡片少於等於4張，不需要輪播
+        if (originalCards.length <= 4) return;
 
-    products.style.transform = "translateX(0%)";
+        // --- 開始打包結構 ---
+        const pages = [];
+        for (let i = 0; i < originalCards.length; i += 4) {
+            // 建立分頁容器
+            const page = document.createElement("div");
+            page.className = "product-page"; // 注意：需要在 CSS 定義這個 class 的樣式
+            
+            // 這裡為了配合之前的 Flex 結構，我們給 page 設定寬度樣式 (或是寫在 CSS 裡)
+            // 建議 CSS: .product-page { width: 50vw; flex-shrink: 0; ...grid settings... }
+            
+            // 將 4 張卡片放入分頁
+            originalCards.slice(i, i + 4).forEach(card => page.appendChild(card));
+            pages.push(page);
+        }
 
-    /* ===== 3️⃣ 更新畫面 ===== */
-    function update() {
-        products.style.transition = "transform 0.4s ease";
-        products.style.transform = `translateX(-${currentPage * 100}%)`;
+        // 清空容器並放入分頁
+        productsContainer.innerHTML = "";
+        pages.forEach(page => productsContainer.appendChild(page));
+
+        // 更新狀態
+        isMobileCarouselActive = true;
+        totalPages = pages.length;
+        currentPage = 0; // 重置回第一頁
+
+        // 初始化位置
+        updateSlide();
     }
 
-    /* ===== 4️⃣ 循環翻頁 ===== */
-    rightArrow?.addEventListener("click", () => {
-        currentPage = (currentPage + 1) % total;
-        update();
-    });
+    // 5. 銷毀手機版輪播 (拆包卡片 -> 恢復 PC 狀態)
+    function destroyMobileCarousel() {
+        // 如果本來就不是啟用狀態，就不執行
+        if (!isMobileCarouselActive) return;
 
-    leftArrow?.addEventListener("click", () => {
-        currentPage = (currentPage - 1 + total) % total;
-        update();
-    });
+        // 獲取所有分頁
+        const pages = productsContainer.querySelectorAll(".product-page");
+        
+        // 準備一個文檔片段來暫存卡片 (效能優化)
+        const fragment = document.createDocumentFragment();
 
-});
+        // 把卡片從分頁拿出來
+        pages.forEach(page => {
+            Array.from(page.children).forEach(card => {
+                fragment.appendChild(card);
+            });
+        });
+
+        // 清空容器並把卡片放回去
+        productsContainer.innerHTML = "";
+        productsContainer.appendChild(fragment);
+
+        // 清除樣式
+        productsContainer.style.transform = "";
+        productsContainer.style.transition = "";
+
+        // 更新狀態
+        isMobileCarouselActive = false;
+        currentPage = 0;
+    }
+
+    // 6. 檢查視窗大小並切換模式
+    function checkMode() {
+        // 判斷是否為手機版 (小於等於 600px)
+        if (window.matchMedia("(max-width: 600px)").matches) {
+            initMobileCarousel();
+        } else {
+            destroyMobileCarousel();
+        }
+    }
+
+    // 7. 綁定箭頭事件 (點擊事件一直監聽，但內部判斷是否執行)
+    if (rightArrow) {
+        rightArrow.addEventListener("click", () => {
+            if (!isMobileCarouselActive) return; // PC 版點擊無效
+            currentPage = (currentPage + 1) % totalPages; // 循環下一頁
+            updateSlide();
+        });
+    }
+
+    if (leftArrow) {
+        leftArrow.addEventListener("click", () => {
+            if (!isMobileCarouselActive) return; // PC 版點擊無效
+            // 循環上一頁邏輯
+            currentPage = (currentPage - 1 + totalPages) % totalPages;
+            updateSlide();
+        });
+    }
+
+    // 8. 啟動監聽
+    checkMode(); // 載入時先檢查一次
+    window.addEventListener("resize", checkMode); // 視窗縮放時檢查
+});  
