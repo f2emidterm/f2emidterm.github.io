@@ -148,48 +148,53 @@ if (menuToggle && mainNav) {
 // 商品輪播分頁邏輯 (修正為輔助滾動)
 // ===========================================
 
-const productScroller = document.querySelector('.products-scroller'); // 確保選取到滾動容器
-const productArrows = document.querySelectorAll('.carousel-arrow');
+document.addEventListener("DOMContentLoaded", () => {
 
-// 每頁的寬度 = 滾動容器的寬度
-let pageWidth = productScroller ? productScroller.clientWidth : 0;
+    // 只在手機版啟用
+    if (!window.matchMedia("(max-width: 600px)").matches) return;
 
-function updateProductCarousel(direction) {
-    if (window.innerWidth > 600 || !productScroller) {
-        return;
+    const products = document.querySelector(".products");
+    const cards = Array.from(products.children);
+    const leftArrow = document.querySelector(".left-arrow");
+    const rightArrow = document.querySelector(".right-arrow");
+
+    if (!products || cards.length <= 4) return;
+
+    /* ===== 1️⃣ 建立 page（每 4 個一頁）===== */
+    const pages = [];
+    for (let i = 0; i < cards.length; i += 4) {
+        const page = document.createElement("div");
+        page.className = "product-page";
+
+        cards.slice(i, i + 4).forEach(card => page.appendChild(card));
+        pages.push(page);
     }
-    
-    // 關鍵：計算滾動目標位置
-    const scrollAmount = direction * pageWidth;
-    
-    productScroller.scrollBy({
-        left: scrollAmount,
-        behavior: 'smooth' // 平滑滾動
+
+    products.innerHTML = "";
+    pages.forEach(p => products.appendChild(p));
+
+    /* ===== 2️⃣ 初始化狀態 ===== */
+    let currentPage = 0;
+    const total = pages.length;
+
+    products.style.transform = "translateX(0%)";
+
+    /* ===== 3️⃣ 更新畫面 ===== */
+    function update() {
+        products.style.transition = "transform 0.4s ease";
+        products.style.transform = `translateX(-${currentPage * 100}%)`;
+    }
+
+    /* ===== 4️⃣ 循環翻頁 ===== */
+    rightArrow?.addEventListener("click", () => {
+        currentPage = (currentPage + 1) % total;
+        update();
     });
-}
 
-// 監聽箭頭點擊事件
-productArrows.forEach(arrow => {
-    arrow.addEventListener('click', () => {
-        const direction = parseInt(arrow.dataset.direction); // -1 或 1
-        updateProductCarousel(direction);
+    leftArrow?.addEventListener("click", () => {
+        currentPage = (currentPage - 1 + total) % total;
+        update();
     });
+
 });
 
-// 監聽視窗大小變化，更新 pageWidth
-window.addEventListener('resize', () => {
-    if (productScroller) {
-        pageWidth = productScroller.clientWidth;
-    }
-    // 確保 PC 模式下重置滾動位置
-    if (window.innerWidth > 600) {
-        productScroller.scrollTo({ left: 0, behavior: 'instant' });
-    }
-});
-
-// 確保初始頁面正確 (在載入完成後計算寬度)
-window.addEventListener('load', () => {
-    if (productScroller) {
-        pageWidth = productScroller.clientWidth;
-    }
-});
