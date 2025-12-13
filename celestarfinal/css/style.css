@@ -47,10 +47,6 @@ header {
         margin-left: 20px;
     }
 
-.material-symbols-outlined.menu-icon {
-    display: none;
-}
-
 .header-left nav a {
     padding: 0 12px;
     text-decoration: none;
@@ -520,4 +516,5 @@ footer {
         font-size: 20px;
     }
 }
+
 
