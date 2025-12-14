@@ -1,4 +1,4 @@
-// ---- 商品資料 ----
+
 const products = [
     { id: 1, name: "BLUE OCEAN HOUR STICKER", price: "$20", category: "sticker", img: "images/stk1.jpg" },
     { id: 2, name: "SUNDAY BLUSH STICKER", price: "$20", category: "sticker", img: "images/stk2.jpg" },
@@ -10,7 +10,9 @@ const products = [
     { id: 8, name: "STARFISH RING", price: "$200", category: "accessory", img: "images/acc2.png" }
 ];
 
-const perPage = 16;
+function getPerPage() {
+    return window.innerWidth <= 600 ? 10 : 16;
+}
 let currentPage = 1;
 let currentCategory = "all";
 
@@ -23,11 +25,11 @@ function renderProducts() {
             ? products
             : products.filter((p) => p.category === currentCategory);
 
-    const start = (currentPage - 1) * perPage; // 每頁 16 個
+    const perPage = getPerPage();
+    const start = (currentPage - 1) * perPage;
     const end = start + perPage;
     const pageItems = filtered.slice(start, end);
 
-    // 如果沒有商品，顯示 no products
     if (pageItems.length === 0) {
         const noDiv = document.createElement("div");
         noDiv.className = "no-products";
@@ -36,7 +38,6 @@ function renderProducts() {
         return;
     }
 
-    // 渲染商品
     pageItems.forEach((p) => {
         const card = document.createElement("div");
         card.className = "product-card";
@@ -53,7 +54,6 @@ function renderProducts() {
         grid.appendChild(card);
     });
 
-    // 補滿剩餘格子成灰色方框
     const fillCount = perPage - pageItems.length;
     for (let i = 0; i < fillCount; i++) {
         const card = document.createElement("div");
@@ -68,7 +68,6 @@ function renderProducts() {
 }
 
 
-// ---- 篩選功能 ----
 document.querySelectorAll(".filters button").forEach((btn) => {
     btn.addEventListener("click", () => {
         document.querySelectorAll(".filters button").forEach((b) => b.classList.remove("active"));
@@ -79,7 +78,6 @@ document.querySelectorAll(".filters button").forEach((btn) => {
     });
 });
 
-// ---- 分頁控制 ----
 document.getElementById("page1").addEventListener("click", () => {
     currentPage = 1;
     updatePagination();
@@ -107,7 +105,10 @@ function updatePagination() {
     renderProducts();
 }
 
-// ---- 初始化 ----
 
 renderProducts();
 
+window.addEventListener("resize", () => {
+    currentPage = 1;
+    updatePagination();
+});
