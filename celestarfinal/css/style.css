@@ -5,9 +5,12 @@ body {
     background-color: #F9F9F9;
     color: #111;
     padding-top: 90px;
-    cursor: url("../images/starr.png")1 16, auto;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
+}
+
+html, body {
+    cursor: url("../images/starr.png") 1 16, auto; 
 }
 
 a,
@@ -403,6 +406,7 @@ footer {
         font-size: 20px;
     }
 }
+
 
 
 
