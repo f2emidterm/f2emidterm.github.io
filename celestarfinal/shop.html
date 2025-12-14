@@ -6,12 +6,23 @@
     <title>CELESTAR SHOP</title>
     <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="css/shopstyle.css" />
+    <link rel="stylesheet" href="css/header.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
 </head>
 <body>
     <header>
         <div class="header-left">
-            <nav>
+            <span class="material-symbols-outlined menu-btn">menu</span>
+
+            <div class="mobile-menu">
+                <a href="index.html">HOME</a>
+                <a href="shop.html">SHOP</a>
+                <a href="#">DAKKU</a>
+                <a href="#">ABOUT US</a>
+            </div>
+
+            <div class="menu-overlay"></div>
+            <nav id="mainNav">
                 <a href="index.html">HOME</a>
                 <a href="shop.html">SHOP</a>
                 <a href="#">COLLECTION</a>
@@ -64,6 +75,7 @@
     </footer>
 
     <script src="js/shopscript.js"></script>
+    <script src="js/header.js"></script>
 
 </body>
 </html>
