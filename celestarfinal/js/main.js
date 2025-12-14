@@ -122,21 +122,6 @@ function backToTop() {
 startAutoSlide();
 renderProducts();
 
-/*rwd*/
-const menuBtn = document.querySelector(".menu-btn");
-const mobileMenu = document.querySelector(".mobile-menu");
-const overlay = document.querySelector(".menu-overlay");
-
-menuBtn.addEventListener("click", () => {
-    mobileMenu.classList.toggle("active");
-    overlay.classList.toggle("active");
-});
-
-overlay.addEventListener("click", () => {
-    mobileMenu.classList.remove("active");
-    overlay.classList.remove("active");
-});
-
 // ===========================================
 // 商品輪播分頁邏輯 (修正為輔助滾動)
 // ===========================================
