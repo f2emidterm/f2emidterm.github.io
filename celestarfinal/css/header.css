@@ -69,12 +69,6 @@ header {
     cursor: pointer;
 }
 
-.left-arrow,
-.right-arrow,
-.carousel-arrow {
-    display: none !important;
-}
-
 /* ========================================= */
 /* RWD 響應式設定                           */
 /* ========================================= */
