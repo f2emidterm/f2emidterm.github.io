@@ -6,13 +6,24 @@
     <title>PRODUCT PAGE</title>
     <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="css/productstyle.css" />
+    <link rel="stylesheet" href="css/header.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
 </head>
 <body>
 
     <header>
         <div class="header-left">
-            <nav>
+            <span class="material-symbols-outlined menu-btn">menu</span>
+
+            <div class="mobile-menu">
+                <a href="index.html">HOME</a>
+                <a href="shop.html">SHOP</a>
+                <a href="#">DAKKU</a>
+                <a href="#">ABOUT US</a>
+            </div>
+
+            <div class="menu-overlay"></div>
+            <nav id="mainNav">
                 <a href="index.html">HOME</a>
                 <a href="shop.html">SHOP</a>
                 <a href="#">COLLECTION</a>
@@ -46,37 +57,44 @@
         </div>
 
         <div class="product-info">
-            <br>
-            <h2>PRODUCT NAME</h2>
-            <p>$1000</p>
+            <div class="info-header">
+                <h2>PRODUCT NAME</h2>
+                <p class="price">$1000</p>
+            </div>
 
-            <label class="select-label">品項</label>
-            <div class="custom-select">
-                <div class="select-selected">請選擇款式</div>
-                <div class="select-items">
-                    <div data-value="請選擇款式">請選擇款式</div>
-                    <div data-value="款式 A">款式 A</div>
-                    <div data-value="款式 B">款式 B</div>
+            <div class="selectors-row">
+                <div class="selector-group">
+                    <label class="select-label">品項</label>
+                    <div class="custom-select">
+                        <div class="select-selected">請選擇款式</div>
+                        <div class="select-items">
+                            <div data-value="請選擇款式">請選擇款式</div>
+                            <div data-value="款式 A">款式 A</div>
+                            <div data-value="款式 B">款式 B</div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="divider">
+                <div class="selector-group quantity-section" style="display:none;"> <label>數量</label>
+                    <div class="quantity">
+                        <button id="minus">−</button>
+                        <span id="qty">1</span>
+                        <button id="plus">+</button>
+                    </div>
                 </div>
             </div>
 
-
-            <hr>
-
-            <div class="quantity-section" style="display:none;">
-                <label>數量</label><br>
-                <div class="quantity">
-                    <button id="minus">−</button>
-                    <span id="qty">1</span>
-                    <button id="plus">+</button>
-                </div>
-            </div>
-
-            <hr>
+            <hr class="divider">
 
             <div class="total-info" style="display:none;">
-                <p>訂購數量：<span id="totalQty">1</span></p>
-                <p>總額：<span id="totalPrice">20</span></p>
+                <div class="info-row">
+                    <span>訂購數量:</span>
+                    <span id="totalQty">1</span>
+                </div>
+                <div class="info-row">
+                    <span>總額:</span>
+                    <span id="totalPrice">20</span>
+                </div>
             </div>
 
             <div class="buttons">
@@ -102,7 +120,7 @@
     </footer>
 
     <script src="js/productscript.js"></script>
-
+    <script src="js/header.js"></script>
 
 </body>
 </html>
