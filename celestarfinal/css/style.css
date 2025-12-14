@@ -341,7 +341,6 @@ footer {
         display: block;
         order: 1;
         font-size: 24px;
-        margin-right: 50px;
     }
 
     * 手機版：隱藏桌機導航 */
@@ -507,4 +506,5 @@ footer {
         font-size: 20px;
     }
 }
+
 
