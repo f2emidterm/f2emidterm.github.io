@@ -6,6 +6,8 @@ body {
     color: #111;
     padding-top: 90px;
     cursor: url("../images/starr.png")1 16, auto;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
 }
 
 a,
@@ -401,5 +403,6 @@ footer {
         font-size: 20px;
     }
 }
+
 
 
