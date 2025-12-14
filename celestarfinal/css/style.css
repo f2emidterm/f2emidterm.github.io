@@ -1,4 +1,3 @@
-
 body {
     font-family: 'Inter', Arial, sans-serif;
     margin: 0;
@@ -47,18 +46,18 @@ header {
         margin-left: 20px;
     }
 
-        .header-left nav a {
-            padding: 0 12px;
-            text-decoration: none;
-            color: #3f4046;
-            font-size: 12px;
-            letter-spacing: 0.5px;
-            font-weight: bold;
-        }
+.header-left nav a {
+    padding: 0 12px;
+    text-decoration: none;
+    color: #3f4046;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    font-weight: bold;
+}
 
-            .header-left nav a:hover {
-                text-decoration: underline;
-            }
+    .header-left nav a:hover {
+        text-decoration: underline;
+    }
 
 .header-right {
     display: flex;
@@ -162,7 +161,6 @@ header {
 }
 
 .marquee-wrapper {
-    /*margin-top: 25px;*/
     background-color: #AEAEDE;
     color: white;
     padding: 5px 0;
@@ -171,21 +169,21 @@ header {
     font-size: 1em;
     font-weight: bold;
     width: 100%;
+    display: flex;
 }
 
 .marquee-content {
     width: max-content;
-    animation: 20s marquee-scroll steps(40) infinite;
+    animation: 20s pixel-scroll steps(40) infinite;
 }
 
 
-@keyframes marquee-scroll {
+@keyframes pixel-scroll {
     0% {
-        transform: translateX(100%);
+        transform: translateX(0);
     }
-
     100% {
-        transform: translateX(-100%);
+        transform: translateX(-50%);
     }
 }
 
@@ -333,6 +331,28 @@ footer {
     .marquee-wrapper {
         font-size: 0.8em;
         padding: 4px 0;
+        overflow: hidden;
+        width: 100%;
+    }
+
+    .marquee-content {
+        display: flex; 
+        width: max-content; 
+        animation: pixel-scroll 15s steps(30) infinite;
+    }
+
+    .marquee-content span {
+        white-space: nowrap;
+        padding-right: 0;
+    }
+
+    @keyframes pixel-scroll {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(-50%);
+        }
     }
 
     .products {
@@ -401,3 +421,6 @@ footer {
         font-size: 20px;
     }
 }
+
+
+
