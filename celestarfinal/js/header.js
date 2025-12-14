@@ -24,6 +24,11 @@ document.addEventListener("DOMContentLoaded", () => {
             mobileMenu.classList.remove("active");
             overlay.classList.remove("active");
             // menuBtn.textContent = "menu";
+            if (mobileMenu.classList.contains("active")) {
+                menuBtn.textContent = "close";
+            } else {
+                menuBtn.textContent = "menu";
+            }
         });
 
         // 點擊選單內的連結：關閉選單 (優化體驗)
