@@ -291,7 +291,7 @@ footer {
     }
 
     .product-info {
-        padding: 0px 0px 20px 20px;
+        padding: 0px 20px 20px 20px;
         padding-top: 0;
     }
 
@@ -385,3 +385,4 @@ footer {
         font-size: 13px;
     }
 }
+
