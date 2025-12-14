@@ -331,8 +331,8 @@ footer {
     }
 
     .marquee-wrapper {
-        font-size: 12px;
-        padding: 3px 0;
+        font-size: 0.8em;
+        padding: 4px 0;
         overflow: hidden;
         width: 100%;
     }
