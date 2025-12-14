@@ -156,7 +156,6 @@ main {
 .quantity {
     display: flex;
     align-items: center;
-    background: #fff;
     width: fit-content;
 }
 
@@ -385,4 +384,5 @@ footer {
         font-size: 13px;
     }
 }
+
 
