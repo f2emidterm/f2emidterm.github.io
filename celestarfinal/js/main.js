@@ -1,3 +1,4 @@
+
 // ---- �ӫ~��� ----
 const products = [
     { id: 1, name: "BLUE OCEAN HOUR STICKER", price: "$20", category: "sticker", img: "images/stk1.jpg" },
@@ -141,20 +142,33 @@ document.addEventListener("DOMContentLoaded", () => {
     let totalPages = 0;                 // 總頁數
 
     // 3. 更新輪播位置的函式
-    function updateSlide() {
-        // 只在手機模式下執行位移
-        if (!isMobileCarouselActive) {
-            productsContainer.style.transform = "";
-            productsContainer.style.transition = "";
-            return;
-        }
+    //function updateSlide() {
+    //    // 只在手機模式下執行位移
+    //    if (!isMobileCarouselActive) {
+    //        productsContainer.style.transform = "";
+    //        productsContainer.style.transition = "";
+    //        return;
+    //    }
 
-        // 移動邏輯：頁碼 * -100%
-        // 注意：這裡假設 .products 寬度設為 100% * 頁數 (在 CSS 中設定 display: flex; width: 200% 等)
-        // 或者使用我們之前的 CSS 設定 (width: max-content 或 200%)
-        productsContainer.style.transition = "transform 0.4s ease-in-out";
-        productsContainer.style.transform = `translateX(-${currentPage * 100}%)`;
+    //    // 移動邏輯：頁碼 * -100%
+    //    // 注意：這裡假設 .products 寬度設為 100% * 頁數 (在 CSS 中設定 display: flex; width: 200% 等)
+    //    // 或者使用我們之前的 CSS 設定 (width: max-content 或 200%)
+    //    productsContainer.style.transition = "transform 0.4s ease-in-out";
+    //    productsContainer.style.transform = `translateX(-${currentPage * 100}%)`;
+    //}
+    function updateSlide() {
+        if (!isMobileCarouselActive) return;
+
+        const wrapper =
+            document.querySelector(".product-carousel-wrapper");
+
+        const pageWidth = wrapper.clientWidth;
+
+        productsContainer.style.transition = "transform 0.4s ease";
+        productsContainer.style.transform =
+            `translateX(-${currentPage * pageWidth}px)`;
     }
+
 
     // 4. 初始化手機版輪播 (打包卡片)
     function initMobileCarousel() {
@@ -163,7 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // 獲取所有原始卡片
         const originalCards = Array.from(productsContainer.children);
-        
+
         // 如果卡片少於等於4張，不需要輪播
         if (originalCards.length <= 4) return;
 
@@ -173,10 +187,10 @@ document.addEventListener("DOMContentLoaded", () => {
             // 建立分頁容器
             const page = document.createElement("div");
             page.className = "product-page"; // 注意：需要在 CSS 定義這個 class 的樣式
-            
+
             // 這裡為了配合之前的 Flex 結構，我們給 page 設定寬度樣式 (或是寫在 CSS 裡)
             // 建議 CSS: .product-page { width: 50vw; flex-shrink: 0; ...grid settings... }
-            
+
             // 將 4 張卡片放入分頁
             originalCards.slice(i, i + 4).forEach(card => page.appendChild(card));
             pages.push(page);
@@ -202,7 +216,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // 獲取所有分頁
         const pages = productsContainer.querySelectorAll(".product-page");
-        
+
         // 準備一個文檔片段來暫存卡片 (效能優化)
         const fragment = document.createDocumentFragment();
 
@@ -257,4 +271,4 @@ document.addEventListener("DOMContentLoaded", () => {
     // 8. 啟動監聽
     checkMode(); // 載入時先檢查一次
     window.addEventListener("resize", checkMode); // 視窗縮放時檢查
-});  
+});
