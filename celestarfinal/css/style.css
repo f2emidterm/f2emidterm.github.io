@@ -330,29 +330,9 @@ footer {
 
     .marquee-wrapper {
         font-size: 12px;
-        padding: 4px 0;
+        padding: 3px 0;
         overflow: hidden;
         width: 100%;
-    }
-
-    .marquee-content {
-        display: flex; 
-        width: max-content; 
-        animation: pixel-scroll 15s steps(30) infinite;
-    }
-
-    .marquee-content span {
-        white-space: nowrap;
-        padding-right: 0;
-    }
-
-    @keyframes pixel-scroll {
-        0% {
-            transform: translateX(0);
-        }
-        100% {
-            transform: translateX(-50%);
-        }
     }
 
     .products {
@@ -421,8 +401,5 @@ footer {
         font-size: 20px;
     }
 }
-
-
-
 
 
