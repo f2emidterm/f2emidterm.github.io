@@ -1,3 +1,4 @@
+
 header {
     width: 100%;
     padding: 30px 0;
@@ -7,7 +8,7 @@ header {
     position: fixed; /* 固定在頂部 */
     top: 0;
     left: 0;
-    z-index: 1000;
+    z-index: 10;
     background-color: rgba(239, 238, 242, 0.7); /* 半透明背景 */
     justify-content: space-between;
 }
@@ -20,25 +21,25 @@ header {
     align-items: center;
 }
 
-.header-left nav {
-    flex: 1;
-    display: flex;
-    justify-content: flex-start;
-    margin-left: 20px;
-}
+    .header-left nav {
+        flex: 1;
+        display: flex;
+        justify-content: flex-start;
+        margin-left: 20px;
+    }
 
-.header-left nav a {
-    padding: 0 12px;
-    text-decoration: none;
-    color: #3f4046;
-    font-size: 12px;
-    letter-spacing: 0.5px;
-    font-weight: bold;
-}
+        .header-left nav a {
+            padding: 0 12px;
+            text-decoration: none;
+            color: #3f4046;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            font-weight: bold;
+        }
 
-.header-left nav a:hover {
-    text-decoration: underline;
-}
+            .header-left nav a:hover {
+                text-decoration: underline;
+            }
 
 /* 中間 Logo */
 .header-center {
@@ -93,6 +94,7 @@ header {
     header {
         padding: 10px 15px;
         align-items: flex-end;
+        z-index: 10;
     }
 
     .header-left nav {
@@ -105,59 +107,59 @@ header {
         font-size: 30px;
         position: absolute;
         left: 15px;
-        top: 18px; 
-        z-index: 2001;
+        top: 18px;
+        z-index: 11;
     }
 
     /* 手機側邊選單樣式 */
     .mobile-menu {
-        display: block; 
+        display: block;
         position: absolute;
-        top: 100%; 
+        top: 95%;
         left: 0;
         width: 100%;
-        background-color: #EFEEF2;
+        background-image: url("../images/menu.png");
         border-bottom: 1px solid #AEAEDE;
         padding: 30px 25px;
-        
         /* 動畫效果 */
         transform: translateY(-120%);
         transition: transform 0.35s ease;
-        z-index: 2000;
+        z-index: 9;
         box-sizing: border-box;
     }
 
-    .mobile-menu.active {
-        transform: translateY(0);
-    }
+        .mobile-menu.active {
+            transform: translateY(0);
+        }
 
-    /* 側邊選單連結樣式 */
-    .mobile-menu a {
-        display: block;
-        padding: 18px 0;
-        font-size: 18px;
-        color: #222;
-        text-decoration: none;
-        font-weight: 600;
-    }
+        /* 側邊選單連結樣式 */
+        .mobile-menu a {
+            display: block;
+            padding: 18px 0;
+            font-size: 18px;
+            color: #222;
+            text-decoration: none;
+            font-weight: 600;
+        }
 
-    .mobile-menu a:hover {
-        text-decoration: underline;
-    }
+            .mobile-menu a:hover {
+                text-decoration: underline;
+            }
 
     /* 遮罩樣式 */
     .menu-overlay {
         position: fixed;
         inset: 0;
+        top: 60px;
         background: rgba(0,0,0,0.3);
         display: none; /* 預設隱藏 */
-        z-index: 1500;
+        z-index: 8;
     }
 
-    /* 啟用遮罩 */
-    .menu-overlay.active {
-        display: block;
-    }
+        /* 啟用遮罩 */
+        .menu-overlay.active {
+            display: block;
+        }
 
     /* 調整其他 Header 元素位置 */
     .header-center {
