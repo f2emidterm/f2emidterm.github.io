@@ -1,3 +1,4 @@
+
 body {
     font-family: 'Inter', Arial, sans-serif;
     margin: 0;
@@ -46,18 +47,18 @@ header {
         margin-left: 20px;
     }
 
-.header-left nav a {
-    padding: 0 12px;
-    text-decoration: none;
-    color: #3f4046;
-    font-size: 12px;
-    letter-spacing: 0.5px;
-    font-weight: bold;
-}
+        .header-left nav a {
+            padding: 0 12px;
+            text-decoration: none;
+            color: #3f4046;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            font-weight: bold;
+        }
 
-    .header-left nav a:hover {
-        text-decoration: underline;
-    }
+            .header-left nav a:hover {
+                text-decoration: underline;
+            }
 
 .header-right {
     display: flex;
@@ -400,5 +401,3 @@ footer {
         font-size: 20px;
     }
 }
-
-
