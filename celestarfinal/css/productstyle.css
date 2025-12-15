@@ -4,6 +4,7 @@ body {
     margin: 0;
     color: #333;
     padding-top: 70px;
+    cursor: url("../images/starr.png")1 16, auto;
 }
 
 a,
@@ -395,3 +396,4 @@ footer {
     width: 100%;
   }
 }
+
