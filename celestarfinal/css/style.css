@@ -89,6 +89,7 @@ button,
 .products-bg {
     background-image: url("../images/bg1.svg");
     background-size: cover;
+    background-attachment: fixed; 
     padding: 10px 0;
     overflow: hidden;
 }
@@ -345,6 +346,7 @@ footer {
     height: 65vh;
     }
 }
+
 
 
 
