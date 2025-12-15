@@ -17,6 +17,7 @@ button,
 .products-bg {
     background-image: url("../images/bg2.svg");
     background-size: cover;
+    background-attachment: fixed; 
     padding: 10px 0;
     overflow: hidden;
 }
@@ -183,4 +184,5 @@ footer {
     padding:0 30px;
   }
 }
+
 
