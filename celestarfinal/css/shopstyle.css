@@ -177,5 +177,10 @@ footer {
   .products {
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
+    padding:0 30px;
+  }
+  .filters{
+    padding:0 30px;
   }
 }
+
