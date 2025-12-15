@@ -166,8 +166,8 @@ header {
 }
 
 .marquee-wrapper {
-    background-color: #AEAEDE;
-    color: white;
+    background-color:#f9f9f9 ;
+    color: #AEAEDE;
     padding: 5px 0;
     overflow: hidden;
     white-space: nowrap;
@@ -406,6 +406,7 @@ footer {
         font-size: 20px;
     }
 }
+
 
 
 
