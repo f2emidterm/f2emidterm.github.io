@@ -185,3 +185,16 @@ header {
         margin-left: 8px;
     }
 }
+
+@media (min-width: 601px) and (max-width: 1024px) {
+  .header-center {
+    position: static;
+    transform: none;
+    margin: 0 auto;
+    height: 30px;
+  }
+
+  .icons span {
+    margin-left: 6px;
+  }
+}
