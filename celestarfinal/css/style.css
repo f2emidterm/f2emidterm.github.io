@@ -340,7 +340,12 @@ footer {
     .products{
         margin: 0 25px;
     }
+
+    .banner {
+    height: 65vh;
+    }
 }
+
 
 
 
