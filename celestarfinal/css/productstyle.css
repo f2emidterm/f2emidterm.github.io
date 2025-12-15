@@ -10,7 +10,7 @@ a,
 button,
 .icons span,
 .product-card {
-    cursor: pointer;
+    cursor: url("../images/starr.png")1 16, pointer;
 }
 
 main {
@@ -146,7 +146,7 @@ main {
 }
 
 .select-items div:hover {
-    background-color: #f5f5f5;
+    background-color: #EFEEF2;
 }
 
 .select-items.show {
@@ -171,7 +171,7 @@ main {
 }
 
 .quantity button:hover {
-    background-color: #f0f0f0;
+    background-color: #EFEEF2;
 }
 
 .quantity span {
@@ -221,7 +221,6 @@ main {
 
 .buy-btn {
     background-color: #AEAEDE;
-    /* 紫色背景 */
     border: none;
     color: #fff;
 }
@@ -385,4 +384,14 @@ footer {
     }
 }
 
+@media (min-width: 601px) and (max-width: 1024px) {
+  main {
+    flex-direction:row;
+    gap: 30px;
+  }
 
+  .product-image,
+  .product-info {
+    width: 100%;
+  }
+}
