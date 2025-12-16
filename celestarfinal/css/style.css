@@ -84,14 +84,23 @@ button,
             background-color: #ddd;
         }
 
-
-
 .products-bg {
     background-image: url("../images/bg1.svg");
     background-size: cover;
     background-attachment: fixed; 
     padding: 10px 0;
     overflow: hidden;
+    position: relative;
+}
+
+.products-bg::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: url("../images/bg1.svg");
+    background-size: cover;
+    background-position: center;
+    z-index: -1;
 }
 
 .marquee-wrapper {
@@ -346,6 +355,7 @@ footer {
     height: 65vh;
     }
 }
+
 
 
 
