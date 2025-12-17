@@ -88,9 +88,35 @@
         </span>
     </button>
 
+    <div id="tutorialOverlay" class="tutorial-overlay">
+        <div class="tutorial-modal">
+
+            <button class="close-tutorial-btn" id="skipTutorial">×</button>
+
+            <div class="tutorial-content">
+                <div class="tutorial-image">
+                    <img id="stepImage" src="" alt="Tutorial Step">
+                </div>
+                <h2 id="stepTitle">標題</h2>
+                <p id="stepDesc">描述文字...</p>
+            </div>
+
+            <div class="tutorial-footer">
+                <div class="step-dots" id="stepDots">
+                </div>
+
+                <div class="step-buttons">
+                    <button id="prevStepBtn" class="secondary-btn" style="display:none;">上一步</button>
+                    <button id="nextStepBtn" class="primary-btn">下一步</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="js/dakkuscript.js"></script>
     <script src="js/header.js"></script>
 
 </body>
+
 
 </html>
