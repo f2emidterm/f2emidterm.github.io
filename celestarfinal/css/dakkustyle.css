@@ -221,6 +221,7 @@ button,
 
 .primary-btn:hover {
     background-color: #9a9ad0;
+    border:1px solid #3f4046;
 }
 
 .secondary-btn {
@@ -376,3 +377,4 @@ footer {
         font-size: 20px;
     }
 }
+
