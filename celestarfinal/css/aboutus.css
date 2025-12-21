@@ -9,7 +9,7 @@ body {
 }
 
 body.lock-scroll {
-  overflow: hidden;
+    overflow: hidden;
 }
 
 a,
@@ -47,9 +47,9 @@ button,
     height: 40vh;
 }
 
-.window-bar span{
+.window-bar span {
     font-size: 18px;
-    color:#fff;
+    color: #fff;
     margin-left: 10px;
     margin-top: 2px;
 }
@@ -70,40 +70,53 @@ button,
 }
 
 @keyframes retroPop {
-  0% {
-    opacity: 0;
-  }
-  20% {
-    opacity: 0.2;
-  }
-  40% {
-    opacity: 0.6;
-  }
-  55% {
-    opacity: 0.3;
-  }
-  70% {
-    opacity: 0.8;
-  }
-  100% {
-    opacity: 1;
-  }
+    0% {
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 0.2;
+    }
+
+    40% {
+        opacity: 0.6;
+    }
+
+    55% {
+        opacity: 0.3;
+    }
+
+    70% {
+        opacity: 0.8;
+    }
+
+    100% {
+        opacity: 1;
+    }
 }
 
 @keyframes tinyShake {
-  0% { transform: translateX(-50%) translateY(0); }
-  50% { transform: translateX(-50%) translateY(1px); }
-  100% { transform: translateX(-50%) translateY(0); }
+    0% {
+        transform: translateX(-50%) translateY(0);
+    }
+
+    50% {
+        transform: translateX(-50%) translateY(1px);
+    }
+
+    100% {
+        transform: translateX(-50%) translateY(0);
+    }
 }
 
 .about-window.show {
     animation:
-    retroPop 1.2s steps(1, end) forwards,
-    tinyShake 0.15s 3;
+        retroPop 1.2s steps(1, end) forwards,
+        tinyShake 0.15s 3;
 }
 
-.about-window img{
-    width:300px;
+.about-window img {
+    width: 300px;
     margin-top: 20px;
     margin-left: 20px;
 }
@@ -119,10 +132,10 @@ button,
     margin-bottom: 15px;
     font-size: 12px;
     background-color: #AEAEDE;
-    padding:5px;
+    padding: 5px;
 }
 
-p{
+p {
     padding-left: 20px;
 }
 
@@ -131,7 +144,7 @@ p{
     background: #F9F9F9;
 }
 
-.about-window:first-of-type .close-btn:hover{
+.about-window:first-of-type .close-btn:hover {
     background-color: #DFDCE9;
 }
 
@@ -143,77 +156,81 @@ p{
     0% {
         opacity: 0.2;
     }
+
     50% {
         opacity: 1;
     }
+
     100% {
         opacity: 0.2;
     }
 }
 
+/* ===== 過場 SVG ===== */
+
 .between-deco {
-  position: relative;
-  height: 500px;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
+    position: relative;
+    height: 500px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
 
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-  z-index: 2;
+    z-index: 2;
 }
 
 .between-deco.active {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
 }
 
 .between-deco img {
-  width:100%;
-  max-width: 600px;
-  display: block;
-  height: auto;
-  transform: scale(0.1);  
-  transform-origin: center;
+    width: 100%;
+    max-width: 600px;
+    display: block;
+    height: auto;
+    transform: scale(0.1);
+    transform-origin: center;
 }
 
 .between-deco img {
-  opacity: 0;
-  transform: translateY(8px);
-  transition: 1s ease;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: 1s ease;
 }
 
 .between-deco.in-view img {
-  opacity: 1;
-  transform: translateY(0);
+    opacity: 1;
+    transform: translateY(0);
 }
 
-/* ===== 過場 SVG 由上而下顯示 ===== */
 .between-deco {
-  overflow: hidden; /* 重點：裁切 */
+    overflow: hidden;
 }
 
 .between-deco img {
-  transform: translateY(-100%);
-  opacity: 1;
+    transform: translateY(-100%);
+    opacity: 1;
 }
 
 .between-deco.active img {
-  animation: revealDown 1.6s cubic-bezier(.4,0,.2,1) forwards;
+    animation: revealDown 1.6s cubic-bezier(.4, 0, .2, 1) forwards;
 }
 
 @keyframes revealDown {
-  from {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 /* ===== Retro / Modern ===== */
@@ -225,14 +242,15 @@ p{
     transform: translate(-50%, -50%);
     width: 110%;
     height: 110%;
-    object-fit: contain; 
-    z-index: 0;      
-    opacity: 1;   
+    object-fit: contain;
+    z-index: 0;
+    opacity: 1;
 }
 
-.star, .philosophy-text {
-    position: relative; 
-    z-index: 2;  
+.star,
+.philosophy-text {
+    position: relative;
+    z-index: 2;
 }
 
 .about-philosophy {
@@ -272,15 +290,15 @@ p{
 }
 
 .star.float img {
-  animation: floatY 4s ease-in-out infinite;
+    animation: floatY 4s ease-in-out infinite;
 }
 
 .star.retro.float img {
-  animation-duration: 4.8s;
+    animation-duration: 4.8s;
 }
 
 .star.modern.float img {
-  animation-duration: 3.9s;
+    animation-duration: 3.9s;
 }
 
 .about-philosophy.in-view .star {
@@ -302,9 +320,17 @@ p{
 }
 
 @keyframes floatY {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
-  100% { transform: translateY(0); }
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-20px);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
 }
 
 /* ===== philosophy 裝飾小圖 ===== */
@@ -335,27 +361,27 @@ p{
     transform: translateY(20);
 }
 
-.philo-deco  {
-  animation: floatY 2s ease-in-out infinite;
+.philo-deco {
+    animation: floatY 2s ease-in-out infinite;
 }
 
 /* 過度 */
 .between-book {
-    height: 150px;  
+    height: 150px;
     display: flex;
-    justify-content: center;   
-    align-items: center; 
+    justify-content: center;
+    align-items: center;
 }
 
 .between-book img {
-    width: 60px;  
+    width: 60px;
     opacity: 0;
     transform: translateY(-80px);
 }
 
 .between-book.in-view img {
     animation:
-        dropIn 1s cubic-bezier(.4,0,.2,1) forwards,
+        dropIn 1s cubic-bezier(.4, 0, .2, 1) forwards,
         sparkle 2.4s ease-in-out infinite 1s;
 }
 
@@ -364,6 +390,7 @@ p{
         opacity: 0;
         transform: translateY(-80px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -375,10 +402,12 @@ p{
         filter: brightness(1);
         opacity: 1;
     }
+
     50% {
         filter: brightness(1.25);
         opacity: 0.85;
     }
+
     100% {
         filter: brightness(1);
         opacity: 1;
@@ -399,7 +428,7 @@ p{
     position: absolute;
     left: 50%;
     top: 50%;
-    transform: translate(-50%, -50%) scale(2); 
+    transform: translate(-50%, -50%) scale(2);
     width: 100%;
     max-width: 1000px;
     z-index: 1;
@@ -409,33 +438,35 @@ p{
 }
 
 .book-text {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  display: grid;
-  grid-template-columns: 1fr 1fr; /* 左右頁 */
-  padding: 150px 285px; 
-  box-sizing: border-box;
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 15% 25%;
+    box-sizing: border-box;
 }
 
 .book-text p {
-  font-size: 15px;
-  line-height: 1.9;
-  color: #444;
+    font-size: 15px;
+    line-height: 1.9;
+    color: #444;
 }
 
 /* 左頁 */
 .book-text p:nth-child(1) {
-  align-self: flex-start;
-  max-width: 360px;
+    align-self: flex-start;
+    max-width: 360px;
+    margin-right: 15%;
+    margin-top: 30%;
 }
 
 /* 右頁 */
 .book-text p:nth-child(2) {
-  align-self: flex-start;
-  max-width: 360px;
-  padding-top: 30px;
-  padding-left: 50px;
+    align-self: flex-start;
+    max-width: 360px;
+    margin-top: 50%;
+    margin-left: 10%;
 }
 
 @keyframes textFade {
@@ -443,6 +474,7 @@ p{
         opacity: 0;
         transform: translateY(8px);
     }
+
     to {
         opacity: 1;
         transform: none;
@@ -460,99 +492,48 @@ p{
 }
 
 @keyframes bookSpineOpen {
-  0% {
-    transform: translate(-50%, -50%) scale(0.8, 1);
-    opacity: 0;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1, 1);
-    opacity: 1;
-  }
+    0% {
+        transform: translate(-50%, -50%) scale(0.8, 1);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1, 1);
+        opacity: 1;
+    }
 }
 
 .book-section.in-view .book-bg {
-  animation: bookSpineOpen 1s ease-out forwards;
-  transform-origin: center;
+    animation: bookSpineOpen 1s ease-out forwards;
+    transform-origin: center;
 }
 
 
 /* ===== DAKKU 引導區 ===== */
 .dakku-invite {
-  position: absolute;
-  padding-top: 250px;
-  padding-left: 430px;
-  top: 50%;
-  text-align: center;
+    position: absolute;
+    right: 36.5%;
+    bottom: -10%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: max-content;
+    white-space: nowrap;
 }
 
+
 .invite-text {
-  font-size: 13px;
-  line-height: 1.7;
-  margin-bottom: 14px;
-  color: #555;
+    font-size: 13px;
+    line-height: 1.7;
+    margin-bottom: 14px;
+    padding: 0;
+    color: #555;
 }
 
 .dakku-btn {
-  display: inline-block;
-  justify-content: center;
-  padding: 9px 22px;
-  border: 1px solid #AEAEDE;
-  background: #fff;
-  font-size: 13px;
-  font-weight: bold;
-  color: #3f4046;
-  text-decoration: none;
-  box-shadow: 2px 2px 0 rgba(174,174,222,.5);
-  transition: transform .2s ease, box-shadow .2s ease;
-  animation: twinkle 3s infinite ease-in-out;
-}
-
-.dakku-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 3px 3px 0 rgba(174,174,222,.6);
-}
-
-/* ===== Links ===== */
-.about-links {
-    text-align: center;
-    padding: 80px 0;
-}
-
-.about-links a {
-  display: inline-block;
-  justify-content: center;
-  padding: 9px 22px;
-  border: 1px solid #AEAEDE;
-  background: #fff;
-  font-size: 13px;
-  font-weight: bold;
-  color: #3f4046;
-  text-decoration: none;
-  box-shadow: 2px 2px 0 rgba(174,174,222,.5);
-  transition: transform .2s ease, box-shadow .2s ease;
-  animation: twinkle 3s infinite ease-in-out;
-}
-
-.about-links a:hover {
-  transform: translateY(-2px);
-  box-shadow: 3px 3px 0 rgba(174,174,222,.6);
-}
-
-/* ===== Contact ===== */
-.about-contact {
-    text-align: center;
-    padding: 50px 0;
-}
-
-.contact-stars {
-    display: flex;
+    display: inline-block;
     justify-content: center;
-    gap: 30px; 
-    margin-top: 15px;
-}
-
-.contact-star {
-    display: inline-block; 
     padding: 9px 22px;
     border: 1px solid #AEAEDE;
     background: #fff;
@@ -560,15 +541,75 @@ p{
     font-weight: bold;
     color: #3f4046;
     text-decoration: none;
-    box-shadow: 2px 2px 0 rgba(174,174,222,.5);
+    box-shadow: 2px 2px 0 rgba(174, 174, 222, .5);
+    transition: transform .2s ease, box-shadow .2s ease;
+    animation: twinkle 3s infinite ease-in-out;
+}
+
+.dakku-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 3px 3px 0 rgba(174, 174, 222, .6);
+}
+
+/* ===== Links ===== */
+.about-links {
+    position: relative;
+    text-align: center;
+    padding-top: 200px;
+}
+
+.about-links a {
+    display: inline-block;
+    justify-content: center;
+    padding: 9px 22px;
+    border: 1px solid #AEAEDE;
+    background: #fff;
+    font-size: 13px;
+    font-weight: bold;
+    color: #3f4046;
+    text-decoration: none;
+    box-shadow: 2px 2px 0 rgba(174, 174, 222, .5);
+    transition: transform .2s ease, box-shadow .2s ease;
+    animation: twinkle 3s infinite ease-in-out;
+}
+
+.about-links a:hover {
+    transform: translateY(-2px);
+    box-shadow: 3px 3px 0 rgba(174, 174, 222, .6);
+}
+
+/* ===== Contact ===== */
+.about-contact {
+    position: relative;
+    text-align: center;
+    padding: 150px;
+}
+
+.contact-stars {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 15px;
+}
+
+.contact-star {
+    display: inline-block;
+    padding: 9px 22px;
+    border: 1px solid #AEAEDE;
+    background: #fff;
+    font-size: 13px;
+    font-weight: bold;
+    color: #3f4046;
+    text-decoration: none;
+    box-shadow: 2px 2px 0 rgba(174, 174, 222, .5);
     transition: transform .2s ease, box-shadow .2s ease;
     animation: twinkle 3s infinite ease-in-out;
 }
 
 .contact-star:hover {
-    transform: translateY(-2px); 
-    box-shadow: 3px 3px 0 rgba(174,174,222,.6);
-    animation: none; 
+    transform: translateY(-2px);
+    box-shadow: 3px 3px 0 rgba(174, 174, 222, .6);
+    animation: none;
 }
 
 @keyframes twinkle {
@@ -576,10 +617,12 @@ p{
         opacity: 1;
         transform: scale(1);
     }
+
     50% {
         opacity: 0.8;
-        transform: scale(1.05); 
+        transform: scale(1.05);
     }
+
     100% {
         opacity: 1;
         transform: scale(1);
@@ -613,4 +656,157 @@ footer {
     border-top: 1px solid #AEAEDE;
     padding: 50px 20px 20px 20px;
     margin-top: 10px;
+}
+
+/* ========================================= */
+/* RWD 手機與平板調整 (貼在 CSS 最下方)       */
+/* ========================================= */
+
+@media screen and (max-width: 768px) {
+
+    /* --- 1. 彈出視窗調整 --- */
+    .about-window {
+        width: 75%;
+        left: 50%;
+        transform: translateX(-50%) scale(1);
+        top: 100px;
+    }
+
+    .window-2 {
+        top: 130px;
+        left: 300px;
+    }
+
+    .about-window img {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .about-popup-layer {
+        height: 230px;
+    }
+
+    .between-deco {
+        position: relative;
+        height: 500px;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        padding-left: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        z-index: 2;
+    }
+
+    .star img {
+        width: 380px;
+    }
+
+    .star.retro {
+        top: 10%;
+        left: 0;
+        transform: rotate(-10deg);
+        width: 100%;
+        align-items: flex-start;
+        padding-left: 20px;
+    }
+
+    .star.modern {
+        bottom: 10%;
+        right: 0;
+        transform: rotate(10deg);
+        width: 100%;
+        align-items: flex-end;
+        padding-right: 20px;
+    }
+
+    .philosophy-text {
+        width: 80%;
+        margin: 0 auto;
+        font-size: 15px;
+        line-height: 1.8;
+        z-index: 5;
+        position: relative;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    }
+
+    /* --- 3. 書本區塊調整 --- */
+    .book-section {
+        position: relative;
+        height: auto;  
+        min-height: 400px;  
+        padding: 80px 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow: visible;  
+    }
+
+    .book-bg {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -60%) !important; 
+        width: 100%;   
+        height: auto; 
+        max-height: 80%; 
+        object-fit: contain;  
+        z-index: 0;
+        padding-top: 160px;
+    }
+
+    .book-text {
+        position: relative;
+        inset: auto;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding-top: 350px;
+        gap: 30px; 
+        width: 100%;
+    }
+
+    .book-text p:nth-child(1),
+    .book-text p:nth-child(2) {
+        margin: 0;
+        max-width: 100%;
+        align-self: center;
+        font-size: 15px;
+        line-height: 1.8;
+        opacity: 1;
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+    }
+
+    .book-section.in-view .book-bg {
+        animation: none;
+        opacity: 0.6 !important; 
+    }
+
+    .book-section.in-view .book-text p:nth-child(1),
+    .book-section.in-view .book-text p:nth-child(2) {
+        animation: textFade 1s forwards;
+    }
+
+    /* --- 4. DAKKU 按鈕區塊 --- */
+    .dakku-invite {
+        position: static;
+        margin-top: 40px;
+        padding: 0 20px;
+    }
+
+    .between-book img{
+        width:60px ;
+        height: auto;
+    }
+
+    /* --- 5. 聯絡資訊區塊 --- */
+    .contact-stars {
+        align-items: center;
+        gap: 15px;
+    }
 }
