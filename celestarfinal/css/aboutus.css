@@ -1,0 +1,616 @@
+body {
+    font-family: 'Inter', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #F9F9F9;
+    color: #111;
+    padding-top: 90px;
+    cursor: url("../images/starr.png")1 16, auto;
+}
+
+body.lock-scroll {
+  overflow: hidden;
+}
+
+a,
+button,
+.icons span,
+.product-card {
+    cursor: url("../images/starr.png")1 16, pointer;
+}
+
+::selection {
+    background-color: #AEAEDE;
+    color: #3f4046;
+}
+
+.bg {
+    padding: 10px 0;
+    overflow: hidden;
+    position: relative;
+}
+
+.bg::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: url("../images/bg1.svg");
+    background-size: cover;
+    background-position: center;
+    z-index: -1;
+}
+
+/* ===== 視窗區 ===== */
+.about-popup-layer {
+    position: relative;
+    padding-top: 100px;
+    height: 40vh;
+}
+
+.window-bar span{
+    font-size: 18px;
+    color:#fff;
+    margin-left: 10px;
+    margin-top: 2px;
+}
+
+.about-window {
+    position: absolute;
+    top: 120px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.95);
+    width: 400px;
+    background: #fff;
+    border: 2px solid #AEAEDE;
+    padding: 5px;
+    padding-bottom: 10px;
+    box-shadow: 3px 3px 0 rgba(174, 174, 222, .5);
+    opacity: 0;
+    filter: contrast(1.02);
+}
+
+@keyframes retroPop {
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.2;
+  }
+  40% {
+    opacity: 0.6;
+  }
+  55% {
+    opacity: 0.3;
+  }
+  70% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes tinyShake {
+  0% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(1px); }
+  100% { transform: translateX(-50%) translateY(0); }
+}
+
+.about-window.show {
+    animation:
+    retroPop 1.2s steps(1, end) forwards,
+    tinyShake 0.15s 3;
+}
+
+.about-window img{
+    width:300px;
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+.window-2 {
+    top: 160px;
+    left: calc(50% + 40px);
+}
+
+.window-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    font-size: 12px;
+    background-color: #AEAEDE;
+    padding:5px;
+}
+
+p{
+    padding-left: 20px;
+}
+
+.close-btn {
+    border: 1px solid #666;
+    background: #F9F9F9;
+}
+
+.about-window:first-of-type .close-btn:hover{
+    background-color: #DFDCE9;
+}
+
+.about-window:first-of-type .close-btn {
+    animation: blink 2.2s infinite steps(1, end);
+}
+
+@keyframes blink {
+    0% {
+        opacity: 0.2;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.2;
+    }
+}
+
+.between-deco {
+  position: relative;
+  height: 500px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 2;
+}
+
+.between-deco.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.between-deco img {
+  width:100%;
+  max-width: 600px;
+  display: block;
+  height: auto;
+  transform: scale(0.1);  
+  transform-origin: center;
+}
+
+.between-deco img {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: 1s ease;
+}
+
+.between-deco.in-view img {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== 過場 SVG 由上而下顯示 ===== */
+.between-deco {
+  overflow: hidden; /* 重點：裁切 */
+}
+
+.between-deco img {
+  transform: translateY(-100%);
+  opacity: 1;
+}
+
+.between-deco.active img {
+  animation: revealDown 1.6s cubic-bezier(.4,0,.2,1) forwards;
+}
+
+@keyframes revealDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ===== Retro / Modern ===== */
+
+.philo-bg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 110%;
+    height: 110%;
+    object-fit: contain; 
+    z-index: 0;      
+    opacity: 1;   
+}
+
+.star, .philosophy-text {
+    position: relative; 
+    z-index: 2;  
+}
+
+.about-philosophy {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.star {
+    position: absolute;
+    opacity: 0;
+    transition: 3s ease;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.star img {
+    width: 400px;
+    height: auto;
+}
+
+.star.retro {
+    top: 15%;
+    left: 12%;
+    transform: translate(-120px, -120px) rotate(-6deg);
+}
+
+.star.modern {
+    bottom: 0%;
+    right: 12%;
+    transform: translate(120px, -120px) rotate(6deg);
+}
+
+.star.float img {
+  animation: floatY 4s ease-in-out infinite;
+}
+
+.star.retro.float img {
+  animation-duration: 4.8s;
+}
+
+.star.modern.float img {
+  animation-duration: 3.9s;
+}
+
+.about-philosophy.in-view .star {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg);
+}
+
+
+.philosophy-text {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: 2s ease;
+}
+
+.about-philosophy.in-view .philosophy-text {
+    opacity: 1;
+    transform: none;
+    font-size: 18px;
+}
+
+@keyframes floatY {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+  100% { transform: translateY(0); }
+}
+
+/* ===== philosophy 裝飾小圖 ===== */
+.philo-deco {
+    position: absolute;
+    width: 100px;
+    height: auto;
+    opacity: 0;
+    z-index: 1;
+    pointer-events: none;
+    transition: 2s ease;
+}
+
+.deco-left {
+    left: 16%;
+    top: 70%;
+    transform: translateY(20px);
+}
+
+.deco-right {
+    right: 18%;
+    bottom: 48%;
+    transform: translateY(20px);
+}
+
+.about-philosophy.in-view .philo-deco {
+    opacity: 1;
+    transform: translateY(20);
+}
+
+.philo-deco  {
+  animation: floatY 2s ease-in-out infinite;
+}
+
+/* 過度 */
+.between-book {
+    height: 150px;  
+    display: flex;
+    justify-content: center;   
+    align-items: center; 
+}
+
+.between-book img {
+    width: 60px;  
+    opacity: 0;
+    transform: translateY(-80px);
+}
+
+.between-book.in-view img {
+    animation:
+        dropIn 1s cubic-bezier(.4,0,.2,1) forwards,
+        sparkle 2.4s ease-in-out infinite 1s;
+}
+
+@keyframes dropIn {
+    from {
+        opacity: 0;
+        transform: translateY(-80px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes sparkle {
+    0% {
+        filter: brightness(1);
+        opacity: 1;
+    }
+    50% {
+        filter: brightness(1.25);
+        opacity: 0.85;
+    }
+    100% {
+        filter: brightness(1);
+        opacity: 1;
+    }
+}
+
+/* ===== 書本 ===== */
+.book-section {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    margin: 10px auto;
+    height: 700px;
+    aspect-ratio: 16 / 9;
+}
+
+.book-bg {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(2); 
+    width: 100%;
+    max-width: 1000px;
+    z-index: 1;
+    opacity: 0;
+    object-fit: contain;
+    display: block;
+}
+
+.book-text {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 左右頁 */
+  padding: 150px 285px; 
+  box-sizing: border-box;
+}
+
+.book-text p {
+  font-size: 15px;
+  line-height: 1.9;
+  color: #444;
+}
+
+/* 左頁 */
+.book-text p:nth-child(1) {
+  align-self: flex-start;
+  max-width: 360px;
+}
+
+/* 右頁 */
+.book-text p:nth-child(2) {
+  align-self: flex-start;
+  max-width: 360px;
+  padding-top: 30px;
+  padding-left: 50px;
+}
+
+@keyframes textFade {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.book-section.in-view .book-text p:nth-child(1) {
+    animation: textFade .8s forwards;
+    animation-delay: .8s;
+}
+
+.book-section.in-view .book-text p:nth-child(2) {
+    animation: textFade .8s forwards;
+    animation-delay: 1.4s;
+}
+
+@keyframes bookSpineOpen {
+  0% {
+    transform: translate(-50%, -50%) scale(0.8, 1);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1, 1);
+    opacity: 1;
+  }
+}
+
+.book-section.in-view .book-bg {
+  animation: bookSpineOpen 1s ease-out forwards;
+  transform-origin: center;
+}
+
+
+/* ===== DAKKU 引導區 ===== */
+.dakku-invite {
+  position: absolute;
+  padding-top: 250px;
+  padding-left: 430px;
+  top: 50%;
+  text-align: center;
+}
+
+.invite-text {
+  font-size: 13px;
+  line-height: 1.7;
+  margin-bottom: 14px;
+  color: #555;
+}
+
+.dakku-btn {
+  display: inline-block;
+  justify-content: center;
+  padding: 9px 22px;
+  border: 1px solid #AEAEDE;
+  background: #fff;
+  font-size: 13px;
+  font-weight: bold;
+  color: #3f4046;
+  text-decoration: none;
+  box-shadow: 2px 2px 0 rgba(174,174,222,.5);
+  transition: transform .2s ease, box-shadow .2s ease;
+  animation: twinkle 3s infinite ease-in-out;
+}
+
+.dakku-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 3px 3px 0 rgba(174,174,222,.6);
+}
+
+/* ===== Links ===== */
+.about-links {
+    text-align: center;
+    padding: 80px 0;
+}
+
+.about-links a {
+  display: inline-block;
+  justify-content: center;
+  padding: 9px 22px;
+  border: 1px solid #AEAEDE;
+  background: #fff;
+  font-size: 13px;
+  font-weight: bold;
+  color: #3f4046;
+  text-decoration: none;
+  box-shadow: 2px 2px 0 rgba(174,174,222,.5);
+  transition: transform .2s ease, box-shadow .2s ease;
+  animation: twinkle 3s infinite ease-in-out;
+}
+
+.about-links a:hover {
+  transform: translateY(-2px);
+  box-shadow: 3px 3px 0 rgba(174,174,222,.6);
+}
+
+/* ===== Contact ===== */
+.about-contact {
+    text-align: center;
+    padding: 50px 0;
+}
+
+.contact-stars {
+    display: flex;
+    justify-content: center;
+    gap: 30px; 
+    margin-top: 15px;
+}
+
+.contact-star {
+    display: inline-block; 
+    padding: 9px 22px;
+    border: 1px solid #AEAEDE;
+    background: #fff;
+    font-size: 13px;
+    font-weight: bold;
+    color: #3f4046;
+    text-decoration: none;
+    box-shadow: 2px 2px 0 rgba(174,174,222,.5);
+    transition: transform .2s ease, box-shadow .2s ease;
+    animation: twinkle 3s infinite ease-in-out;
+}
+
+.contact-star:hover {
+    transform: translateY(-2px); 
+    box-shadow: 3px 3px 0 rgba(174,174,222,.6);
+    animation: none; 
+}
+
+@keyframes twinkle {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05); 
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+#backToTopBtn {
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
+    z-index: 99;
+    background-color: #EFEEF2;
+    color: #3f4046;
+    padding: 10px 15px;
+    border-radius: 50%;
+    border-color: #AEAEDE;
+    font-size: 24px;
+    display: none;
+    transition: background-color 0.3s, opacity 0.3s;
+}
+
+#backToTopBtn:hover {
+    background-color: #AEAEDE;
+}
+
+footer {
+    text-align: left;
+    font-size: 10px;
+    color: #666;
+    background-color: #EFEEF2;
+    border-top: 1px solid #AEAEDE;
+    padding: 50px 20px 20px 20px;
+    margin-top: 10px;
+}
