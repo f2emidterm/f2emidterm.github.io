@@ -142,6 +142,7 @@ p {
 .close-btn {
     border: 1px solid #666;
     background: #F9F9F9;
+    color:#111;
 }
 
 .about-window:first-of-type .close-btn:hover {
@@ -643,9 +644,9 @@ footer {
     margin-top: 10px;
 }
 
-/* ========================================= */
-/* RWD 手機與平板調整 (貼在 CSS 最下方)       */
-/* ========================================= */
+/* ================ */
+/* RWD 手機調整      */
+/* ================ */
 
 @media screen and (max-width: 768px) {
 
@@ -672,7 +673,7 @@ footer {
 
     .between-deco {
         position: relative;
-        height: 300px;
+        height: 250px;
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
@@ -684,6 +685,10 @@ footer {
         z-index: 2;
     }
 
+    .about-philosophy {
+         height: 80vh;
+    }
+
     .star img {
         width: 380px;
     }
@@ -691,16 +696,24 @@ footer {
     .star.retro {
         top: 10%;
         left: 0;
-        transform: rotate(-10deg);
         width: 100%;
         align-items: flex-start;
         padding-left: 20px;
+        transform: translate(-60px, -80px) rotate(-6deg);
+    }
+
+    .star.retro img{
+        width: 60%;
+    }
+
+    .star.modern img{
+        width: 60%;
     }
 
     .star.modern {
         bottom: 10%;
         right: 0;
-        transform: rotate(10deg);
+        transform: translate(60px, -80px) rotate(6deg);
         width: 100%;
         align-items: flex-end;
         padding-right: 20px;
@@ -782,7 +795,9 @@ footer {
         position: static;
         margin-top: 20px;
         word-break: keep-all;
+        gap: 24px;
     }
+    
 
     .between-book img {
         width: 60px;
@@ -790,6 +805,10 @@ footer {
     }
 
     /* --- 5. 聯絡資訊區塊 --- */
+
+    .about-links {
+    padding-top: 120px;
+    }
     .contact-stars {
         align-items: center;
         gap: 15px;
