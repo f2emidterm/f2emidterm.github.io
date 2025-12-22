@@ -135,8 +135,9 @@ button,
     padding: 5px;
 }
 
-p {
+.about-window p {
     padding-left: 20px;
+    line-height: 2.0;
 }
 
 .close-btn {
@@ -429,12 +430,12 @@ p {
     z-index: 2;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    padding: 15% 24%;
+    padding: 15% 23%;
     box-sizing: border-box;
 }
 
 .book-text p {
-    font-size: 15px;
+    font-size: 16px;
     line-height: 1.9;
     color: #444;
 }
@@ -443,7 +444,7 @@ p {
 .book-text p:nth-child(1) {
     align-self: flex-start;
     max-width: 360px;
-    margin-right: 15%;
+    margin-left: 10%;
     margin-top: 30%;
 }
 
@@ -452,7 +453,7 @@ p {
     align-self: flex-start;
     max-width: 360px;
     margin-top: 50%;
-    margin-left: 10%;
+    margin-left: 20%;
 }
 
 @keyframes textFade {
@@ -517,6 +518,7 @@ p {
     margin-bottom: 16px;
     padding: 0;
     color: #555;
+    margin-left: 0 !important;
 }
 
 .dakku-btn {
@@ -753,7 +755,7 @@ footer {
 
         width: 90%;
         max-width: 720px;
-        opacity: 0.6;
+        opacity: 0.5;
         z-index: 0;
 
         padding: 0;
@@ -835,25 +837,28 @@ footer {
         line-height: 1;
     }
    .book-text p:nth-child(1){
-    margin-left:10%;
+    margin-left:15%;
    }
    .dakku-invite {
         position: absolute; 
         right: auto; 
         left: 50%;
-        transform: translateX(-55%);
         bottom: -10%; 
+        gap:24px;
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
         width: max-content;
         white-space: nowrap;
+        transform: translateX(-50%);
     }
-    .dakku-btn{
-        margin-left: 10px ;    
+    .invite-text{
+        display: block;
+        width: 100%;
+       margin-left: 0 !important;
+    }
+    .dakku-btn{  
         align-self: center;     
     }
 }
-
-
