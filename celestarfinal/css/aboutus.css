@@ -817,7 +817,7 @@ footer {
     /* --- 5. 聯絡資訊區塊 --- */
 
     .about-links {
-        padding-top: 450px;
+        padding-top: 650px;
     }
 
     .contact-stars {
@@ -855,4 +855,5 @@ footer {
         align-self: center;     
     }
 }
+
 
