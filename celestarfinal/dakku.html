@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -50,27 +51,41 @@
     </header>
 
     <!--<div class="container">-->
-    <section class="journal-sticker-wrap">
+    <section class="journal-workspace">
 
-        <!-- 手帳區 -->
-        <div class="journal-book" id="journal">
-            <img src="images/paper1.png" alt="journal" class="journal-img">
-        </div>
+        <!-- 左：貼紙庫 -->
+        <aside class="sticker-panel">
+            <!--<h3>STICKERS</h3>-->
+            <div class="sticker-grid">
+                <img src="images/d1.png" class="sticker">
+                <img src="images/d2.png" class="sticker">
+                <img src="images/d3.png" class="sticker">
+                <img src="images/d4.png" class="sticker">
+                <img src="images/d5.png" class="sticker">
+                <img src="images/d6.png" class="sticker">
+                <img src="images/d7.png" class="sticker">
+                <img src="images/d8.png" class="sticker">
+                <img src="images/d1.png" class="sticker">
+                <img src="images/d2.png" class="sticker">
+            </div>
+        </aside>
+        <main class="journal-canvas">
+            <div class="journal-book" id="journal">
+                <img src="images/note.png" class="journal-img">
+            </div>
+        </main>
 
-        <!-- 貼紙區 -->
-        <div class="sticker-grid">
-            <img src="images/d1.png" class="sticker">
-            <img src="images/d2.png" class="sticker">
-            <img src="images/d3.png" class="sticker">
-            <img src="images/d4.png" class="sticker">
-            <img src="images/d5.png" class="sticker">
-            <img src="images/d6.png" class="sticker">
-            <img src="images/d7.png" class="sticker">
-            <img src="images/d8.png" class="sticker">
-            <img src="images/d1.png" class="sticker">
-            <img src="images/d2.png" class="sticker">
-        </div>                    
+        <!-- 右：操作 / 下載 -->
+        <aside class="action-panel">
+            <button id="downloadBtn">下載成圖片</button>
 
+            <div class="sticker-source">
+                <h4>使用的貼紙</h4>
+                <ul id="usedStickerList">
+                    <!-- JS 動態產生 -->
+                </ul>
+            </div>
+        </aside>
     </section>
     <!--</div>-->
 
@@ -112,7 +127,7 @@
             </div>
         </div>
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script src="js/dakkuscript.js"></script>
     <script src="js/header.js"></script>
 
@@ -120,4 +135,3 @@
 
 
 </html>
-
