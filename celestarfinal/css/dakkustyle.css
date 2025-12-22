@@ -1,3 +1,4 @@
+
 body {
     font-family: 'Inter', Arial, sans-serif;
     margin: 0;
@@ -50,16 +51,17 @@ button,
     max-width: 860px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    row-gap: 40px;
-    column-gap: 30px;
+    grid-template-columns: repeat(2, 1fr);
+    /*row-gap: 40px;
+    column-gap: 30px;*/
+    gap: 16px;
     justify-items: center;
 }
 
 /* 小貼紙 */
 .sticker {
-    width: 72px;
-    height: 72px;
+    width: 56px;
+    height: 56px;
     /*background: #e5e5e5;*/
     object-fit: contain;
 }
@@ -91,11 +93,11 @@ button,
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-/* 顯示狀態 */
-.tutorial-overlay.active {
-    opacity: 1;
-    visibility: visible;
-}
+    /* 顯示狀態 */
+    .tutorial-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
 
 /* 視窗本體 */
 .tutorial-modal {
@@ -104,42 +106,53 @@ button,
     max-width: 400px;
     padding: 30px;
     position: relative;
-    border:1px solid #3f4046;
+    border: 1px solid #3f4046;
     text-align: left;
     filter: contrast(1.02);
 }
 
 @keyframes retroPop {
-  0% {
-    opacity: 0;
-  }
-  20% {
-    opacity: 0.2;
-  }
-  40% {
-    opacity: 0.6;
-  }
-  55% {
-    opacity: 0.3;
-  }
-  70% {
-    opacity: 0.8;
-  }
-  100% {
-    opacity: 1;
-  }
+    0% {
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 0.2;
+    }
+
+    40% {
+        opacity: 0.6;
+    }
+
+    55% {
+        opacity: 0.3;
+    }
+
+    70% {
+        opacity: 0.8;
+    }
+
+    100% {
+        opacity: 1;
+    }
 }
 
 @keyframes tinyShake {
-  0% { transform: translateX(-50%) translateY(0); }
-  50% { transform: translateX(-50%) translateY(1px); }
-  100% { transform: translateX(-50%) translateY(0); }
+    0% {
+        transform: translateX(-50%) translateY(0);
+    }
+
+    50% {
+        transform: translateX(-50%) translateY(1px);
+    }
+
+    100% {
+        transform: translateX(-50%) translateY(0);
+    }
 }
 
 .tutorial-overlay.active .tutorial-modal {
-    animation:
-    retroPop 1.2s steps(1, end) forwards,
-    tinyShake 0.15s 3;
+    animation: retroPop 1.2s steps(1, end) forwards, tinyShake 0.15s 3;
 }
 
 
@@ -154,11 +167,11 @@ button,
     justify-content: center;
 }
 
-.tutorial-image img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-}
+    .tutorial-image img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
 
 .tutorial-content h2 {
     font-size: 22px;
@@ -195,10 +208,10 @@ button,
     transition: 0.3s;
 }
 
-.dot.active {
-    background-color: #AEAEDE;
-    transform: scale(1.2);
-}
+    .dot.active {
+        background-color: #AEAEDE;
+        transform: scale(1.2);
+    }
 
 .step-buttons {
     display: flex;
@@ -219,10 +232,10 @@ button,
     transition: 0.2s;
 }
 
-.primary-btn:hover {
-    background-color: #9a9ad0;
-    border:1px solid #3f4046;
-}
+    .primary-btn:hover {
+        background-color: #9a9ad0;
+        border: 1px solid #3f4046;
+    }
 
 .secondary-btn {
     background-color: transparent;
@@ -236,10 +249,10 @@ button,
     transition: 0.2s;
 }
 
-.secondary-btn:hover {
-    border-color: #333;
-    color: #333;
-}
+    .secondary-btn:hover {
+        border-color: #333;
+        color: #333;
+    }
 
 .close-tutorial-btn {
     position: absolute;
@@ -256,9 +269,9 @@ button,
     border: solid 1px #999;
 }
 
-.close-tutorial-btn:hover {
-    color: #333;
-}
+    .close-tutorial-btn:hover {
+        color: #333;
+    }
 
 #backToTopBtn {
     position: fixed;
@@ -275,9 +288,54 @@ button,
     transition: background-color 0.3s, opacity 0.3s;
 }
 
-#backToTopBtn:hover {
-    background-color: #AEAEDE;
+    #backToTopBtn:hover {
+        background-color: #AEAEDE;
+    }
+
+.journal-workspace {
+    display: grid;
+    grid-template-columns: 240px 1fr 260px;
+    gap: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    /*height: calc(100vh - 140px);*/ /* 扣掉 header */
 }
+
+/* 左側貼紙 */
+.sticker-panel {
+    overflow: visible;
+}
+
+/* 中央畫布 */
+.journal-canvas {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 手帳最大高度限制 */
+.journal-book {
+    max-height: 100%;
+}
+
+/* 右側操作 */
+.action-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#downloadBtn {
+    padding: 14px;
+    font-weight: bold;
+    background-color: #AEAEDE;
+    border: 2px solid #AEAEDE;
+}
+
+    #downloadBtn:hover {
+        background: #9a9ad0;
+    }
 
 footer {
     text-align: left;
@@ -301,12 +359,12 @@ footer {
     }
 
     .tutorial-modal {
-        padding: 20px; 
-        max-width: 80%; 
+        padding: 20px;
+        max-width: 80%;
     }
 
     .tutorial-image {
-        height: 180px; 
+        height: 180px;
         margin-bottom: 15px;
     }
 
@@ -318,7 +376,7 @@ footer {
     .tutorial-content p {
         font-size: 14px;
         line-height: 1.5;
-        min-height: 65px; 
+        min-height: 65px;
     }
 
     .tutorial-footer {
@@ -331,10 +389,10 @@ footer {
     }
 
     .primary-btn, .secondary-btn {
-        padding: 10px 0; 
+        padding: 10px 0;
         font-size: 14px;
     }
-    
+
     .close-tutorial-btn {
         width: 28px;
         height: 28px;
@@ -343,17 +401,34 @@ footer {
         font-size: 18px;
     }
 
-    .journal-sticker-wrap {
-        padding: 40px 0 100px;
+    /* 整體改成直向 */
+    .journal-workspace {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding: 0 12px;
+        height: auto;
+    }
+
+    /* 手帳在最上面 */
+    .journal-canvas {
+        order: 1;
     }
 
     .journal-book {
-        max-width: 92%;
-        margin-bottom: 80px;
+        max-width: 100%;
     }
 
-    .placed-sticker {
-        width: 48px;
+    /* 貼紙在下面：一排 5 個，共 2 排 */
+    .sticker-panel {
+        order: 2;
+    }
+
+    .sticker-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr); /* 關鍵 */
+        gap: 12px;
+        max-width: 100%;
     }
 
     .sticker {
@@ -361,8 +436,9 @@ footer {
         height: 50px;
     }
 
-    .sticker-grid {
-        max-width: 92%;
+    /* 操作區放最下面，可以滑 */
+    .action-panel {
+        order: 3;
     }
 
     footer {
@@ -377,4 +453,3 @@ footer {
         font-size: 20px;
     }
 }
-
