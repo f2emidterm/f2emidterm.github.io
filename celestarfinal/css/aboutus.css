@@ -142,7 +142,7 @@ p {
 .close-btn {
     border: 1px solid #666;
     background: #F9F9F9;
-    color:#111;
+    color: #111;
 }
 
 .about-window:first-of-type .close-btn:hover {
@@ -429,7 +429,7 @@ p {
     z-index: 2;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    padding: 15% 25%;
+    padding: 15% 24%;
     box-sizing: border-box;
 }
 
@@ -498,7 +498,8 @@ p {
 /* ===== DAKKU 引導區 ===== */
 .dakku-invite {
     position: absolute;
-    right: 36.5%;
+    left: 50%;
+    transform: translateX(-50%);
     bottom: -10%;
     display: flex;
     flex-direction: column;
@@ -506,6 +507,7 @@ p {
     text-align: center;
     width: max-content;
     white-space: nowrap;
+    z-index: 10;
 }
 
 
@@ -648,7 +650,7 @@ footer {
 /* RWD 手機調整      */
 /* ================ */
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 601px) {
 
     /* --- 1. 彈出視窗調整 --- */
     .about-window {
@@ -673,7 +675,7 @@ footer {
 
     .between-deco {
         position: relative;
-        height: 250px;
+        height: 300px;
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
@@ -681,12 +683,13 @@ footer {
         display: flex;
         justify-content: center;
         align-items: center;
+        overflow: visible;
 
         z-index: 2;
     }
 
     .about-philosophy {
-         height: 80vh;
+        height: 80vh;
     }
 
     .star img {
@@ -702,11 +705,11 @@ footer {
         transform: translate(-60px, -80px) rotate(-6deg);
     }
 
-    .star.retro img{
+    .star.retro img {
         width: 60%;
     }
 
-    .star.modern img{
+    .star.modern img {
         width: 60%;
     }
 
@@ -723,7 +726,7 @@ footer {
         width: 90%;
         max-width: 500px;
         margin: 0 auto;
-        font-size: 12px;
+        font-size: 10px;
         line-height: 1;
         z-index: 5;
         position: relative;
@@ -731,15 +734,20 @@ footer {
         text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
     }
 
+    .about-philosophy.in-view .philosophy-text {
+        font-size: 16px;
+    }
+
     /* --- 3. 書本區塊調整 --- */
     .book-section {
         position: relative;
         min-height: 50vh;
+        height: max-content;
     }
 
     .book-bg {
         position: absolute;
-        top: 50%;
+        top: 100%;
         left: 50%;
         transform: translate(-50%, -50%);
 
@@ -774,43 +782,76 @@ footer {
         margin: 0;
         max-width: 100%;
         align-self: center;
-        font-size: 15px;
-        line-height: 1.8;
+        font-size: 16px;
+        line-height: 2.2;
         opacity: 1;
         text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
     }
 
     .book-section.in-view .book-bg {
-        animation: none;
         opacity: 0.6 !important;
     }
 
     .book-section.in-view .book-text p:nth-child(1),
     .book-section.in-view .book-text p:nth-child(2) {
-        animation: textFade 1s forwards;
+        animation: textFade 3s forwards;
     }
 
     /* --- 4. DAKKU 按鈕區塊 --- */
     .dakku-invite {
         position: static;
-        margin-top: 20px;
+        margin-top: 50px;
         word-break: keep-all;
         gap: 24px;
+        transform: none;
+        left: auto;
+        width: 100%;
+        text-align: center;
     }
-    
 
     .between-book img {
-        width: 60px;
+        width: 50px;
         height: auto;
     }
 
     /* --- 5. 聯絡資訊區塊 --- */
 
     .about-links {
-    padding-top: 120px;
+        padding-top: 450px;
     }
+
     .contact-stars {
         align-items: center;
         gap: 15px;
+    }
+}
+
+@media (min-width: 601px) and (max-width: 1024px) {
+    .about-popup-layer{
+        height: 25vh;
+    }
+    .book-text{
+        padding:20% 15%;
+        line-height: 1;
+    }
+   .book-text p:nth-child(1){
+    margin-left:10%;
+   }
+   .dakku-invite {
+        position: absolute; 
+        right: auto; 
+        left: 50%;
+        transform: translateX(-55%);
+        bottom: -10%; 
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        width: max-content;
+        white-space: nowrap;
+    }
+    .dakku-btn{
+        margin: 0 auto;   
+        align-self: center;     
     }
 }
