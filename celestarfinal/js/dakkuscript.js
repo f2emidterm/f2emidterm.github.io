@@ -1,4 +1,5 @@
-﻿const backToTopBtn = document.getElementById("backToTopBtn");
+
+const backToTopBtn = document.getElementById("backToTopBtn");
 
 window.onscroll = function () { scrollFunction() };
 
@@ -23,6 +24,8 @@ function backToTop() {
 document.addEventListener("DOMContentLoaded", () => {
     const stickers = document.querySelectorAll(".sticker");
     const journal = document.getElementById("journal");
+    const usedStickerList = document.getElementById("usedStickerList");
+    const downloadBtn = document.getElementById("downloadBtn");
 
     if (!journal || stickers.length === 0) return;
 
@@ -37,8 +40,48 @@ document.addEventListener("DOMContentLoaded", () => {
 
             journal.appendChild(clone);
             makeDraggable(clone);
+
+            // 記錄來源（一次）
+            const src = sticker.src;
+            if (!usedStickerList.querySelector(`[data-src="${src}"]`)) {
+                const li = document.createElement("li");
+                li.dataset.src = src;
+                li.textContent = "貼紙來源";
+                usedStickerList.appendChild(li);
+            }
         });
     });
+    if (downloadBtn) {
+        downloadBtn.addEventListener("click", async () => {
+
+            const images = journal.querySelectorAll("img");
+
+            await Promise.all(
+                Array.from(images).map(img => {
+                    if (img.complete && img.naturalWidth !== 0) {
+                        return Promise.resolve();
+                    }
+                    return new Promise(resolve => {
+                        img.onload = img.onerror = resolve;
+                    });
+                })
+            );
+
+            const canvas = await html2canvas(journal, {
+                backgroundColor: "#ffffff",
+                scale: 2
+            });
+
+            const link = document.createElement("a");
+            link.href = canvas.toDataURL("image/png");
+            link.download = "my-dakku.png";
+            link.click();
+        });
+
+
+
+    }
+
 
     function makeDraggable(el) {
         let offsetX = 0;
@@ -96,22 +139,22 @@ document.addEventListener("DOMContentLoaded", () => {
         {
             title: "什麼是 DAKKU (다꾸)?",
             desc: "DAKKU 源自韓語「裝飾日記 (Diary Kkumigi)」。這是一種透過貼紙、紙膠帶和照片來表達自我風格的療癒文化。",
-            img: "images/tutorial_1.png" 
+            img: "images/tutorial_1.png"
         },
         {
             title: "打造你的專屬電子手帳",
             desc: "在這裡，您可以用電子的方式體驗韓國流行的DAKKU!頁面的下方是您的貼紙庫，上方是您的筆記本。",
-            img: "images/tutorial_2.png" 
+            img: "images/tutorial_2.png"
         },
         {
             title: "拖放貼紙，自由拼貼",
             desc: "從貼紙庫中選擇喜歡的款式，「拖曳」到手帳頁面上。點擊貼紙還可以調整大小或旋轉！",
-            img: "images/tutorial_3.png" 
+            img: "images/tutorial_3.png"
         },
         {
             title: "開始您的創作之旅！",
             desc: "準備好了嗎？現在就開始製作屬於您的第一頁 DAKKU 手帳吧！完成後可以自行截圖保存喔。",
-            img: "images/tutorial_4.png" 
+            img: "images/tutorial_4.png"
         }
     ];
 
@@ -225,3 +268,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     checkAndShowTutorial();
 });
+
+
+
+
