@@ -36,8 +36,6 @@ async function fetchProducts() {
         // 資料抓到了，開始渲染
         renderProducts();
 
-        // **重要**：資料渲染完之後，才啟動手機版輪播功能
-        initCarouselLogic();
 
     } catch (error) {
         console.error("讀取商品失敗:", error);
@@ -85,15 +83,6 @@ function renderProducts() {
         `;
         grid.appendChild(card);
     });
-
-    // 補齊剩餘格子的填充物 (維持排版整齊)
-    const fillCount = perPage - pageItems.length;
-    for (let i = 0; i < fillCount; i++) {
-        const card = document.createElement("div");
-        card.className = "product-card empty-card"; // 加個 empty-card 方便 CSS 隱藏或調整
-        card.style.visibility = "hidden"; // 直接隱藏但佔位
-        grid.appendChild(card);
-    }
 }
 
 // ===========================================
@@ -316,4 +305,5 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
 
