@@ -45,21 +45,22 @@ async function fetchProducts() {
     }
 }
 
-// 4. 渲染商品 (Render)
 function renderProducts() {
     const grid = document.querySelector(".products");
-    if (!grid) return;
+    if (!grid) return; // 防止在沒有商品列表的頁面報錯
 
     grid.innerHTML = "";
 
-    const filtered = currentCategory === "all"
-        ? products
-        : products.filter((p) => p.category === currentCategory);
+    const filtered =
+        currentCategory === "all"
+            ? products
+            : products.filter((p) => p.category === currentCategory);
 
     const start = (currentPage - 1) * perPage;
     const end = start + perPage;
     const pageItems = filtered.slice(start, end);
 
+    // 如果沒有商品
     if (pageItems.length === 0) {
         const noDiv = document.createElement("div");
         noDiv.className = "no-products";
@@ -68,11 +69,11 @@ function renderProducts() {
         return;
     }
 
+    // 渲染商品卡片
     pageItems.forEach((p) => {
         const card = document.createElement("div");
         card.className = "product-card";
         const imgSrc = p.img ? p.img : "https://via.placeholder.com/200/cccccc/808080?text=No+Image";
-
         card.innerHTML = `
           <a href="product.html?id=${p.id}">
             <div class="product-img">
@@ -85,21 +86,15 @@ function renderProducts() {
         grid.appendChild(card);
     });
 
-    // 補齊空格邏輯
+    // 補齊剩餘格子的填充物 (維持排版整齊)
     const fillCount = perPage - pageItems.length;
     for (let i = 0; i < fillCount; i++) {
         const card = document.createElement("div");
-        card.className = "product-card";
-        // 為了美觀，可以讓空的卡片不可見 (visibility: hidden) 或者顯示空白
-        card.innerHTML = `
-          <div class="product-img" style="background-color:#f9f9f9;"></div>
-          <div class="product-name" style="color:transparent">.</div>
-          <div class="product-price" style="color:transparent">.</div>
-        `;
+        card.className = "product-card empty-card"; // 加個 empty-card 方便 CSS 隱藏或調整
+        card.style.visibility = "hidden"; // 直接隱藏但佔位
         grid.appendChild(card);
     }
 }
-
 
 // ===========================================
 // Banner 輪播邏輯
@@ -321,3 +316,4 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
