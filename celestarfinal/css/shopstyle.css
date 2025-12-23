@@ -125,7 +125,7 @@ button,
     font-size: 13px;
 }
 
-.pagination .active {
+.pagination .page-active {
     font-weight: 700;
 }
 
@@ -144,7 +144,7 @@ button,
     text-decoration: underline; 
 }
 
-#pagination span.active:hover {
+#pagination span.page-active:hover {
     text-decoration: underline; 
 }
 
@@ -193,6 +193,7 @@ footer {
     padding:0 30px;
   }
 }
+
 
 
 
