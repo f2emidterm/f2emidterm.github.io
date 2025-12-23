@@ -1,26 +1,4 @@
 /* ========================================= */
-/* 1. Global Functions (回到頂部功能)         */
-/* ========================================= */
-const backToTopBtn = document.getElementById("backToTopBtn");
-
-if (backToTopBtn) {
-    window.onscroll = function () {
-        if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-            backToTopBtn.style.display = "block";
-        } else {
-            backToTopBtn.style.display = "none";
-        }
-    };
-
-    backToTopBtn.addEventListener("click", () => {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    });
-}
-
-/* ========================================= */
 /* 2. Main Logic (DOM 載入後執行)             */
 /* ========================================= */
 document.addEventListener("DOMContentLoaded", () => {
@@ -494,3 +472,4 @@ if (btn) {
         btn.style.setProperty('--y', y + 'px');
     });
 }
+
