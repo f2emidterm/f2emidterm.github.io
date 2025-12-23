@@ -13,11 +13,7 @@ let currentCategory = "all";
 // 3. 從 Firebase 抓資料
 async function fetchProducts() {
     const grid = document.querySelector(".products");
-    
-    // 如果連 grid 都找不到，表示 DOM 還沒準備好，直接結束
-    if (!grid) return; 
-
-    grid.innerHTML = '<div style="width:100%;text-align:center;padding:20px;">Loading products...</div>';
+    if (grid) grid.innerHTML = '<div style="width:100%;text-align:center;padding:20px;">Loading products...</div>';
 
     try {
         // 抓取資料
@@ -26,6 +22,7 @@ async function fetchProducts() {
 
         querySnapshot.forEach((doc) => {
             const data = doc.data();
+            // 確保資料有 ID，如果資料庫沒存 ID 欄位，就用 doc.id
             products.push({
                 ...data,
                 id: doc.id
@@ -39,6 +36,7 @@ async function fetchProducts() {
         // 資料抓到了，開始渲染
         renderProducts();
 
+
     } catch (error) {
         console.error("讀取商品失敗:", error);
         if (grid) grid.innerHTML = '<div style="color:red;text-align:center;">Failed to load products. Check Console (F12).</div>';
@@ -47,7 +45,7 @@ async function fetchProducts() {
 
 function renderProducts() {
     const grid = document.querySelector(".products");
-    if (!grid) return; 
+    if (!grid) return; // 防止在沒有商品列表的頁面報錯
 
     grid.innerHTML = "";
 
@@ -73,33 +71,18 @@ function renderProducts() {
     pageItems.forEach((p) => {
         const card = document.createElement("div");
         card.className = "product-card";
-        // 處理圖片
         const imgSrc = p.img ? p.img : "https://via.placeholder.com/200/cccccc/808080?text=No+Image";
-        
-        // 處理價格 (轉成數字比較安全)
-        let displayPrice = p.price;
-        // 如果資料庫已經存 "$20"，就不用再加 $，如果是 "20"，就加 $
-        if(!String(displayPrice).includes("$")) {
-             displayPrice = `$${displayPrice}`;
-        }
-
         card.innerHTML = `
           <a href="product.html?id=${p.id}">
             <div class="product-img">
               <img src="${imgSrc}" alt="${p.name}">
             </div>
             <div class="product-name">${p.name}</div>
-            <div class="product-price">${displayPrice}</div>
+            <div class="product-price">${p.price}</div>
           </a>
         `;
         grid.appendChild(card);
     });
-
-    // 渲染完畢後，檢查是否需要啟動手機版輪播
-    // initCarouselLogic(); // 視情況決定是否要放在這裡呼叫，或者利用 CSS media query 處理
-    // 根據你之前的代碼，這裡會自動觸發 resize 事件來檢查
-    const event = new Event('resize');
-    window.dispatchEvent(event);
 }
 
 // ===========================================
@@ -158,7 +141,7 @@ if (backToTopBtn) {
 
 
 // ===========================================
-// 手機版商品輪播邏輯
+// 手機版商品輪播邏輯 (封裝成函式)
 // ===========================================
 function initCarouselLogic() {
     const productsContainer = document.querySelector(".products");
@@ -168,7 +151,7 @@ function initCarouselLogic() {
     if (!productsContainer) return;
 
     let isMobileCarouselActive = false;
-    let carouselPage = 0;
+    let carouselPage = 0; // 改名以免跟上面的全域 currentPage 衝突
     let totalCarouselPages = 0;
 
     function updateSlide() {
@@ -184,17 +167,16 @@ function initCarouselLogic() {
     function initMobileCarousel() {
         if (isMobileCarouselActive) return;
 
+        // 這裡要抓取 product-card，但要小心不要抓到補位用的空白卡片(如果有區分的話)
+        // 簡單起見，先抓全部 children
         const originalCards = Array.from(productsContainer.children);
-        // 如果沒有卡片(還沒fetch到)，或者卡片太少，就不啟動
-        if (originalCards.length === 0) return; 
-
-        // 避免重複包裝，先檢查是否已經有 product-page
-        if(originalCards[0].classList.contains('product-page')) return;
+        if (originalCards.length <= 4) return;
 
         const pages = [];
         for (let i = 0; i < originalCards.length; i += 4) {
             const page = document.createElement("div");
             page.className = "product-page";
+            // 建議在 CSS 加上 .product-page { min-width: 100%; display: grid; grid-template-columns: 1fr 1fr; ... }
             originalCards.slice(i, i + 4).forEach(card => page.appendChild(card));
             pages.push(page);
         }
@@ -231,8 +213,10 @@ function initCarouselLogic() {
         }
     }
 
-    // 綁定箭頭事件
+    // 移除舊的 event listener 以免重複綁定 (雖然這裡是初始化，但保險起見)
+    // 這裡簡單處理，直接綁定
     if (rightArrow) {
+        // 用 cloneNode 清除舊事件，或確保只綁定一次。這裡簡化直接綁定，但要注意不要多次呼叫 initCarouselLogic
         rightArrow.onclick = () => {
             if (!isMobileCarouselActive) return;
             carouselPage = (carouselPage + 1) % totalCarouselPages;
@@ -248,58 +232,69 @@ function initCarouselLogic() {
     }
 
     checkMode();
-    // 這裡我們把 checkMode 暴露給 window resize 事件，並確保它能讀取到最新的 DOM
     window.addEventListener("resize", checkMode);
 }
 
-// 啟動手機輪播邏輯的監聽
-initCarouselLogic();
+// ===========================================
+// 啟動程式
+// ===========================================
+startAutoSlide();
+fetchProducts(); // 這會觸發 renderProducts -> initCarouselLogic
+
+// ===========================================
+//  初始化執行
+// ===========================================
+startAutoSlide();
+renderProducts();
 
 
 // ===========================================
-// 🚀 核心啟動區 (這裡是最關鍵的地方)
+//  刷新頁面自動回到頂部 (強制重置捲動位置)
 // ===========================================
-document.addEventListener("DOMContentLoaded", () => {
-    // 1. 啟動 Banner
-    startAutoSlide();
-
-    // 2. 啟動 Firebase 抓資料
-    // (這會等 HTML 都載入後才執行，避免 products 找不到元素)
-    fetchProducts(); 
-});
-
-
-// ===========================================
-//  其他輔助功能
-// ===========================================
-
 if ('scrollRestoration' in history) {
-    history.scrollRestoration = 'manual';
+    history.scrollRestoration = 'manual'; // 防止瀏覽器記住捲動位置
 }
 
 window.onbeforeunload = function () {
     window.scrollTo(0, 0);
 };
 
-// 首頁彈出視窗
+// 雙重保險：DOM 載入後也滾一次
+document.addEventListener("DOMContentLoaded", () => {
+    window.scrollTo(0, 0);
+});
+
+
+// =========================================
+//  首頁彈出視窗邏輯 (Popup Modal)
+// =========================================
 document.addEventListener("DOMContentLoaded", () => {
     const popup = document.getElementById("promoPopup");
     const closeBtn = document.getElementById("closePopupBtn");
     const checkbox = document.getElementById("dontShowCheckbox");
 
+    // 確保這個頁面有彈出視窗元素才執行
     if (popup && closeBtn && checkbox) {
+
+        // 檢查 LocalStorage 是否有紀錄 "不再顯示"
         const hidePopup = localStorage.getItem("ce-hide-popup");
+
+        // 如果沒有紀錄，延遲 0.5 秒後跳出
         if (!hidePopup) {
             setTimeout(() => {
                 popup.classList.add("active");
             }, 500);
         }
+
+        // 關閉按鈕點擊事件
         closeBtn.addEventListener("click", () => {
             if (checkbox.checked) {
                 localStorage.setItem("ce-hide-popup", "true");
             }
             popup.classList.remove("active");
         });
+
+        // 點擊遮罩背景也可以關閉
         popup.addEventListener("click", (e) => {
             if (e.target === popup) {
                 if (checkbox.checked) {
