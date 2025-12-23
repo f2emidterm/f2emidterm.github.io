@@ -488,7 +488,6 @@ button,
     padding: 10px 15px;
     background: #ebe0f8;
     border-bottom: 1px solid #eee;
-    border-radius: 8px 8px 0 0;
 }
 
 .dropdown-title {
@@ -761,4 +760,5 @@ footer {
         padding: 30px 15px 15px 15px;
     }
 }
+
 
