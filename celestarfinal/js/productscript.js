@@ -1,81 +1,87 @@
-// product.js (或你的檔案名稱)
+// js/product.js
 
 // 1. 引入 Firebase 功能
 import { db } from './firebase.js';
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// 2. 初始化頁面
 document.addEventListener("DOMContentLoaded", async () => {
-    
+
     // --- (A) 取得網址上的 ID ---
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get('id');
 
-    if (!productId) {
-        document.querySelector("main").innerHTML = "<p>無效的商品 ID</p>";
-        return;
-    }
-
-    // --- (B) DOM 元素抓取 ---
+    // --- (B) 抓取 DOM 元素 ---
+    const main = document.querySelector("main");
     const minusBtn = document.getElementById('minus');
     const plusBtn = document.getElementById('plus');
     const qtySpan = document.getElementById('qty');
     const buyBtn = document.getElementById('buy');
     const cartBtn = document.getElementById('cart');
-    
-    // 下拉選單相關
+
+    // 下拉選單
     const selectSelected = document.querySelector(".select-selected");
     const selectItems = document.querySelector(".select-items");
-    
-    // 價格與數量顯示區
+
+    // 價格區域
     const quantitySection = document.querySelector(".quantity-section");
     const totalInfo = document.querySelector(".total-info");
     const totalQty = document.getElementById('totalQty');
     const totalPrice = document.getElementById('totalPrice');
 
+    // --- (C) 全域變數 (用來存商品狀態) ---
     let quantity = 1;
-    let unitPrice = 0; // 之後會從資料庫更新
+    let unitPrice = 0;        // 存單價 (解決 NaN 問題)
+    let currentProductName = ""; // 存商品名稱 (解決 Alert 顯示問題)
 
-    // --- (C) 從 Firebase 抓取商品資料 ---
+    // 如果網址沒有 ID
+    if (!productId) {
+        main.innerHTML = "<p>無效的商品 ID</p>";
+        return;
+    }
+
+    // --- (D) 從 Firebase 讀取資料 ---
     try {
         const docRef = doc(db, "products", productId);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
             const product = docSnap.data();
-            console.log("商品資料:", product);
+            console.log("從 Firebase 讀到的資料:", product);
 
-            // 更新單價
-            unitPrice = Number(product.price);
+            // 1. 處理商品名稱
+            currentProductName = product.name;
 
-            // 渲染畫面
+            // 2. 處理價格 (解決 NaN 問題)
+            // 先轉成字串，把 "$" 符號拿掉，再轉成數字
+            let cleanPrice = String(product.price).replace(/[^0-9.]/g, ''); 
+            unitPrice = Number(cleanPrice);
+
+            // 3. 渲染畫面
             renderProduct(product);
         } else {
-            document.querySelector("main").innerHTML = "<p>找不到此商品 (ID 不存在)</p>";
+            main.innerHTML = "<p>找不到此商品 (ID 不存在)</p>";
         }
     } catch (error) {
         console.error("讀取錯誤:", error);
-        document.querySelector("main").innerHTML = `<p>載入失敗: ${error.message}</p>`;
+        main.innerHTML = `<p>載入失敗: ${error.message}</p>`;
     }
 
-    // --- (D) 渲染函式 (把資料填入 HTML) ---
+    // --- (E) 渲染畫面函式 ---
     function renderProduct(product) {
+        // 填入文字
         document.querySelector(".product-info h2").textContent = product.name;
-        document.querySelector(".product-info p").textContent = product.price;
-        
-        // 處理主圖 (如果有 img 欄位就用，沒有就用預設圖)
+        document.querySelector(".product-info p").textContent = `$${unitPrice}`; // 顯示處理過的價格
+
+        // 主圖
         const imgSrc = product.img ? product.img : "https://via.placeholder.com/400?text=No+Image";
         const mainImg = document.querySelector(".main-img img");
         mainImg.src = imgSrc;
 
-        // --- 處理縮圖 (Thumbs) ---
-        // 注意：如果你在 Firebase 沒建立 thumbs 陣列，這裡會用空陣列 [] 避免報錯
+        // 縮圖 (Thumbs)
         const thumbsContainer = document.querySelector(".thumbs");
         thumbsContainer.innerHTML = "";
-        
-        const thumbsList = product.thumbs || []; // 如果資料庫沒有 thumbs 欄位，就用空陣列
+        const thumbsList = product.thumbs || []; // 防止沒有 thumbs 欄位報錯
 
-        // 如果有縮圖才顯示，沒有就顯示一個空的方塊
         if (thumbsList.length > 0) {
             thumbsList.forEach(src => {
                 const img = document.createElement("img");
@@ -87,41 +93,39 @@ document.addEventListener("DOMContentLoaded", async () => {
                 });
             });
         } else {
-            // 如果這商品沒有縮圖，也可以選擇什麼都不做，或顯示預設方塊
+            // 沒有縮圖時顯示預設方塊
             const emptyDiv = document.createElement("div");
-            Object.assign(emptyDiv.style, {
-                width: "80px",
-                height: "80px",
-                backgroundColor: "#eee",
-                border: "1px solid #ccc"
-            });
+            emptyDiv.style.width = "80px";
+            emptyDiv.style.height = "80px";
+            emptyDiv.style.backgroundColor = "#eee";
             thumbsContainer.appendChild(emptyDiv);
         }
 
-        // --- 商品描述 ---
+        // 商品描述
         const descSection = document.querySelector(".description");
-        // 確保有 desc 欄位，沒有就顯示預設文字
-        const description = product.desc || "暫無商品描述"; 
+        const description = product.desc || "暫無商品描述";
         descSection.innerHTML = `
             <br><p>商品描述</p><br>
             <p>${description}</p><br>
         `;
 
-        // 預設隱藏數量與總價 (等你選規格)
+        // 初始化隱藏總價區塊
         if (quantitySection) quantitySection.style.display = "none";
         if (totalInfo) totalInfo.style.display = "none";
     }
 
-    // --- (E) 按鈕互動邏輯 (保持原本邏輯) ---
-    
-    // 更新總金額函式
+    // --- (F) 互動邏輯 (按鈕 & 計算) ---
+
     function updateTotal() {
-        if(totalQty) totalQty.textContent = quantity;
-        if(totalPrice) totalPrice.textContent = unitPrice * quantity;
-        if(totalInfo) totalInfo.style.display = "block";
+        if (totalQty) totalQty.textContent = quantity;
+        
+        // 這裡做計算，因為 unitPrice 已經轉成數字了，所以不會 NaN
+        if (totalPrice) totalPrice.textContent = unitPrice * quantity;
+        
+        if (totalInfo) totalInfo.style.display = "block";
     }
 
-    // 數量加減
+    // 數量 -
     if (minusBtn) {
         minusBtn.addEventListener('click', () => {
             if (quantity > 1) quantity--;
@@ -130,6 +134,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
+    // 數量 +
     if (plusBtn) {
         plusBtn.addEventListener('click', () => {
             quantity++;
@@ -138,23 +143,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // 購買與購物車
+    // 購買按鈕 (已修正：顯示商品名稱)
     if (buyBtn) {
         buyBtn.addEventListener('click', () => {
-            alert(`準備購買 ID: ${productId}, 數量: ${quantity}, 總價: ${unitPrice * quantity}`);
+            alert(`準備購買: ${currentProductName}\n數量: ${quantity}\n總價: $${unitPrice * quantity}`);
         });
     }
 
+    // 加入購物車
     if (cartBtn) {
         cartBtn.addEventListener('click', () => {
             alert('已加入購物車');
         });
     }
 
-    // --- (F) 下拉選單邏輯 ---
+    // 下拉選單邏輯 (完全保留你原本的功能)
     if (selectSelected && selectItems) {
         selectSelected.addEventListener("click", (e) => {
-            e.stopPropagation(); // 防止冒泡
+            e.stopPropagation();
             selectSelected.classList.toggle("active");
             selectItems.classList.toggle("show");
         });
@@ -164,7 +170,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             selectItems.classList.remove("show");
         });
 
-        // 選項點擊
         selectItems.querySelectorAll("div").forEach(option => {
             option.addEventListener("click", () => {
                 const value = option.getAttribute("data-value");
@@ -173,14 +178,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                 selectItems.classList.remove("show");
 
                 if (value !== "請選擇款式") {
-                    if(quantitySection) quantitySection.style.display = "flex";
+                    if (quantitySection) quantitySection.style.display = "flex";
                     updateTotal();
                 } else {
-                    if(quantitySection) quantitySection.style.display = "none";
-                    if(totalInfo) totalInfo.style.display = "none";
+                    if (quantitySection) quantitySection.style.display = "none";
+                    if (totalInfo) totalInfo.style.display = "none";
                 }
             });
         });
     }
 });
-
