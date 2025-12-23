@@ -1,79 +1,83 @@
-﻿document.addEventListener("DOMContentLoaded", () => {
+// product.js (或你的檔案名稱)
+
+// 1. 引入 Firebase 功能
+import { db } from './firebase.js';
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+// 2. 初始化頁面
+document.addEventListener("DOMContentLoaded", async () => {
+    
+    // --- (A) 取得網址上的 ID ---
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+
+    if (!productId) {
+        document.querySelector("main").innerHTML = "<p>無效的商品 ID</p>";
+        return;
+    }
+
+    // --- (B) DOM 元素抓取 ---
     const minusBtn = document.getElementById('minus');
     const plusBtn = document.getElementById('plus');
     const qtySpan = document.getElementById('qty');
     const buyBtn = document.getElementById('buy');
     const cartBtn = document.getElementById('cart');
-
-    let quantity = 1;
-
-    minusBtn.addEventListener('click', () => {
-        if (quantity > 1) quantity--;
-        qtySpan.textContent = quantity;
-        updateTotal();
-    });
-
-    plusBtn.addEventListener('click', () => {
-        quantity++;
-        qtySpan.textContent = quantity;
-        updateTotal();
-    });
-
-    buyBtn.addEventListener('click', () => {
-        alert('前往結帳頁面');
-    });
-
-    cartBtn.addEventListener('click', () => {
-        alert('已加入購物車');
-    });
-
-    // ==== 下拉選單互動 ====
+    
+    // 下拉選單相關
     const selectSelected = document.querySelector(".select-selected");
     const selectItems = document.querySelector(".select-items");
+    
+    // 價格與數量顯示區
+    const quantitySection = document.querySelector(".quantity-section");
+    const totalInfo = document.querySelector(".total-info");
+    const totalQty = document.getElementById('totalQty');
+    const totalPrice = document.getElementById('totalPrice');
 
-    selectSelected.addEventListener("click", () => {
-        selectSelected.classList.toggle("active");
-        selectItems.classList.toggle("show");
-    });
+    let quantity = 1;
+    let unitPrice = 0; // 之後會從資料庫更新
 
-    window.addEventListener("click", (e) => {
-        if (!e.target.closest(".custom-select")) {
-            selectSelected.classList.remove("active");
-            selectItems.classList.remove("show");
+    // --- (C) 從 Firebase 抓取商品資料 ---
+    try {
+        const docRef = doc(db, "products", productId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            const product = docSnap.data();
+            console.log("商品資料:", product);
+
+            // 更新單價
+            unitPrice = Number(product.price);
+
+            // 渲染畫面
+            renderProduct(product);
+        } else {
+            document.querySelector("main").innerHTML = "<p>找不到此商品 (ID 不存在)</p>";
         }
-    });
+    } catch (error) {
+        console.error("讀取錯誤:", error);
+        document.querySelector("main").innerHTML = `<p>載入失敗: ${error.message}</p>`;
+    }
 
-    // 取得網址參數
-    const urlParams = new URLSearchParams(window.location.search);
-    const productId = urlParams.get('id');
-
-    // 模擬商品資料庫
-    const products = {
-        1: { name: "BLUE OCEAN HOUR STICKER", price: 20, img: "images/stk1.jpg", thumbs: ["images/stk1.jpg", "images/stk1-1.jpg", "images/stk1-2.jpg"], desc: "blue sticker" },
-        2: { name: "SUNDAY BLUSH STICKER", price: 20, img: "images/stk2.jpg", thumbs: [], desc: "sticker" },
-        3: { name: "LUCKY GREEN STICKER", price: 20, img: "images/stk3.jpg", thumbs: [], desc: "sticker" },
-        4: { name: "LEMON MOOD STICKER", price: 20, img: "images/stk4.jpg", thumbs: [], desc: "sticker" },
-        5: { name: "STRAWBERRY VIBES STICKER", price: 20, img: "images/stk5.jpg", thumbs: [], desc: "sticker" },
-        6: { name: "MONOTONE DIARY STICKER", price: 20, img: "images/stk6.jpg", thumbs: [], desc: "sticker" },
-        7: { name: "APPLE FLAVOR HAIRPIN", price: 120, img: "images/acc1.png", thumbs: ["images/acc1.png", "images/acc1-1.png"], desc: "apple accessory" },
-        8: { name: "STARFISH RING", price: 200, img: "images/acc2.png", thumbs: [], desc: "accessory" }
-    };
-
-    // 根據 ID 取得商品資料
-    const product = products[productId];
-
-    // 顯示資料
-    if (product) {
+    // --- (D) 渲染函式 (把資料填入 HTML) ---
+    function renderProduct(product) {
         document.querySelector(".product-info h2").textContent = product.name;
         document.querySelector(".product-info p").textContent = `$${product.price}`;
-        document.querySelector(".main-img img").src = product.img;
+        
+        // 處理主圖 (如果有 img 欄位就用，沒有就用預設圖)
+        const imgSrc = product.img ? product.img : "https://via.placeholder.com/400?text=No+Image";
         const mainImg = document.querySelector(".main-img img");
+        mainImg.src = imgSrc;
 
-        // 縮圖切換
+        // --- 處理縮圖 (Thumbs) ---
+        // 注意：如果你在 Firebase 沒建立 thumbs 陣列，這裡會用空陣列 [] 避免報錯
         const thumbsContainer = document.querySelector(".thumbs");
         thumbsContainer.innerHTML = "";
-        if (product.thumbs && product.thumbs.length > 0) {
-            product.thumbs.forEach(src => {
+        
+        const thumbsList = product.thumbs || []; // 如果資料庫沒有 thumbs 欄位，就用空陣列
+
+        // 如果有縮圖才顯示，沒有就顯示一個空的方塊
+        if (thumbsList.length > 0) {
+            thumbsList.forEach(src => {
                 const img = document.createElement("img");
                 img.src = src;
                 img.alt = "預覽圖";
@@ -83,32 +87,84 @@
                 });
             });
         } else {
+            // 如果這商品沒有縮圖，也可以選擇什麼都不做，或顯示預設方塊
             const emptyDiv = document.createElement("div");
-            emptyDiv.style.width = "80px";
-            emptyDiv.style.height = "80px";
-            emptyDiv.style.backgroundColor = "#eee";
-            emptyDiv.style.border = "1px solid #ccc";
+            Object.assign(emptyDiv.style, {
+                width: "80px",
+                height: "80px",
+                backgroundColor: "#eee",
+                border: "1px solid #ccc"
+            });
             thumbsContainer.appendChild(emptyDiv);
         }
 
-        // 商品描述
+        // --- 商品描述 ---
         const descSection = document.querySelector(".description");
+        // 確保有 desc 欄位，沒有就顯示預設文字
+        const description = product.desc || "暫無商品描述"; 
         descSection.innerHTML = `
-            <p>商品描述</p>
-            <p>${product.desc}</p>
-          `;
+            <br><p>商品描述</p><br>
+            <p>${description}</p><br>
+        `;
 
-        // 數量與總額顯示控制
-        const quantitySection = document.querySelector(".quantity-section");
-        const totalInfo = document.querySelector(".total-info");
-        const totalQty = document.getElementById('totalQty');
-        const totalPrice = document.getElementById('totalPrice');
-        let unitPrice = product.price;
+        // 預設隱藏數量與總價 (等你選規格)
+        if (quantitySection) quantitySection.style.display = "none";
+        if (totalInfo) totalInfo.style.display = "none";
+    }
 
-        quantitySection.style.display = "none";
-        totalInfo.style.display = "none";
+    // --- (E) 按鈕互動邏輯 (保持原本邏輯) ---
+    
+    // 更新總金額函式
+    function updateTotal() {
+        if(totalQty) totalQty.textContent = quantity;
+        if(totalPrice) totalPrice.textContent = unitPrice * quantity;
+        if(totalInfo) totalInfo.style.display = "block";
+    }
 
-        // 選項行為（自訂select）
+    // 數量加減
+    if (minusBtn) {
+        minusBtn.addEventListener('click', () => {
+            if (quantity > 1) quantity--;
+            qtySpan.textContent = quantity;
+            updateTotal();
+        });
+    }
+
+    if (plusBtn) {
+        plusBtn.addEventListener('click', () => {
+            quantity++;
+            qtySpan.textContent = quantity;
+            updateTotal();
+        });
+    }
+
+    // 購買與購物車
+    if (buyBtn) {
+        buyBtn.addEventListener('click', () => {
+            alert(`準備購買 ID: ${productId}, 數量: ${quantity}, 總價: ${unitPrice * quantity}`);
+        });
+    }
+
+    if (cartBtn) {
+        cartBtn.addEventListener('click', () => {
+            alert('已加入購物車');
+        });
+    }
+
+    // --- (F) 下拉選單邏輯 ---
+    if (selectSelected && selectItems) {
+        selectSelected.addEventListener("click", (e) => {
+            e.stopPropagation(); // 防止冒泡
+            selectSelected.classList.toggle("active");
+            selectItems.classList.toggle("show");
+        });
+
+        window.addEventListener("click", () => {
+            selectSelected.classList.remove("active");
+            selectItems.classList.remove("show");
+        });
+
+        // 選項點擊
         selectItems.querySelectorAll("div").forEach(option => {
             option.addEventListener("click", () => {
                 const value = option.getAttribute("data-value");
@@ -117,24 +173,13 @@
                 selectItems.classList.remove("show");
 
                 if (value !== "請選擇款式") {
-                    quantitySection.style.display = "flex";
+                    if(quantitySection) quantitySection.style.display = "flex";
                     updateTotal();
                 } else {
-                    quantitySection.style.display = "none";
-                    totalInfo.style.display = "none";
+                    if(quantitySection) quantitySection.style.display = "none";
+                    if(totalInfo) totalInfo.style.display = "none";
                 }
             });
         });
-
-        // 更新總額
-        function updateTotal() {
-            totalQty.textContent = quantity;
-            totalPrice.textContent = unitPrice * quantity;
-            totalInfo.style.display = "block";
-        }
-
-    } else {
-        document.querySelector("main").innerHTML = "<p>找不到此商品</p>";
     }
-
 });
