@@ -78,7 +78,7 @@ function renderProducts() {
               <img src="${imgSrc}" alt="${p.name}">
             </div>
             <div class="product-name">${p.name}</div>
-            <div class="product-price">${p.price}</div>
+            <div class="product-price">$${p.price}</div>
           </a>
         `;
         grid.appendChild(card);
@@ -305,3 +305,4 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
