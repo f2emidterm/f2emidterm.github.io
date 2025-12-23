@@ -69,6 +69,37 @@ header {
     margin-left: 10px;
     cursor: pointer;
 }
+/* ========================================= */
+/* 搜尋列樣式                                */
+/* ========================================= */
+#searchBtn {
+    transition: transform 0.2s ease; 
+    display: inline-block; 
+}
+
+#searchBtn:hover {
+    transform: scale(1.2); 
+}
+.search-bar {
+    position: absolute;
+    top: 100%; 
+    left: auto;
+    right: 0px;
+    width: 320px;
+    background-color: #fff;
+    padding: 15px 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* 預設隱藏狀態 */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 900;
+    border: 1px solid #AEAEDE;
+}
 /* 當搜尋列被啟用時的樣式 */
 .search-bar.active {
     opacity: 1;
@@ -324,4 +355,5 @@ header {
         display: block;
     }
 }
+
 
