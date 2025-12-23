@@ -180,7 +180,7 @@ button,
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    overflow: visible;
     z-index: 2;
 }
 
@@ -862,6 +862,7 @@ footer {
         align-self: center;     
     }
 }
+
 
 
 
