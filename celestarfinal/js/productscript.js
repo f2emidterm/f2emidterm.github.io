@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // --- (D) 渲染函式 (把資料填入 HTML) ---
     function renderProduct(product) {
         document.querySelector(".product-info h2").textContent = product.name;
-        document.querySelector(".product-info p").textContent = `$${product.price}`;
+        document.querySelector(".product-info p").textContent = product.price;
         
         // 處理主圖 (如果有 img 欄位就用，沒有就用預設圖)
         const imgSrc = product.img ? product.img : "https://via.placeholder.com/400?text=No+Image";
@@ -183,3 +183,4 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 });
+
