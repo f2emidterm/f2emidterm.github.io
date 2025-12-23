@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     function renderProduct(product) {
         // 填入文字
         document.querySelector(".product-info h2").textContent = product.name;
-        document.querySelector(".product-info p").textContent = `$${unitPrice}`; // 顯示處理過的價格
+        document.querySelector(".product-info p").textContent = `$${product.price}`; // 顯示處理過的價格
 
         // 主圖
         const imgSrc = product.img ? product.img : "https://via.placeholder.com/400?text=No+Image";
@@ -188,3 +188,4 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 });
+
