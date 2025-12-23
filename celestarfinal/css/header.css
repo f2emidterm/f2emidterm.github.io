@@ -69,7 +69,36 @@ header {
     margin-left: 10px;
     cursor: pointer;
 }
+/* 當搜尋列被啟用時的樣式 */
+.search-bar.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
 
+.search-bar input {
+    width: 100%;
+    max-width: 600px;
+    padding: 8px 15px;
+    border: 1px solid #AEAEDE;
+    outline: none;
+    font-size: 14px;
+    color: #3f4046;
+}
+
+.search-bar button {
+    margin-left: 10px;
+    padding: 8px 20px;
+    background-color: #AEAEDE;
+    color: #fff;
+    border: none;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.search-bar button:hover {
+    background-color: #9d9dd1;
+}
 /* ========================================= */
 /* RWD 響應式設定                           */
 /* ========================================= */
@@ -295,3 +324,4 @@ header {
         display: block;
     }
 }
+
