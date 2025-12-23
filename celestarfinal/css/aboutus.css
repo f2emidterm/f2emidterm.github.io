@@ -524,7 +524,7 @@ button,
 .dakku-btn {
     display: inline-block;
     justify-content: center;
-    padding: 9px 22px;
+    padding: 15px 22px;
     border: 1px solid #AEAEDE;
     background: #fff;
     font-size: 13px;
@@ -538,7 +538,7 @@ button,
 
 .dakku-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 3px 3px 0 rgba(174, 174, 222, .6);
+    box-shadow: 5px 5px 0 rgba(174, 174, 222, .6);
 }
 
 /* ===== Links ===== */
@@ -551,7 +551,7 @@ button,
 .about-links a {
     display: inline-block;
     justify-content: center;
-    padding: 15px 22px;
+    padding: 9px 22px;
     border: 1px solid #AEAEDE;
     background: #fff;
     font-size: 13px;
@@ -565,7 +565,7 @@ button,
 
 .about-links a:hover {
     transform: translateY(-2px);
-    box-shadow: 5px 5px 0 rgba(174, 174, 222, .6);
+    box-shadow: 3px 3px 0 rgba(174, 174, 222, .6);
 }
 
 /* ===== Contact ===== */
@@ -862,5 +862,6 @@ footer {
         align-self: center;     
     }
 }
+
 
 
