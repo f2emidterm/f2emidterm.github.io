@@ -199,7 +199,6 @@ if (btnNext) {
 // --- 視窗縮放 ---
 window.addEventListener("resize", () => {
     // 為了避免頻繁觸發，這裡通常會建議只重置邏輯
-    currentPage = 1;
     renderProducts();
 });
 
@@ -218,3 +217,4 @@ if ('scrollRestoration' in history) {
 window.onbeforeunload = function () {
     window.scrollTo(0, 0);
 };
+
