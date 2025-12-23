@@ -566,7 +566,25 @@ footer {
 }
 
 @media (min-width: 601px) and (max-width: 1024px) {
+    .tutorial-modal {
+        width: 85%; 
+        max-width: 380px;
+        padding: 25px;
+    }
 
+    .tutorial-image {
+        height: 200px; 
+        margin-bottom: 15px;
+    }
+
+    .tutorial-content h2 {
+        font-size: 20px; 
+    }
+
+    .tutorial-content p {
+        font-size: 14px;
+        min-height: 50px; 
+    }
     .journal-workspace {
         display: flex;
         flex-direction: column;
@@ -652,6 +670,56 @@ footer {
         overflow-x: hidden;
     }
 
+    .tutorial-modal {
+        width: 70%;    
+        max-width: 340px;  
+        padding: 20px;   
+        max-height: 90vh;   
+        overflow-y: auto; 
+    }
+
+    .tutorial-image {
+        height: 150px; 
+        margin-bottom: 12px;
+    }
+
+    .tutorial-content h2 {
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+
+    .tutorial-content p {
+        font-size: 13px;
+        line-height: 1.5;
+        min-height: 40px;   
+        margin-bottom: 10px;
+    }
+
+    .tutorial-footer {
+        margin-top: 15px;
+        gap: 10px;
+    }
+
+    .primary-btn, .secondary-btn {
+        padding: 8px 15px;
+        font-size: 13px;
+        height: auto;
+    }
+
+    .close-tutorial-btn {
+        top: 10px;
+        right: 10px;
+        width: 24px;
+        height: 24px;
+        font-size: 18px;
+        line-height: 22px;
+    }
+    
+    .dot {
+        width: 5px;
+        height: 5px;
+    }
+    
     .journal-workspace {
         display: flex;
         flex-direction: column;
@@ -760,6 +828,7 @@ footer {
         padding: 30px 15px 15px 15px;
     }
 }
+
 
 
 
