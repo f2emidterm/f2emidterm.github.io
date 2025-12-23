@@ -129,8 +129,16 @@ function renderProducts() {
 }
 
 // 更新分頁按鈕的 active 樣式
+// 更新分頁按鈕的 active 樣式
 function updatePaginationUI() {
-    document.querySelectorAll(".pagination span").forEach((s) => s.classList.remove("active"));
+    // 1. 先強制把 page1 和 page2 的粗體都拿掉 (這樣最保險)
+    const p1 = document.getElementById("page1");
+    const p2 = document.getElementById("page2");
+    
+    if (p1) p1.classList.remove("active");
+    if (p2) p2.classList.remove("active");
+
+    // 2. 再把「現在這頁」加上粗體
     const currentBtn = document.getElementById(`page${currentPage}`);
     if (currentBtn) {
         currentBtn.classList.add("active");
@@ -209,3 +217,4 @@ if ('scrollRestoration' in history) {
 window.onbeforeunload = function () {
     window.scrollTo(0, 0);
 };
+
