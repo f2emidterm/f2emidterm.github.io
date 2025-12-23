@@ -125,10 +125,6 @@ button,
     font-size: 13px;
 }
 
-.pagination .page-active {
-    font-weight: 700;
-}
-
 .no-products {
     grid-column: 1 / -1;
     text-align: center;
@@ -193,6 +189,7 @@ footer {
     padding:0 30px;
   }
 }
+
 
 
 
