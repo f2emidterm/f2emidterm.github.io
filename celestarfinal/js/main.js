@@ -24,7 +24,7 @@ async function fetchProducts() {
             const data = doc.data();
             // 確保資料有 ID，如果資料庫沒存 ID 欄位，就用 doc.id
             products.push({
-                id: data.id || doc.id,
+                id: doc.id,
                 ...data
             });
         });
@@ -305,5 +305,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
 
 
