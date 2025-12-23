@@ -1,34 +1,65 @@
+// js/main.js
 
-// ---- �ӫ~��� ----
-const products = [
-    { id: 1, name: "BLUE OCEAN HOUR STICKER", price: "$20", category: "sticker", img: "images/stk1.jpg" },
-    { id: 2, name: "SUNDAY BLUSH STICKER", price: "$20", category: "sticker", img: "images/stk2.jpg" },
-    { id: 3, name: "LUCKY GREEN STICKER", price: "$20", category: "sticker", img: "images/stk3.jpg" },
-    { id: 4, name: "LEMON MOOD STICKER", price: "$20", category: "sticker", img: "images/stk4.jpg" },
-    { id: 5, name: "STRAWBERRY VIBES STICKER", price: "$20", category: "sticker", img: "images/stk5.jpg" },
-    { id: 6, name: "MONOTONE DIARY STICKER", price: "$20", category: "sticker", img: "images/stk6.jpg" },
-    { id: 7, name: "APPLE FLAVOR HAIRPIN", price: "$120", category: "accessory", img: "images/acc1.png" },
-    { id: 8, name: "STARFISH RING", price: "$200", category: "accessory", img: "images/acc2.png" }
-];
+// 1. 引入 Firebase 功能
+import { db } from './firebase.js';
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+// 2. 全域變數
+let products = [];
 const perPage = 8;
 let currentPage = 1;
 let currentCategory = "all";
 
+// 3. 從 Firebase 抓資料
+async function fetchProducts() {
+    const grid = document.querySelector(".products");
+    if (grid) grid.innerHTML = '<div style="width:100%;text-align:center;padding:20px;">Loading products...</div>';
+
+    try {
+        // 抓取資料
+        const querySnapshot = await getDocs(collection(db, "products"));
+        products = [];
+
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            // 確保資料有 ID，如果資料庫沒存 ID 欄位，就用 doc.id
+            products.push({
+                id: data.id || doc.id,
+                ...data
+            });
+        });
+
+        // 排序 (依據 id)
+        products.sort((a, b) => a.id - b.id);
+        console.log("商品載入成功:", products);
+
+        // 資料抓到了，開始渲染
+        renderProducts();
+
+        // **重要**：資料渲染完之後，才啟動手機版輪播功能
+        initCarouselLogic();
+
+    } catch (error) {
+        console.error("讀取商品失敗:", error);
+        if (grid) grid.innerHTML = '<div style="color:red;text-align:center;">Failed to load products. Check Console (F12).</div>';
+    }
+}
+
+// 4. 渲染商品 (Render)
 function renderProducts() {
     const grid = document.querySelector(".products");
+    if (!grid) return;
+
     grid.innerHTML = "";
 
-    const filtered =
-        currentCategory === "all"
-            ? products
-            : products.filter((p) => p.category === currentCategory);
+    const filtered = currentCategory === "all"
+        ? products
+        : products.filter((p) => p.category === currentCategory);
 
     const start = (currentPage - 1) * perPage;
     const end = start + perPage;
     const pageItems = filtered.slice(start, end);
 
-    // �p�G�S���ӫ~�A��� no products
     if (pageItems.length === 0) {
         const noDiv = document.createElement("div");
         noDiv.className = "no-products";
@@ -37,11 +68,11 @@ function renderProducts() {
         return;
     }
 
-    // ��V�ӫ~
     pageItems.forEach((p) => {
         const card = document.createElement("div");
         card.className = "product-card";
         const imgSrc = p.img ? p.img : "https://via.placeholder.com/200/cccccc/808080?text=No+Image";
+
         card.innerHTML = `
           <a href="product.html?id=${p.id}">
             <div class="product-img">
@@ -54,29 +85,35 @@ function renderProducts() {
         grid.appendChild(card);
     });
 
-    // �ɺ��Ѿl��l���Ǧ���
+    // 補齊空格邏輯
     const fillCount = perPage - pageItems.length;
     for (let i = 0; i < fillCount; i++) {
         const card = document.createElement("div");
         card.className = "product-card";
+        // 為了美觀，可以讓空的卡片不可見 (visibility: hidden) 或者顯示空白
         card.innerHTML = `
-          <div class="product-img" style="background-color:#f0f0f0;"></div>
-          <div class="product-name">PRODUCT NAME</div>
-          <div class="product-price">$0</div>
+          <div class="product-img" style="background-color:#f9f9f9;"></div>
+          <div class="product-name" style="color:transparent">.</div>
+          <div class="product-price" style="color:transparent">.</div>
         `;
         grid.appendChild(card);
     }
 }
 
+
+// ===========================================
+// Banner 輪播邏輯
+// ===========================================
 const slides = document.querySelectorAll('.banner-imgs img');
 const dots = document.querySelectorAll('.banner-dots span');
 let current = 0;
 let timer;
 
 function showSlide(index) {
+    if (slides.length === 0) return;
     slides.forEach((img, i) => {
         img.classList.toggle('active', i === index);
-        dots[i].classList.toggle('active', i === index);
+        if (dots[i]) dots[i].classList.toggle('active', i === index);
     });
     current = index;
 }
@@ -86,163 +123,105 @@ function nextSlide() {
     showSlide(next);
 }
 
-dots.forEach(dot => {
-    dot.addEventListener('click', () => {
-        clearInterval(timer);
-        showSlide(Number(dot.dataset.index));
-        startAutoSlide();
+if (dots.length > 0) {
+    dots.forEach(dot => {
+        dot.addEventListener('click', () => {
+            clearInterval(timer);
+            showSlide(Number(dot.dataset.index));
+            startAutoSlide();
+        });
     });
-});
+}
 
 function startAutoSlide() {
-    timer = setInterval(nextSlide, 3000); // �C 3 ������
+    if (slides.length > 0) timer = setInterval(nextSlide, 3000);
 }
 
+
+// ===========================================
+// Back To Top 邏輯
+// ===========================================
 const backToTopBtn = document.getElementById("backToTopBtn");
-
-window.onscroll = function () { scrollFunction() };
-
-function scrollFunction() {
-    if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-        backToTopBtn.style.display = "block";
-    } else {
-        backToTopBtn.style.display = "none";
-    }
-}
-
-backToTopBtn.addEventListener("click", backToTop);
-
-function backToTop() {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
+if (backToTopBtn) {
+    window.onscroll = function () {
+        if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+            backToTopBtn.style.display = "block";
+        } else {
+            backToTopBtn.style.display = "none";
+        }
+    };
+    backToTopBtn.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     });
-
 }
 
-startAutoSlide();
-renderProducts();
 
 // ===========================================
-// 商品輪播分頁邏輯 (修正為輔助滾動)
+// 手機版商品輪播邏輯 (封裝成函式)
 // ===========================================
-
-document.addEventListener("DOMContentLoaded", () => {
-    // 1. 選取關鍵元素
+function initCarouselLogic() {
     const productsContainer = document.querySelector(".products");
     const leftArrow = document.querySelector(".left-arrow");
     const rightArrow = document.querySelector(".right-arrow");
 
-    // 如果找不到容器，直接結束
     if (!productsContainer) return;
 
-    // 2. 狀態變數
-    let isMobileCarouselActive = false; // 標記目前是否為手機輪播模式
-    let currentPage = 0;                // 當前頁碼
-    let totalPages = 0;                 // 總頁數
+    let isMobileCarouselActive = false;
+    let carouselPage = 0; // 改名以免跟上面的全域 currentPage 衝突
+    let totalCarouselPages = 0;
 
-    // 3. 更新輪播位置的函式
-    //function updateSlide() {
-    //    // 只在手機模式下執行位移
-    //    if (!isMobileCarouselActive) {
-    //        productsContainer.style.transform = "";
-    //        productsContainer.style.transition = "";
-    //        return;
-    //    }
-
-    //    // 移動邏輯：頁碼 * -100%
-    //    // 注意：這裡假設 .products 寬度設為 100% * 頁數 (在 CSS 中設定 display: flex; width: 200% 等)
-    //    // 或者使用我們之前的 CSS 設定 (width: max-content 或 200%)
-    //    productsContainer.style.transition = "transform 0.4s ease-in-out";
-    //    productsContainer.style.transform = `translateX(-${currentPage * 100}%)`;
-    //}
     function updateSlide() {
         if (!isMobileCarouselActive) return;
-
-        const wrapper =
-            document.querySelector(".product-carousel-wrapper");
-
+        const wrapper = document.querySelector(".product-carousel-wrapper");
+        if (!wrapper) return;
         const pageWidth = wrapper.clientWidth;
 
         productsContainer.style.transition = "transform 0.4s ease";
-        productsContainer.style.transform =
-            `translateX(-${currentPage * pageWidth}px)`;
+        productsContainer.style.transform = `translateX(-${carouselPage * pageWidth}px)`;
     }
 
-
-    // 4. 初始化手機版輪播 (打包卡片)
     function initMobileCarousel() {
-        // 如果已經是啟用狀態，或者沒有卡片，就不重複執行
         if (isMobileCarouselActive) return;
 
-        // 獲取所有原始卡片
+        // 這裡要抓取 product-card，但要小心不要抓到補位用的空白卡片(如果有區分的話)
+        // 簡單起見，先抓全部 children
         const originalCards = Array.from(productsContainer.children);
-
-        // 如果卡片少於等於4張，不需要輪播
         if (originalCards.length <= 4) return;
 
-        // --- 開始打包結構 ---
         const pages = [];
         for (let i = 0; i < originalCards.length; i += 4) {
-            // 建立分頁容器
             const page = document.createElement("div");
-            page.className = "product-page"; // 注意：需要在 CSS 定義這個 class 的樣式
-
-            // 這裡為了配合之前的 Flex 結構，我們給 page 設定寬度樣式 (或是寫在 CSS 裡)
-            // 建議 CSS: .product-page { width: 50vw; flex-shrink: 0; ...grid settings... }
-
-            // 將 4 張卡片放入分頁
+            page.className = "product-page";
+            // 建議在 CSS 加上 .product-page { min-width: 100%; display: grid; grid-template-columns: 1fr 1fr; ... }
             originalCards.slice(i, i + 4).forEach(card => page.appendChild(card));
             pages.push(page);
         }
 
-        // 清空容器並放入分頁
         productsContainer.innerHTML = "";
         pages.forEach(page => productsContainer.appendChild(page));
 
-        // 更新狀態
         isMobileCarouselActive = true;
-        totalPages = pages.length;
-        currentPage = 0; // 重置回第一頁
-
-        // 初始化位置
+        totalCarouselPages = pages.length;
+        carouselPage = 0;
         updateSlide();
     }
 
-    // 5. 銷毀手機版輪播 (拆包卡片 -> 恢復 PC 狀態)
     function destroyMobileCarousel() {
-        // 如果本來就不是啟用狀態，就不執行
         if (!isMobileCarouselActive) return;
-
-        // 獲取所有分頁
         const pages = productsContainer.querySelectorAll(".product-page");
-
-        // 準備一個文檔片段來暫存卡片 (效能優化)
         const fragment = document.createDocumentFragment();
-
-        // 把卡片從分頁拿出來
         pages.forEach(page => {
-            Array.from(page.children).forEach(card => {
-                fragment.appendChild(card);
-            });
+            Array.from(page.children).forEach(card => fragment.appendChild(card));
         });
-
-        // 清空容器並把卡片放回去
         productsContainer.innerHTML = "";
         productsContainer.appendChild(fragment);
-
-        // 清除樣式
         productsContainer.style.transform = "";
-        productsContainer.style.transition = "";
 
-        // 更新狀態
         isMobileCarouselActive = false;
-        currentPage = 0;
+        carouselPage = 0;
     }
 
-    // 6. 檢查視窗大小並切換模式
     function checkMode() {
-        // 判斷是否為手機版 (小於等於 600px)
         if (window.matchMedia("(max-width: 600px)").matches) {
             initMobileCarousel();
         } else {
@@ -250,25 +229,30 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // 7. 綁定箭頭事件 (點擊事件一直監聽，但內部判斷是否執行)
+    // 移除舊的 event listener 以免重複綁定 (雖然這裡是初始化，但保險起見)
+    // 這裡簡單處理，直接綁定
     if (rightArrow) {
-        rightArrow.addEventListener("click", () => {
-            if (!isMobileCarouselActive) return; // PC 版點擊無效
-            currentPage = (currentPage + 1) % totalPages; // 循環下一頁
+        // 用 cloneNode 清除舊事件，或確保只綁定一次。這裡簡化直接綁定，但要注意不要多次呼叫 initCarouselLogic
+        rightArrow.onclick = () => {
+            if (!isMobileCarouselActive) return;
+            carouselPage = (carouselPage + 1) % totalCarouselPages;
             updateSlide();
-        });
+        };
     }
-
     if (leftArrow) {
-        leftArrow.addEventListener("click", () => {
-            if (!isMobileCarouselActive) return; // PC 版點擊無效
-            // 循環上一頁邏輯
-            currentPage = (currentPage - 1 + totalPages) % totalPages;
+        leftArrow.onclick = () => {
+            if (!isMobileCarouselActive) return;
+            carouselPage = (carouselPage - 1 + totalCarouselPages) % totalCarouselPages;
             updateSlide();
-        });
+        };
     }
 
-    // 8. 啟動監聽
-    checkMode(); // 載入時先檢查一次
-    window.addEventListener("resize", checkMode); // 視窗縮放時檢查
-});
+    checkMode();
+    window.addEventListener("resize", checkMode);
+}
+
+// ===========================================
+// 啟動程式
+// ===========================================
+startAutoSlide();
+fetchProducts(); // 這會觸發 renderProducts -> initCarouselLogic
