@@ -1,3 +1,4 @@
+
 // js/product.js
 
 // 1. 引入 Firebase 功能
@@ -53,7 +54,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             // 2. 處理價格 (解決 NaN 問題)
             // 先轉成字串，把 "$" 符號拿掉，再轉成數字
-            let cleanPrice = String(product.price).replace(/[^0-9.]/g, ''); 
+            let cleanPrice = String(product.price).replace(/[^0-9.]/g, '');
             unitPrice = Number(cleanPrice);
 
             // 3. 渲染畫面
@@ -118,10 +119,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function updateTotal() {
         if (totalQty) totalQty.textContent = quantity;
-        
+
         // 這裡做計算，因為 unitPrice 已經轉成數字了，所以不會 NaN
         if (totalPrice) totalPrice.textContent = unitPrice * quantity;
-        
+
         if (totalInfo) totalInfo.style.display = "block";
     }
 
@@ -151,11 +152,53 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // 加入購物車
+    // ... (前面的代碼不變)
+
+    // 加入購物車
     if (cartBtn) {
         cartBtn.addEventListener('click', () => {
-            alert('已加入購物車');
+
+            // 1. 準備要存的商品資料
+            // 如果有選規格(selectSelected)，記得加上規格名稱，這裡示範基本的
+            const item = {
+                id: productId,
+                name: currentProductName,
+                price: unitPrice,
+                img: document.querySelector(".main-img img").src,
+                qty: quantity // 這裡是你頁面上選擇的數量
+            };
+
+            // 2. 讀取目前的購物車 (如果沒有就給空陣列)
+            let cart = JSON.parse(localStorage.getItem("shopCart")) || [];
+
+            // 3. 檢查商品是否已經在車內
+            const existingItem = cart.find(i => i.id === item.id);
+
+            if (existingItem) {
+                // 如果有了，就加上新的數量
+                existingItem.qty += item.qty;
+            } else {
+                // 如果沒有，就推入新商品
+                cart.push(item);
+            }
+
+            // 4. 存回 localStorage
+            localStorage.setItem("shopCart", JSON.stringify(cart));
+
+            // 5. 觸發自定義事件，通知 Header 更新畫面
+            window.dispatchEvent(new Event("cartUpdated"));
+
+            // 6. 顯示即時回饋 (例如打開購物車)
+            // 這裡我們模擬點擊購物車按鈕，讓它滑出來
+            const cartIcon = document.getElementById("cartIcon");
+            if (cartIcon) cartIcon.click();
+
+            // 或者是簡單的 Alert
+            // alert('Added to cart!');
         });
     }
+
+    // ... (後面的代碼不變)
 
     // 下拉選單邏輯 (完全保留你原本的功能)
     if (selectSelected && selectItems) {
