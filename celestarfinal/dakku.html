@@ -1,4 +1,3 @@
-﻿
 <!DOCTYPE html>
 <html lang="en">
 
@@ -50,44 +49,54 @@
         </div>
     </header>
 
-    <!--<div class="container">-->
-    <section class="journal-workspace">
+    <div class="bg">
+        <!--<div class="container">-->
+        <section class="journal-workspace">
 
-        <!-- 左：貼紙庫 -->
-        <aside class="sticker-panel">
-            <!--<h3>STICKERS</h3>-->
-            <div class="sticker-grid">
-                <img src="images/d1.png" class="sticker">
-                <img src="images/d2.png" class="sticker">
-                <img src="images/d3.png" class="sticker">
-                <img src="images/d4.png" class="sticker">
-                <img src="images/d5.png" class="sticker">
-                <img src="images/d6.png" class="sticker">
-                <img src="images/d7.png" class="sticker">
-                <img src="images/d8.png" class="sticker">
-                <img src="images/d1.png" class="sticker">
-                <img src="images/d2.png" class="sticker">
-            </div>
-        </aside>
-        <main class="journal-canvas">
-            <div class="journal-book" id="journal">
-                <img src="images/note.png" class="journal-img">
-            </div>
-        </main>
+            <!-- 左：貼紙庫 -->
+            <aside class="sticker-panel">
 
-        <!-- 右：操作 / 下載 -->
-        <aside class="action-panel">
-            <button id="downloadBtn">下載成圖片</button>
+                <div class="sticker-panel-bg">
+                    <img src="images/sticker-bg.jpg" alt="Sticker Background">
+                </div>
+                <!--<h3>STICKERS</h3>-->
+                <div class="sticker-grid">
+                    <img src="images/d1.png" class="sticker">
+                    <img src="images/d2.png" class="sticker">
+                    <img src="images/d3.png" class="sticker">
+                    <img src="images/d4.png" class="sticker">
+                    <img src="images/d5.png" class="sticker">
+                    <img src="images/d6.png" class="sticker">
+                    <img src="images/d7.png" class="sticker">
+                    <img src="images/d8.png" class="sticker">
+                    <img src="images/d1.png" class="sticker">
+                    <img src="images/d2.png" class="sticker">
+                </div>
+            </aside>
+            <main class="journal-canvas">
+                <div class="journal-book" id="journal">
+                    <img src="images/note.png" class="journal-img">
+                </div>
+            </main>
 
-            <div class="sticker-source">
-                <h4>使用的貼紙</h4>
-                <ul id="usedStickerList">
-                    <!-- JS 動態產生 -->
-                </ul>
-            </div>
-        </aside>
-    </section>
-    <!--</div>-->
+            <!-- 右：操作 / 下載 -->
+            <aside class="action-panel">
+
+                <div id="usedProductsPopup" class="product-dropdown">
+                    <div class="dropdown-header">
+                        <span class="dropdown-title">使用素材</span>
+                        <button id="closeProductPopupBtn" class="dropdown-close-btn">×</button>
+                    </div>
+                    <div id="usedProductList" class="used-product-list">
+                    </div>
+                </div>
+
+                <button id="downloadBtn" class="ripple-btn">
+                    <span>下載圖片*:·.</span></button>
+
+            </aside>
+        </section>
+    </div>
 
     <footer>
         COPYRIGHT © 2025 CELESTAR <br>
@@ -127,6 +136,7 @@
             </div>
         </div>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script src="js/dakkuscript.js"></script>
     <script src="js/header.js"></script>
