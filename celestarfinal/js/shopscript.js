@@ -1,5 +1,3 @@
-// js/shopscript.js (或是 js/main.js，請確認檔名與 HTML 一致)
-
 // ===========================================
 // 1. 引入 Firebase
 // ===========================================
@@ -52,7 +50,7 @@ async function fetchProducts() {
 }
 
 // ===========================================
-// 4. 渲染邏輯
+// 4. 渲染邏輯 (核心功能)
 // ===========================================
 function renderProducts() {
     const grid = document.querySelector(".products");
@@ -78,7 +76,7 @@ function renderProducts() {
         noDiv.className = "no-products";
         noDiv.textContent = "No products found.";
         grid.appendChild(noDiv);
-        return;
+        return; // 這裡 return 後，就不會執行下面的卡片生成，但還是要更新頁碼狀態嗎？通常沒商品時不用管頁碼
     }
 
     // 4. 產生商品卡片
@@ -119,36 +117,33 @@ function renderProducts() {
         }
     }
     
-    // 🔥 重要修正：渲染完之後，呼叫更新 UI
-    updatePaginationUI();
+    // 6. 🔥更新分頁按鈕的「樣式」 (只做視覺更新，不跑邏輯)
+    updatePaginationVisuals();
 }
 
 // ===========================================
-// 🔥 重點修改區域：更新分頁樣式
+// 5. 更新分頁樣式 (純視覺)
 // ===========================================
-function updatePaginationUI() {
-    // 1. 暴力清除所有 active
-    // 使用 getElementById 確保一定抓得到
+function updatePaginationVisuals() {
+    // 移除所有 active
     const p1 = document.getElementById("page1");
     const p2 = document.getElementById("page2");
-
+    
     if (p1) p1.classList.remove("active");
     if (p2) p2.classList.remove("active");
 
-    // 2. 針對當前頁面加上 active
+    // 加上當前的 active
     const currentBtn = document.getElementById(`page${currentPage}`);
     if (currentBtn) {
         currentBtn.classList.add("active");
     }
-
-    // ❌ 絕對不能在這裡呼叫 renderProducts()，否則會無限迴圈！
 }
 
 // ===========================================
-// 5. 事件監聽
+// 6. 事件監聽 (全域只執行一次！)
 // ===========================================
 
-// 分類按鈕
+// --- 分類按鈕 ---
 document.querySelectorAll(".filters button").forEach((btn) => {
     btn.addEventListener("click", () => {
         document.querySelectorAll(".filters button").forEach((b) => b.classList.remove("active"));
@@ -159,7 +154,7 @@ document.querySelectorAll(".filters button").forEach((btn) => {
     });
 });
 
-// 分頁按鈕事件
+// --- 分頁按鈕 (必須寫在 renderProducts 外面) ---
 const btnPage1 = document.getElementById("page1");
 const btnPage2 = document.getElementById("page2");
 const btnPrev = document.getElementById("prev");
@@ -167,7 +162,7 @@ const btnNext = document.getElementById("next");
 
 if (btnPage1) {
     btnPage1.addEventListener("click", () => {
-        if (currentPage !== 1) { // 加個判斷，如果已經是第1頁就不用重跑
+        if (currentPage !== 1) {
             currentPage = 1;
             renderProducts();
         }
@@ -176,7 +171,7 @@ if (btnPage1) {
 
 if (btnPage2) {
     btnPage2.addEventListener("click", () => {
-        if (currentPage !== 2) { // 加個判斷
+        if (currentPage !== 2) {
             currentPage = 2;
             renderProducts();
         }
@@ -201,19 +196,22 @@ if (btnNext) {
     });
 }
 
+// --- 視窗縮放 ---
 window.addEventListener("resize", () => {
+    // 為了避免頻繁觸發，這裡通常會建議只重置邏輯
     currentPage = 1;
     renderProducts();
 });
 
+
 // ===========================================
-// 6. 啟動程式
+// 7. 啟動程式
 // ===========================================
 document.addEventListener("DOMContentLoaded", () => {
     fetchProducts();
 });
 
-// 捲動相關設定
+// 自動回到頂部
 if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';
 }
