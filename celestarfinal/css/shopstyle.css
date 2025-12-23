@@ -136,6 +136,11 @@ button,
     transition: text-decoration 0.3s; 
 }
 
+/* 設定當前頁碼的樣式 */
+#pagination span.page-active {
+    font-weight: bold;       /* 粗體 */
+}
+
 #pagination span:hover {
     text-decoration: underline; 
 }
@@ -189,6 +194,7 @@ footer {
     padding:0 30px;
   }
 }
+
 
 
 
