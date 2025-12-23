@@ -133,30 +133,9 @@ function renderProducts() {
 // js/main.js 的 updatePaginationUI 函式
 
 function updatePaginationUI() {
-    console.log("正在更新分頁 UI，目前頁碼:", currentPage);
-
-    // 1. 抓取分頁容器 (確保你的 HTML 外層有 class="pagination")
-    const container = document.querySelector(".pagination");
-    if (!container) {
-        console.error("找不到 .pagination 區塊，請檢查 HTML class");
-        return;
-    }
-
-    // 2. 抓取容器內「所有的」子元素 (不管是 span, a, div, button 都可以)
-    const allBtns = container.children;
-
-    // 3. 跑迴圈檢查每一個按鈕
-    for (let btn of allBtns) {
-        // A. 無論如何，先把 active 移除 (重置狀態)
-        btn.classList.remove("active");
-
-        // B. 比對 ID (這是最精準的方法)
-        // 邏輯：如果這個按鈕的 ID 等於 "page" + "當前頁碼" (例如 page1, page2)
-        if (btn.id === ("page" + currentPage)) {
-            console.log("找到當前頁面按鈕，加上 active:", btn);
-            btn.classList.add("active");
-        }
-    }
+    document.querySelectorAll(".pagination span").forEach((s) => s.classList.remove("active"));
+    document.getElementById(`page${currentPage}`).classList.add("active");
+    renderProducts();
 }
 
 // ===========================================
@@ -231,5 +210,6 @@ if ('scrollRestoration' in history) {
 window.onbeforeunload = function () {
     window.scrollTo(0, 0);
 };
+
 
 
