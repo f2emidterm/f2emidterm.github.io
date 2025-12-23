@@ -142,8 +142,8 @@ function updatePaginationVisuals() {
 // --- 分類按鈕 ---
 document.querySelectorAll(".filters button").forEach((btn) => {
     btn.addEventListener("click", () => {
-        document.querySelectorAll(".filters button").forEach((b) => b.classList.remove("page-active"));
-        btn.classList.add("page-active");
+        document.querySelectorAll(".filters button").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
         currentCategory = btn.dataset.category;
         currentPage = 1;
         renderProducts();
