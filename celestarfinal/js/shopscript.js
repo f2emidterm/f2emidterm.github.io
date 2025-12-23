@@ -125,19 +125,15 @@ function renderProducts() {
 // 5. 更新分頁樣式 (純視覺)
 // ===========================================
 function updatePaginationVisuals() {
-    // 移除所有 active
-    const p1 = document.getElementById("page1");
-    const p2 = document.getElementById("page2");
-    
-    if (p1) p1.classList.remove("active");
-    if (p2) p2.classList.remove("active");
+    document.querySelectorAll(".pagination span")
+        .forEach(el => el.classList.remove("page-active"));
 
-    // 加上當前的 active
     const currentBtn = document.getElementById(`page${currentPage}`);
     if (currentBtn) {
-        currentBtn.classList.add("active");
+        currentBtn.classList.add("page-active");
     }
 }
+
 
 // ===========================================
 // 6. 事件監聽 (全域只執行一次！)
@@ -146,8 +142,8 @@ function updatePaginationVisuals() {
 // --- 分類按鈕 ---
 document.querySelectorAll(".filters button").forEach((btn) => {
     btn.addEventListener("click", () => {
-        document.querySelectorAll(".filters button").forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
+        document.querySelectorAll(".filters button").forEach((b) => b.classList.remove("page-active"));
+        btn.classList.add("page-active");
         currentCategory = btn.dataset.category;
         currentPage = 1;
         renderProducts();
@@ -217,4 +213,5 @@ if ('scrollRestoration' in history) {
 window.onbeforeunload = function () {
     window.scrollTo(0, 0);
 };
+
 
