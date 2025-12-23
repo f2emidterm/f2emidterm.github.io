@@ -1,4 +1,3 @@
-
 body {
     font-family: 'Inter', Arial, sans-serif;
     margin: 0;
@@ -8,9 +7,16 @@ body {
     padding-top: 90px;
     cursor: url("../images/starr.png")1 16, auto;
     min-height: 100vh;
-    display: flex; 
-    flex-direction: column; 
-    box-sizing: border-box; overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+.bg {
+    flex: 1;
+    position: relative; 
+    z-index: 0;
 }
 
 a,
@@ -51,11 +57,11 @@ button,
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-    /* 顯示狀態 */
-    .tutorial-overlay.active {
-        opacity: 1;
-        visibility: visible;
-    }
+/* 顯示狀態 */
+.tutorial-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
 
 /* 視窗本體 */
 .tutorial-modal {
@@ -125,11 +131,11 @@ button,
     justify-content: center;
 }
 
-    .tutorial-image img {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain;
-    }
+.tutorial-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
 
 .tutorial-content h2 {
     font-size: 22px;
@@ -166,10 +172,10 @@ button,
     transition: 0.3s;
 }
 
-    .dot.active {
-        background-color: #AEAEDE;
-        transform: scale(1.2);
-    }
+.dot.active {
+    background-color: #AEAEDE;
+    transform: scale(1.2);
+}
 
 .step-buttons {
     display: flex;
@@ -190,10 +196,10 @@ button,
     transition: 0.2s;
 }
 
-    .primary-btn:hover {
-        background-color: #9a9ad0;
-        border: 1px solid #3f4046;
-    }
+.primary-btn:hover {
+    background-color: #9a9ad0;
+    border: 1px solid #3f4046;
+}
 
 .secondary-btn {
     background-color: transparent;
@@ -207,10 +213,10 @@ button,
     transition: 0.2s;
 }
 
-    .secondary-btn:hover {
-        border-color: #333;
-        color: #333;
-    }
+.secondary-btn:hover {
+    border-color: #333;
+    color: #333;
+}
 
 .close-tutorial-btn {
     position: absolute;
@@ -227,9 +233,9 @@ button,
     border: solid 1px #999;
 }
 
-    .close-tutorial-btn:hover {
-        color: #333;
-    }
+.close-tutorial-btn:hover {
+    color: #333;
+}
 
 #backToTopBtn {
     position: fixed;
@@ -246,9 +252,9 @@ button,
     transition: background-color 0.3s, opacity 0.3s;
 }
 
-    #backToTopBtn:hover {
-        background-color: #AEAEDE;
-    }
+#backToTopBtn:hover {
+    background-color: #AEAEDE;
+}
 
 /* ========================================= */
 /* 3. Journal & Workspace (手帳區)           */
@@ -270,9 +276,9 @@ button,
     position: relative;
     overflow: visible;
     padding-top: 10%;
-    justify-self: center; 
+    justify-self: center;
     width: 100%;
-    max-width: 260px; 
+    max-width: 260px;
 }
 
 .sticker-panel-bg {
@@ -281,7 +287,7 @@ button,
     left: 0;
     width: 100%;
     height: 110%;
-    z-index: 0; 
+    z-index: 0;
     overflow: hidden;
 }
 
@@ -293,7 +299,7 @@ button,
 }
 
 .sticker-grid {
-    left:10%;
+    left: 10%;
     position: relative;
     z-index: 1;
     width: 80%;
@@ -312,20 +318,20 @@ button,
     transition: all 0.3s ease;
 }
 
-.sticker:hover{
-    scale: 1.1 ;
+.sticker:hover {
+    scale: 1.1;
 }
 
 .placed-sticker {
-    position: absolute; 
-    z-index: 10; 
-    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
-    border: none; 
+    position: absolute;
+    z-index: 10;
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
+    border: none;
 }
 
 .placed-sticker.active {
     outline: 2px dashed #AEAEDE;
-    z-index: 100 !important; 
+    z-index: 100 !important;
     cursor: grab;
 }
 
@@ -337,13 +343,13 @@ button,
     background: #fff;
     border: 1px solid #AEAEDE;
     border-radius: 50%;
-    display: none; 
+    display: none;
     justify-content: center;
     align-items: center;
     cursor: pointer;
     font-size: 16px;
     color: #3f4046;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     z-index: 101;
 }
 
@@ -360,7 +366,7 @@ button,
 .btn-transform {
     bottom: -12px;
     right: -12px;
-    cursor: nwse-resize; 
+    cursor: nwse-resize;
     color: #AEAEDE;
 }
 
@@ -374,7 +380,7 @@ button,
 .journal-canvas {
     justify-content: center;
     align-items: start;
-    position: relative; 
+    position: relative;
 }
 
 .journal-book {
@@ -391,7 +397,7 @@ button,
     width: 100%;
     height: auto;
     display: block;
-    scale:1.2;
+    scale: 1.2;
 }
 
 /* Placed sticker on the journal */
@@ -409,23 +415,23 @@ button,
     padding-top: 100%;
     overflow: visible;
 
-    position: relative; 
-    right:auto;         
+    position: relative;
+    right: auto;
     align-items: center;
-    justify-self: center; 
+    justify-self: center;
     width: 100%;
-    max-width: 240px; 
+    max-width: 240px;
 }
 
 .ripple-btn {
     position: relative;
     padding: 12px 24px;
-    background: #fff;  
-    color: #3f4046;     
+    background: #fff;
+    color: #3f4046;
     border: 1px solid #AEAEDE;
     font-size: 14px;
     font-weight: bold;
-    overflow: hidden;   
+    overflow: hidden;
     transition: color 0.4s ease, transform 0.2s, box-shadow 0.2s;
     z-index: 1;
     box-shadow: 2px 2px 0 rgba(174, 174, 222, .5);
@@ -439,25 +445,25 @@ button,
 .ripple-btn::before {
     content: '';
     position: absolute;
-    top: var(--y, 0);     
-    left: var(--x, 0);   
+    top: var(--y, 0);
+    left: var(--x, 0);
     transform: translate(-50%, -50%);
     width: 0;
     height: 0;
     border-radius: 50%;
-    background: #AEAEDE; 
+    background: #AEAEDE;
     transition: width 0.5s ease, height 0.5s ease;
-    z-index: 0;  
+    z-index: 0;
 }
 
 .ripple-btn:hover {
-    color: #fff;    
+    color: #fff;
     transform: translateY(-2px);
     box-shadow: 4px 4px 0 rgba(174, 174, 222, .6);
 }
 
 .ripple-btn:hover::before {
-    width: 300px;   
+    width: 300px;
     height: 300px;
 }
 
@@ -473,14 +479,14 @@ button,
 
 .product-dropdown {
     position: absolute;
-    top: 80px;  
+    top: 80px;
     left: 0;
-    width: 100%; 
+    width: 100%;
     background: #fff;
     border: 1px solid #3f4046;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
     z-index: 200;
-    
+
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
@@ -533,11 +539,11 @@ button,
 .used-product-item {
     display: flex;
     align-items: center;
-    padding: 10px; 
-    margin-bottom: 10px; 
-    
-    border: 1px solid #AEAEDE;  
-    
+    padding: 10px;
+    margin-bottom: 10px;
+
+    border: 1px solid #AEAEDE;
+
     transition: background-color 0.2s;
     text-decoration: none;
     color: #3f4046;
@@ -554,7 +560,7 @@ button,
 }
 
 .used-product-item:hover .used-product-thumb {
-    transform: scale(1.15); 
+    transform: scale(1.15);
 }
 
 .used-product-thumb {
@@ -584,9 +590,9 @@ footer {
     .journal-workspace {
         display: flex;
         flex-direction: column;
-        align-items: center; 
-        padding: 40px 5vw; 
-        gap: 40px;  
+        align-items: center;
+        padding: 40px 5vw;
+        gap: 40px;
     }
 
     .journal-canvas {
@@ -595,9 +601,9 @@ footer {
         display: flex;
         justify-content: center;
     }
-    
+
     .journal-book {
-        max-width: 100%; 
+        max-width: 100%;
     }
 
     .sticker-panel {
@@ -606,12 +612,12 @@ footer {
         padding-top: 0;
         left: auto;
         position: relative;
-        padding:30px 100px;
+        padding: 30px 110px;
         display: flex;
         justify-content: center;
-        background-color: #F3F0F7; 
-        border: 2px dashed #AEAEDE;  
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+        background-color: #F3F0F7;
+        border: 2px dashed #AEAEDE;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     }
 
     .sticker-panel-bg {
@@ -620,40 +626,40 @@ footer {
 
     .sticker-grid {
         display: grid;
-        grid-template-columns: repeat(5, 1fr); 
+        grid-template-columns: repeat(5, 1fr);
         gap: 20px;
         margin: 0;
-        left: auto; 
+        left: auto;
         width: auto;
     }
-    
+
     .sticker {
-        width: 64px; 
+        width: 64px;
         height: 64px;
     }
 
     .action-panel {
         order: 3;
         width: 100%;
-        padding-top: 10%;  
+        padding-top: 10%;
         padding-bottom: 150px;
         right: auto;
         left: auto;
         transform: none;
-        
+
         display: flex;
         flex-direction: column;
-        align-items: center; 
-        overflow: visible; 
+        align-items: center;
+        overflow: visible;
     }
 
     .product-dropdown {
-        width: 300px; 
+        width: 300px;
         left: 50%;
-        top:0%;
-        transform: translateX(-50%) translateY(-10px); 
+        top: 0%;
+        transform: translateX(-50%) translateY(-10px);
     }
-    
+
     .product-dropdown.active {
         transform: translateX(-50%) translateY(0);
     }
@@ -670,8 +676,8 @@ footer {
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 20px 0px;  
-        gap: 0px; 
+        padding: 20px 0px;
+        gap: 0px;
         height: auto;
     }
 
@@ -687,7 +693,7 @@ footer {
         max-width: 100%;
         min-width: unset;
         margin: 0 auto;
-        display: flex; 
+        display: flex;
         justify-content: center;
     }
 
@@ -711,9 +717,9 @@ footer {
         overflow: hidden;
         padding: 0 10px;
 
-        background-color: #F3F0F7; 
-        border: 2px dashed #AEAEDE;  
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+        background-color: #F3F0F7;
+        border: 2px dashed #AEAEDE;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     }
 
     .sticker-panel-bg {
@@ -724,20 +730,20 @@ footer {
         position: relative;
         z-index: 1;
         display: grid;
-        grid-template-columns: repeat(5, 1fr); 
-        
-        gap: 10px;    
-        width: 95%;          
-        max-width: 400px;  
-        margin: 0 auto;   
-        
+        grid-template-columns: repeat(5, 1fr);
+
+        gap: 10px;
+        width: 95%;
+        max-width: 400px;
+        margin: 0 auto;
+
         left: auto;
-        justify-items: center; 
+        justify-items: center;
     }
 
     .sticker {
-        width: 100%; 
-        max-width: 56px; 
+        width: 100%;
+        max-width: 56px;
         height: auto;
         aspect-ratio: 1 / 1;
         object-fit: contain;
@@ -758,7 +764,7 @@ footer {
     }
 
     .product-dropdown {
-        width: 90%;   
+        width: 90%;
         max-width: 300px;
         left: 50%;
         top: 0px;
@@ -768,7 +774,7 @@ footer {
     .product-dropdown.active {
         transform: translateX(-50%) translateY(0);
     }
-    
+
     footer {
         font-size: 9px;
         padding: 30px 15px 15px 15px;
