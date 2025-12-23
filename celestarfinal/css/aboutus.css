@@ -572,7 +572,7 @@ button,
 .about-contact {
     position: relative;
     text-align: center;
-    padding: 150px;
+    padding: 80px 20px;
 }
 
 .contact-stars {
@@ -862,3 +862,4 @@ footer {
         align-self: center;     
     }
 }
+
