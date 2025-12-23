@@ -256,3 +256,68 @@ function initCarouselLogic() {
 // ===========================================
 startAutoSlide();
 fetchProducts(); // 這會觸發 renderProducts -> initCarouselLogic
+
+// ===========================================
+//  初始化執行
+// ===========================================
+startAutoSlide();
+renderProducts();
+
+
+// ===========================================
+//  刷新頁面自動回到頂部 (強制重置捲動位置)
+// ===========================================
+if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual'; // 防止瀏覽器記住捲動位置
+}
+
+window.onbeforeunload = function () {
+    window.scrollTo(0, 0);
+};
+
+// 雙重保險：DOM 載入後也滾一次
+document.addEventListener("DOMContentLoaded", () => {
+    window.scrollTo(0, 0);
+});
+
+
+// =========================================
+//  首頁彈出視窗邏輯 (Popup Modal)
+// =========================================
+document.addEventListener("DOMContentLoaded", () => {
+    const popup = document.getElementById("promoPopup");
+    const closeBtn = document.getElementById("closePopupBtn");
+    const checkbox = document.getElementById("dontShowCheckbox");
+
+    // 確保這個頁面有彈出視窗元素才執行
+    if (popup && closeBtn && checkbox) {
+        
+        // 檢查 LocalStorage 是否有紀錄 "不再顯示"
+        const hidePopup = localStorage.getItem("ce-hide-popup");
+
+        // 如果沒有紀錄，延遲 0.5 秒後跳出
+        if (!hidePopup) {
+            setTimeout(() => {
+                popup.classList.add("active");
+            }, 500);
+        }
+
+        // 關閉按鈕點擊事件
+        closeBtn.addEventListener("click", () => {
+            if (checkbox.checked) {
+                localStorage.setItem("ce-hide-popup", "true");
+            }
+            popup.classList.remove("active");
+        });
+
+        // 點擊遮罩背景也可以關閉
+        popup.addEventListener("click", (e) => {
+            if (e.target === popup) {
+                if (checkbox.checked) {
+                    localStorage.setItem("ce-hide-popup", "true");
+                }
+                popup.classList.remove("active");
+            }
+        });
+    }
+});
