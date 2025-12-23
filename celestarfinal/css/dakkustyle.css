@@ -7,6 +7,10 @@ body {
     color: #111;
     padding-top: 90px;
     cursor: url("../images/starr.png")1 16, auto;
+    min-height: 100vh;
+    display: flex; 
+    flex-direction: column; 
+    box-sizing: border-box; 
 }
 
 a,
@@ -16,60 +20,14 @@ button,
     cursor: url("../images/starr.png")1 16, pointer;
 }
 
-/*.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}*/
-
-/* ===== 手帳整體區 ===== */
-.journal-sticker-wrap {
-    width: 100%;
-    padding: 60px 0 120px;
-}
-
-/* ===== 手帳本體（整張圖） ===== */
-.journal-book {
-    width: 100%;
-    max-width: 860px;
-    margin: 0 auto 60px;
-    position: relative;
-}
-
-.journal-img {
-    width: 100%;
-    /* 關鍵：直接放大 */
-    height: auto;
-    /* 保持原比例 */
-    display: block;
-    /* 去掉 img 底下奇怪空隙 */
-}
-
-/* ===== 貼紙陳列 ===== */
-.sticker-grid {
-    width: 100%;
-    max-width: 860px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    /*row-gap: 40px;
-    column-gap: 30px;*/
-    gap: 16px;
-    justify-items: center;
-}
-
-/* 小貼紙 */
-.sticker {
-    width: 56px;
-    height: 56px;
-    /*background: #e5e5e5;*/
-    object-fit: contain;
-}
-
-.placed-sticker {
-    position: absolute;
-    width: 60px;
-    z-index: 10;
+.bg::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: url("../images/bg1.svg");
+    background-size: cover;
+    background-position: center;
+    z-index: -1;
 }
 
 /* ========================================= */
@@ -292,50 +250,317 @@ button,
         background-color: #AEAEDE;
     }
 
+/* ========================================= */
+/* 3. Journal & Workspace (手帳區)           */
+/* ========================================= */
+
+/* Grid Layout Container */
 .journal-workspace {
     display: grid;
-    grid-template-columns: 240px 1fr 260px;
+    grid-template-columns: 240px 1fr 260px; /* Left | Center | Right */
     gap: 24px;
     max-width: 1400px;
     margin: 0 auto;
     padding: 40px 20px;
-    /*height: calc(100vh - 140px);*/ /* 扣掉 header */
+    align-items: start;
 }
 
-/* 左側貼紙 */
+/* --- Left: Sticker Panel --- */
 .sticker-panel {
+    position: relative;
     overflow: visible;
+    padding-top: 40%;
+    left:20%;
 }
 
-/* 中央畫布 */
+.sticker-panel-bg {
+    position: absolute;
+    top: 10%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0; 
+}
+
+.sticker-panel-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    display: block;
+}
+
+.sticker-grid {
+    left:10%;
+    position: relative;
+    z-index: 1;
+    width: 80%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    justify-items: center;
+}
+
+.sticker {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    border: 2.5px solid #fff;
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+.sticker:hover{
+    scale: 1.1 ;
+}
+
+.placed-sticker {
+    position: absolute; 
+    z-index: 10; 
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+    border: none; 
+}
+
+.placed-sticker.active {
+    outline: 2px dashed #AEAEDE;
+    z-index: 100 !important; 
+    cursor: grab;
+}
+
+/* 貼紙上的控制按鈕 (預設隱藏) */
+.sticker-control {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: #fff;
+    border: 1px solid #AEAEDE;
+    border-radius: 50%;
+    display: none; 
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 16px;
+    color: #3f4046;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 101;
+}
+
+.placed-sticker.active .sticker-control {
+    display: flex;
+}
+
+.btn-delete {
+    top: -12px;
+    left: -12px;
+    color: #ff6b6b;
+}
+
+.btn-transform {
+    bottom: -12px;
+    right: -12px;
+    cursor: nwse-resize; 
+    color: #AEAEDE;
+}
+
+.sticker-control span {
+    font-size: 16px;
+    font-weight: bold;
+    pointer-events: none;
+}
+
+/* --- Center: Journal Canvas --- */
 .journal-canvas {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: start;
+    position: relative; 
 }
 
-/* 手帳最大高度限制 */
 .journal-book {
+    width: 100%;
+    max-width: 860px;
+    position: relative;
+    overflow: hidden;
     max-height: 100%;
+    flex-shrink: 0;
+    width: 860px;
 }
 
-/* 右側操作 */
+.journal-img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Placed sticker on the journal */
+.placed-sticker {
+    position: absolute;
+    width: 60px;
+    z-index: 10;
+}
+
+/* --- Right: Action Panel --- */
 .action-panel {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    padding-top: 170%;
+    overflow: visible;
+
+    position: relative; 
+    right: 20%;         
+    align-items: center; 
 }
 
-#downloadBtn {
-    padding: 14px;
+.ripple-btn {
+    position: relative;
+    padding: 12px 24px;
+    background: #fff;  
+    color: #3f4046;     
+    border: 1px solid #AEAEDE;
+    font-size: 14px;
     font-weight: bold;
-    background-color: #AEAEDE;
-    border: 2px solid #AEAEDE;
+    overflow: hidden;   
+    transition: color 0.4s ease, transform 0.2s, box-shadow 0.2s;
+    z-index: 1;
+    box-shadow: 2px 2px 0 rgba(174, 174, 222, .5);
 }
 
-    #downloadBtn:hover {
-        background: #9a9ad0;
-    }
+.ripple-btn span {
+    position: relative;
+    z-index: 2;
+}
+
+.ripple-btn::before {
+    content: '';
+    position: absolute;
+    top: var(--y, 0);     
+    left: var(--x, 0);   
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: #AEAEDE; 
+    transition: width 0.5s ease, height 0.5s ease;
+    z-index: 0;  
+}
+
+.ripple-btn:hover {
+    color: #fff;    
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 0 rgba(174, 174, 222, .6);
+}
+
+.ripple-btn:hover::before {
+    width: 300px;   
+    height: 300px;
+}
+
+/* Legacy wrapper */
+.journal-sticker-wrap {
+    width: 100%;
+    padding: 60px 0 120px;
+}
+
+/* ========================================= */
+/* 使用素材清單彈窗樣式                       */
+/* ========================================= */
+
+.product-dropdown {
+    position: absolute;
+    top: 80px;  
+    left: 0;
+    width: 100%; 
+    background: #fff;
+    border: 1px solid #3f4046;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    z-index: 200;
+    
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+.product-dropdown.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* 下拉選單標題區 */
+.dropdown-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background: #ebe0f8;
+    border-bottom: 1px solid #eee;
+    border-radius: 8px 8px 0 0;
+}
+
+.dropdown-title {
+    font-size: 13px;
+    font-weight: bold;
+    color: #333;
+}
+
+.dropdown-close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #999;
+    padding: 0;
+    line-height: 1;
+}
+
+.dropdown-close-btn:hover {
+    scale: 1.4;
+}
+
+/* 清單內容 */
+.used-product-list {
+    max-height: 250px;
+    overflow-y: auto;
+    padding: 5px;
+}
+
+.used-product-item {
+    display: flex;
+    align-items: center;
+    padding: 10px; 
+    margin-bottom: 10px; 
+    
+    border: 1px solid #AEAEDE;  
+    
+    transition: background-color 0.2s;
+    text-decoration: none;
+    color: #3f4046;
+    font-size: 12px;
+    transition: all 0.3s ease;
+}
+
+.used-product-thumb {
+    transition: transform 0.3s ease;
+}
+
+.used-product-item:hover {
+    background-color: #ececf9;
+}
+
+.used-product-item:hover .used-product-thumb {
+    transform: scale(1.15); 
+}
+
+.used-product-thumb {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+.used-product-name {
+    font-size: 12px;
+    color: #3f4046;
+}
 
 footer {
     text-align: left;
@@ -345,6 +570,101 @@ footer {
     border-top: 1px solid #AEAEDE;
     padding: 50px 20px 20px 20px;
     margin-top: 10px;
+    width: 100%;
+}
+
+@media (min-width: 601px) and (max-width: 1024px) {
+
+    .journal-workspace {
+        display: flex;
+        flex-direction: column;
+        align-items: center; 
+        padding: 40px 5vw; 
+        gap: 40px;  
+    }
+
+    .journal-canvas {
+        order: 1;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+    
+    .journal-book {
+        max-width: 100%; 
+    }
+
+    .sticker-panel {
+        order: 2;
+        width: 100%;
+        padding-top: 0;
+        left: auto;
+        position: relative;
+        
+        display: flex;
+        justify-content: center;
+    }
+
+    .sticker-panel-bg {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0; 
+    }
+
+    .sticker-panel-bg img {
+        position: relative;
+        top: 170%;
+        left: 60%;
+        transform: translate(-50%, -50%) rotate(90deg);
+        width: max-content;  
+        height: 100%;
+        object-fit: cover;
+        scale:3.3; 
+    }
+
+    .sticker-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr); 
+        gap: 20px;
+        margin: 0;
+        left: auto; 
+        width: auto;
+    }
+    
+    .sticker {
+        width: 64px; 
+        height: 64px;
+    }
+
+    .action-panel {
+        order: 3;
+        width: 100%;
+        padding-top: 10%;  
+        padding-bottom: 150px;
+        right: auto;
+        left: auto;
+        transform: none;
+        
+        display: flex;
+        flex-direction: column;
+        align-items: center; 
+        overflow: visible; 
+    }
+
+    .product-dropdown {
+        width: 300px; 
+        left: 50%;
+        top:0%;
+        transform: translateX(-50%) translateY(-10px); 
+    }
+    
+    .product-dropdown.active {
+        transform: translateX(-50%) translateY(0);
+    }
 }
 
 @media (max-width: 600px) {
@@ -354,102 +674,100 @@ footer {
         overflow-x: hidden;
     }
 
-    .tutorial-overlay {
-        padding-right: 40px;
-    }
-
-    .tutorial-modal {
-        padding: 20px;
-        max-width: 80%;
-    }
-
-    .tutorial-image {
-        height: 180px;
-        margin-bottom: 15px;
-    }
-
-    .tutorial-content h2 {
-        font-size: 18px;
-        margin-bottom: 8px;
-    }
-
-    .tutorial-content p {
-        font-size: 14px;
-        line-height: 1.5;
-        min-height: 65px;
-    }
-
-    .tutorial-footer {
-        margin-top: 15px;
-        gap: 12px;
-    }
-
-    .step-buttons {
-        gap: 10px;
-    }
-
-    .primary-btn, .secondary-btn {
-        padding: 10px 0;
-        font-size: 14px;
-    }
-
-    .close-tutorial-btn {
-        width: 28px;
-        height: 28px;
-        top: 10px;
-        right: 10px;
-        font-size: 18px;
-    }
-
-    /* 整體改成直向 */
     .journal-workspace {
         display: flex;
         flex-direction: column;
-        gap: 20px;
-        padding: 0 12px;
+        align-items: center;
+        padding: 20px 10px;  
+        gap: 30px; 
         height: auto;
     }
 
-    /* 手帳在最上面 */
     .journal-canvas {
         order: 1;
+        width: 100%;
+        display: flex;
+        justify-content: center;
     }
 
     .journal-book {
         max-width: 100%;
     }
 
-    /* 貼紙在下面：一排 5 個，共 2 排 */
     .sticker-panel {
         order: 2;
+        width: 100%;
+        padding-top: 0;
+        min-height: 150px;
+        left: auto;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+
+    .sticker-panel-bg {
+        display: block;
+        position: absolute;
+        z-index: 0;
+    }
+
+    .sticker-panel-bg img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(90deg);
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        scale: 3;
     }
 
     .sticker-grid {
+        position: relative;
+        z-index: 1;
         display: grid;
-        grid-template-columns: repeat(5, 1fr); /* 關鍵 */
+        grid-template-columns: repeat(5, 1fr); 
         gap: 12px;
-        max-width: 100%;
+        margin: 0;
+        left: auto;
+        width: auto;
     }
 
     .sticker {
-        width: 50px;
-        height: 50px;
+        width: 48px; 
+        height: 48px;
     }
 
-    /* 操作區放最下面，可以滑 */
     .action-panel {
         order: 3;
+        width: 100%;
+        padding-top: 20px;
+        padding-bottom: 220px;
+        right: auto;
+        left: auto;
+        transform: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow: visible;
     }
 
+    .product-dropdown {
+        width: 90%;    /* 手機版用百分比寬度比較安全 */
+        max-width: 300px;
+        left: 50%;
+        top: 0px;
+        transform: translateX(-50%) translateY(-10px);
+    }
+
+    .product-dropdown.active {
+        transform: translateX(-50%) translateY(0);
+    }
+    
     footer {
         font-size: 9px;
         padding: 30px 15px 15px 15px;
-    }
-
-    #backToTopBtn {
-        right: 15px;
-        bottom: 15px;
-        padding: 8px 12px;
-        font-size: 20px;
     }
 }
