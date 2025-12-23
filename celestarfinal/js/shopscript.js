@@ -1,4 +1,4 @@
-// js/main.js
+// js/shopscript.js (或是 js/main.js，請確認檔名與 HTML 一致)
 
 // ===========================================
 // 1. 引入 Firebase
@@ -9,11 +9,11 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/f
 // ===========================================
 // 2. 全域變數 & 設定
 // ===========================================
-let products = []; // 變成空陣列，等待 Firebase 填入
+let products = []; 
 let currentPage = 1;
 let currentCategory = "all";
 
-// 判斷每頁顯示數量 (手機 10 筆，電腦 16 筆)
+// 判斷每頁顯示數量
 function getPerPage() {
     return window.innerWidth <= 600 ? 10 : 16;
 }
@@ -25,7 +25,6 @@ async function fetchProducts() {
     const grid = document.querySelector(".products");
     if (!grid) return;
 
-    // 顯示 Loading 效果
     grid.innerHTML = '<div style="width:100%;text-align:center;padding:20px;">Loading...</div>';
 
     try {
@@ -40,11 +39,10 @@ async function fetchProducts() {
             });
         });
 
-        // 排序 (依據 id)
+        // 排序
         products.sort((a, b) => a.id - b.id);
         console.log("Firebase 商品載入成功:", products);
 
-        // 資料抓完後，執行渲染
         renderProducts();
 
     } catch (error) {
@@ -54,7 +52,7 @@ async function fetchProducts() {
 }
 
 // ===========================================
-// 4. 渲染邏輯 (保留你的分頁與補位功能)
+// 4. 渲染邏輯
 // ===========================================
 function renderProducts() {
     const grid = document.querySelector(".products");
@@ -89,7 +87,6 @@ function renderProducts() {
         card.className = "product-card";
         const imgSrc = p.img ? p.img : "https://via.placeholder.com/200/cccccc/808080?text=No+Image";
         
-        // 處理價格 (加上 $ 符號)
         let displayPrice = p.price;
         if (!String(displayPrice).includes("$")) {
             displayPrice = `$${displayPrice}`;
@@ -107,14 +104,12 @@ function renderProducts() {
         grid.appendChild(card);
     });
 
-    // 5. 補位機制 (Fillers - 保留你的功能)
+    // 5. 補位機制
     const fillCount = perPage - pageItems.length;
-    // 只要有缺口就補
     if (fillCount > 0) { 
         for (let i = 0; i < fillCount; i++) {
             const card = document.createElement("div");
             card.className = "product-card";
-            // 這裡設定為裝飾用的空白卡片
             card.innerHTML = `
               <div class="product-img" style="background-color:#f0f0f0;"></div>
               <div class="product-name" style="color:#ddd;">PRODUCT NAME</div>
@@ -124,22 +119,33 @@ function renderProducts() {
         }
     }
     
-    // 更新分頁按鈕顯示狀態 (例如 highlight 當前頁碼)
+    // 🔥 重要修正：渲染完之後，呼叫更新 UI
     updatePaginationUI();
 }
 
-// 更新分頁按鈕的 active 樣式
-// 更新分頁按鈕的 active 樣式
-// js/main.js 的 updatePaginationUI 函式
-
+// ===========================================
+// 🔥 重點修改區域：更新分頁樣式
+// ===========================================
 function updatePaginationUI() {
-    document.querySelectorAll(".pagination span").forEach((s) => s.classList.remove("active"));
-    document.getElementById(`page${currentPage}`).classList.add("active");
-    renderProducts();
+    // 1. 暴力清除所有 active
+    // 使用 getElementById 確保一定抓得到
+    const p1 = document.getElementById("page1");
+    const p2 = document.getElementById("page2");
+
+    if (p1) p1.classList.remove("active");
+    if (p2) p2.classList.remove("active");
+
+    // 2. 針對當前頁面加上 active
+    const currentBtn = document.getElementById(`page${currentPage}`);
+    if (currentBtn) {
+        currentBtn.classList.add("active");
+    }
+
+    // ❌ 絕對不能在這裡呼叫 renderProducts()，否則會無限迴圈！
 }
 
 // ===========================================
-// 5. 事件監聽 (Filters & Pagination)
+// 5. 事件監聽
 // ===========================================
 
 // 分類按鈕
@@ -149,11 +155,11 @@ document.querySelectorAll(".filters button").forEach((btn) => {
         btn.classList.add("active");
         currentCategory = btn.dataset.category;
         currentPage = 1;
-        renderProducts(); // 資料已經在本地了，直接 render 即可
+        renderProducts();
     });
 });
 
-// 分頁按鈕 - 這裡沿用你的 ID 邏輯
+// 分頁按鈕事件
 const btnPage1 = document.getElementById("page1");
 const btnPage2 = document.getElementById("page2");
 const btnPrev = document.getElementById("prev");
@@ -161,16 +167,22 @@ const btnNext = document.getElementById("next");
 
 if (btnPage1) {
     btnPage1.addEventListener("click", () => {
-        currentPage = 1;
-        renderProducts();
+        if (currentPage !== 1) { // 加個判斷，如果已經是第1頁就不用重跑
+            currentPage = 1;
+            renderProducts();
+        }
     });
 }
+
 if (btnPage2) {
     btnPage2.addEventListener("click", () => {
-        currentPage = 2;
-        renderProducts();
+        if (currentPage !== 2) { // 加個判斷
+            currentPage = 2;
+            renderProducts();
+        }
     });
 }
+
 if (btnPrev) {
     btnPrev.addEventListener("click", () => {
         if (currentPage > 1) {
@@ -179,37 +191,32 @@ if (btnPrev) {
         }
     });
 }
+
 if (btnNext) {
     btnNext.addEventListener("click", () => {
-        if (currentPage < 2) { // 注意：如果你的商品超過 2 頁，這裡可能要改成動態判斷
+        if (currentPage < 2) {
             currentPage++;
             renderProducts();
         }
     });
 }
 
-// 視窗縮放重新計算 (因為 perPage 會變)
 window.addEventListener("resize", () => {
     currentPage = 1;
     renderProducts();
 });
 
-
 // ===========================================
 // 6. 啟動程式
 // ===========================================
 document.addEventListener("DOMContentLoaded", () => {
-    // 這裡改呼叫 fetchProducts 來啟動 Firebase
     fetchProducts();
 });
 
-// 自動回到頂部 (保留)
+// 捲動相關設定
 if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';
 }
 window.onbeforeunload = function () {
     window.scrollTo(0, 0);
 };
-
-
-
