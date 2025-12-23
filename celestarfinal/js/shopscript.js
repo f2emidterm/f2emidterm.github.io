@@ -53,6 +53,7 @@ async function fetchProducts() {
 // 4. 渲染邏輯 (核心功能)
 // ===========================================
 function renderProducts() {
+    updatePaginationVisuals();
     const grid = document.querySelector(".products");
     if (!grid) return;
 
@@ -118,7 +119,7 @@ function renderProducts() {
     }
     
     // 6. 🔥更新分頁按鈕的「樣式」 (只做視覺更新，不跑邏輯)
-    updatePaginationVisuals();
+    
 }
 
 // ===========================================
@@ -213,5 +214,6 @@ if ('scrollRestoration' in history) {
 window.onbeforeunload = function () {
     window.scrollTo(0, 0);
 };
+
 
 
