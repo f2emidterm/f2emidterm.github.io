@@ -610,7 +610,7 @@ footer {
         padding-top: 0;
         left: auto;
         position: relative;
-        padding: 30px 110px;
+        padding: 30px 150px;
         display: flex;
         justify-content: center;
         background-color: #F3F0F7;
@@ -625,7 +625,7 @@ footer {
     .sticker-grid {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
-        gap: 20px;
+        gap: 40px;
         margin: 0;
         left: auto;
         width: auto;
@@ -757,13 +757,14 @@ footer {
         width: 100%;
         padding-top: 0;
         min-height: 150px;
+        max-width: 80%;
         left: auto;
         position: relative;
         display: flex;
         justify-content: center;
         align-items: center;
         overflow: hidden;
-        padding: 0 10px;
+        padding: 0 5px;
 
         background-color: #F3F0F7;
         border: 2px dashed #AEAEDE;
@@ -828,6 +829,7 @@ footer {
         padding: 30px 15px 15px 15px;
     }
 }
+
 
 
 
