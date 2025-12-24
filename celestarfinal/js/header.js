@@ -196,7 +196,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     status: "new"
                 });
 
-                alert("Order placed successfully! (Saved to Firebase)");
+                alert("Order placed successfully!");
                 
                 // 清空購物車
                 localStorage.removeItem("shopCart");
@@ -216,3 +216,4 @@ document.addEventListener("DOMContentLoaded", () => {
     // 初始化時渲染一次 (避免重新整理後小紅點消失)
     renderCart();
 });
+
