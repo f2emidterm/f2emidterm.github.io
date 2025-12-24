@@ -43,9 +43,20 @@
             <div class="icons">
                 <span class="material-symbols-outlined">search</span>
                 <span class="material-symbols-outlined">person</span>
-                <span class="material-symbols-outlined">shopping_cart</span>
-            </div>
+                <div class="cart-wrapper" style="position: relative; display: inline-block;">
+                <span class="material-symbols-outlined" id="cartIcon">shopping_cart</span>
+                <span id="cartCount" class="cart-badge">0</span>
+                </div>
+            </div>     
         </div>
+        <div class="cart-dropdown">
+        <div class="cart-items">
+            </div>
+        <div class="cart-footer">
+            <div class="cart-total">Total: $0</div>
+            <button id="checkoutBtn">CHECKOUT</button>
+        </div>
+    </div>
     </header>
 
     <main>
@@ -125,6 +136,7 @@
 
 </body>
 </html>
+
 
 
 
