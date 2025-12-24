@@ -258,11 +258,12 @@ header {
 }
 
 .qty-btn {
-    background: #eee;
+    background: transparent;
+    backdround-color: #333;
+    transition: 0.2s;
     border: none;
     width: 20px;
     height: 20px;
-    cursor: pointer;
     font-size: 14px;
     line-height: 1;
     display: flex;
@@ -291,7 +292,7 @@ header {
 #checkoutBtn {
     width: 100%;
     padding: 10px;
-    background-color: #3f4046;
+    background-color: #AEAEDE;
     color: white;
     border: none;
     cursor: pointer;
@@ -300,7 +301,7 @@ header {
 }
 
     #checkoutBtn:hover {
-        background-color: #222;
+        background-color: #c0c8e8;
     }
 
 /* ========================================= */
@@ -573,10 +574,11 @@ header {
         }
     .cart-dropdown {
         width: 300px; /* 平板稍微窄一點點 */
-        right: 0;     /* 對齊右邊緣，避免超出螢幕 */
+        right: 30;     /* 對齊右邊緣，避免超出螢幕 */
         top: 60px;    /* 配合 Header 高度 */
     }
 }
+
 
 
 
