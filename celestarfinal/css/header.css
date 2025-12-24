@@ -258,7 +258,7 @@ header {
 
 .qty-btn {
     background: transparent;
-    backdround-color: #eee;
+    background-color: #eee;
     transition: 0.2s;
     border: none;
     width: 20px;
@@ -573,10 +573,11 @@ header {
         }
     .cart-dropdown {
         width: 300px; /* 平板稍微窄一點點 */
-        right: 20px;     /* 對齊右邊緣，避免超出螢幕 */
+        margin-right: 25px;     /* 對齊右邊緣，避免超出螢幕 */
         top: 60px;    /* 配合 Header 高度 */
     }
 }
+
 
 
 
