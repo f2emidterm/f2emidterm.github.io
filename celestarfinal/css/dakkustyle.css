@@ -749,7 +749,7 @@ footer {
         width: 100%;
         height: auto;
         display: block;
-        scale: 1;
+        scale: 1.2;
     }
 
     .sticker-panel {
@@ -829,6 +829,7 @@ footer {
         padding: 30px 15px 15px 15px;
     }
 }
+
 
 
 
