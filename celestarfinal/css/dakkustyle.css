@@ -621,6 +621,7 @@ footer {
         align-items: center;
         padding: 40px 5vw;
         gap: 30px;
+        box-sizing: border-box;
     }
 
     .journal-canvas {
@@ -872,6 +873,7 @@ footer {
         padding: 30px 15px 15px 15px;
     }
 }
+
 
 
 
