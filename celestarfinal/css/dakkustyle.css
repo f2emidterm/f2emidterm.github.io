@@ -590,7 +590,7 @@ footer {
         flex-direction: column;
         align-items: center;
         padding: 40px 5vw;
-        gap: 40px;
+        gap: 30px;
     }
 
     .journal-canvas {
@@ -639,7 +639,7 @@ footer {
     .action-panel {
         order: 3;
         width: 100%;
-        padding-top: 10%;
+        padding-top: 2%;
         padding-bottom: 150px;
         right: auto;
         left: auto;
@@ -654,7 +654,7 @@ footer {
     .product-dropdown {
         width: 300px;
         left: 50%;
-        top: 0%;
+        top: 33%;
         transform: translateX(-50%) translateY(-10px);
     }
 
@@ -829,6 +829,7 @@ footer {
         padding: 30px 15px 15px 15px;
     }
 }
+
 
 
 
