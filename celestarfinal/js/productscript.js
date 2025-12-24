@@ -163,8 +163,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 加入購物車
     if (cartBtn) {
         cartBtn.addEventListener('click', () => {
-            const currentSelection = selectText.textContent.trim();
-
+            const currentSelection = document.querySelector('.select-selected').textContent.trim();
             // 檢查是否還停留在預設文字 "請選擇款式"
             if (currentSelection === '請選擇款式') {
                 alert('請先選取款式！'); // 跳出提示視窗
@@ -238,6 +237,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 });
+
 
 
 
