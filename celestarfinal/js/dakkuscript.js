@@ -1,32 +1,105 @@
+// =========================================
+// 1. 引入 Firebase 與所需模組
+// =========================================
+import { db } from './firebase.js';
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+// 用來儲存「商品 ID -> 商品詳細資料」的對照表
+let productsMap = {}; 
+
 /* ========================================= */
 /* 2. Main Logic (DOM 載入後執行)             */
 /* ========================================= */
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
 
     // --- 變數宣告 ---
-    const stickers = document.querySelectorAll(".sticker");
     const journal = document.getElementById("journal");
     const downloadBtn = document.getElementById("downloadBtn");
+    const palette = document.getElementById("stickerPalette"); // 貼紙庫容器
+
+    // ==========================================
+    // 功能 NEW: 從 Firebase 讀取資料 (雙集合)
+    // ==========================================
+    async function initData() {
+        try {
+            console.log("開始讀取 Firebase 資料...");
+            
+            // 1. 同時並行讀取 products 和 stickers (速度較快)
+            const [productsSnapshot, stickersSnapshot] = await Promise.all([
+                getDocs(collection(db, "products")),
+                getDocs(collection(db, "stickers"))
+            ]);
+
+            // 2. 處理商品資料 -> 建立對照表 (Map)
+            productsMap = {};
+            productsSnapshot.forEach((doc) => {
+                const data = doc.data();
+                // 使用 doc.id 作為 Key，方便之後用 ID 快速查找商品資訊
+                productsMap[doc.id] = {
+                    id: doc.id,
+                    name: data.name,
+                    price: data.price,
+                    img: data.img // 商品封面圖
+                };
+            });
+            console.log("商品載入完成，共:", Object.keys(productsMap).length, "個");
+
+            // 3. 處理貼紙資料 -> 生成 UI
+            palette.innerHTML = ""; // 清空 Loading
+
+            if (stickersSnapshot.empty) {
+                palette.innerHTML = "<p>目前沒有貼紙可使用。</p>";
+                return;
+            }
+
+            stickersSnapshot.forEach((doc) => {
+                const data = doc.data();
+                
+                // 建立圖片
+                const img = document.createElement("img");
+                img.src = data.img; // 假設 sticker 集合裡的圖片欄位也是 'img'
+                img.className = "sticker";
+                img.alt = "sticker";
+                img.crossOrigin = "anonymous"; // 避免截圖跨域問題
+
+                // ★★★ 關鍵：連結貼紙與商品 ★★★
+                // 假設你在 stickers 集合的文件裡，有一個欄位叫 'productId' 儲存對應的商品 ID
+                if (data.productId) {
+                    img.dataset.productId = data.productId;
+                } else {
+                    console.warn("這張貼紙沒有設定 productId:", doc.id);
+                }
+
+                // 綁定點擊事件
+                img.addEventListener("click", () => {
+                    createSticker(img);
+                });
+
+                palette.appendChild(img);
+            });
+
+        } catch (error) {
+            console.error("Firebase 讀取失敗:", error);
+            palette.innerHTML = "<p style='color:red; padding:10px;'>資料載入失敗，請檢查網路或 Console。</p>";
+        }
+    }
+
+    // 執行初始化
+    await initData();
+
 
     // ==========================================
     // 功能 A: 點擊空白處取消選取
     // ==========================================
-    document.addEventListener("click", (e) => {
-        // 如果點擊的目標不是 "placed-sticker" 或是它的子元素 (按鈕)
+    const deselectHandler = (e) => {
         if (!e.target.closest(".placed-sticker")) {
             document.querySelectorAll(".placed-sticker.active").forEach(el => {
                 el.classList.remove("active");
             });
         }
-    });
-    // 手機版也需要監聽 touchstart 來取消選取
-    document.addEventListener("touchstart", (e) => {
-        if (!e.target.closest(".placed-sticker")) {
-            document.querySelectorAll(".placed-sticker.active").forEach(el => {
-                el.classList.remove("active");
-            });
-        }
-    });
+    };
+    document.addEventListener("click", deselectHandler);
+    document.addEventListener("touchstart", deselectHandler);
 
     // ==========================================
     // 統一取得座標 (滑鼠/觸控) 
@@ -41,22 +114,15 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     // 功能 B: 貼紙生成與互動系統 (核心功能)
     // ==========================================
-    if (journal && stickers.length > 0) {
-
-        // 1. 點擊素材庫貼紙 -> 生成到手帳上
-        stickers.forEach(sticker => {
-            sticker.addEventListener("click", () => {
-                createSticker(sticker);
-            });
-        });
-    }
-
     function createSticker(originalSticker) {
         const imgClone = originalSticker.cloneNode(true);
-
-        // 建立一個 wrapper (容器)
         const wrapper = document.createElement("div");
         wrapper.classList.add("placed-sticker");
+
+        // ★★★ 傳遞 Product ID 到畫布上的元素 ★★★
+        if (originalSticker.dataset.productId) {
+            wrapper.dataset.productId = originalSticker.dataset.productId;
+        }
 
         // 初始化數據
         wrapper.dataset.x = 0.4;
@@ -94,9 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
         journal.appendChild(wrapper);
         updateStickerVisuals(wrapper);
 
-        // 綁定互動事件
         initStickerInteraction(wrapper);
-
         activateSticker(wrapper);
     }
 
@@ -105,13 +169,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const deleteBtn = el.querySelector(".btn-delete");
         const transformBtn = el.querySelector(".btn-transform");
 
-        // A. 點擊本體 (選取 + 移動) - 支援滑鼠與觸控
+        // A. 移動
         const startMoveHandler = (e) => {
             if (e.target.closest(".sticker-control")) return;
-            // 如果是觸控，阻止預設行為 (防止畫面捲動)
-            if (e.type === 'touchstart') {
-                e.preventDefault();
-            }
+            if (e.type === 'touchstart') e.preventDefault();
             e.stopPropagation();
             activateSticker(el);
             startDrag(e, el);
@@ -119,16 +180,16 @@ document.addEventListener("DOMContentLoaded", () => {
         el.addEventListener("mousedown", startMoveHandler);
         el.addEventListener("touchstart", startMoveHandler, { passive: false });
 
-        // B. 點擊刪除按鈕
+        // B. 刪除
         const deleteHandler = (e) => {
             e.stopPropagation();
-            e.preventDefault(); // 防止觸發其他事件
+            e.preventDefault();
             el.remove();
         };
         deleteBtn.addEventListener("mousedown", deleteHandler);
         deleteBtn.addEventListener("touchstart", deleteHandler, { passive: false });
 
-        // C. 點擊變形按鈕 (旋轉 + 縮放)
+        // C. 變形
         const transformHandler = (e) => {
             e.stopPropagation();
             e.preventDefault();
@@ -141,29 +202,20 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- 輔助函式: 處理拖曳 (Move) ---
     function startDrag(e, el) {
         const rect = journal.getBoundingClientRect();
-
-        // 取得初始座標 (統一處理滑鼠/觸控)
         const pos = getClientPos(e);
         const startX = pos.x;
         const startY = pos.y;
-
         const initialLeft = parseFloat(el.style.left || 0);
         const initialTop = parseFloat(el.style.top || 0);
 
         const onMove = (eMove) => {
-            // 手機拖曳時防止畫面捲動
             if (eMove.type === 'touchmove') eMove.preventDefault();
-
             const movePos = getClientPos(eMove);
             const dx = movePos.x - startX;
             const dy = movePos.y - startY;
-
-            let newLeft = initialLeft + dx;
-            let newTop = initialTop + dy;
-
-            el.dataset.x = newLeft / rect.width;
-            el.dataset.y = newTop / rect.height;
-
+            
+            el.dataset.x = (initialLeft + dx) / rect.width;
+            el.dataset.y = (initialTop + dy) / rect.height;
             updateStickerVisuals(el);
         };
 
@@ -176,7 +228,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         document.addEventListener("mousemove", onMove);
         document.addEventListener("mouseup", onEnd);
-        // 新增觸控監聽 (passive: false 允許 preventDefault)
         document.addEventListener("touchmove", onMove, { passive: false });
         document.addEventListener("touchend", onEnd);
     }
@@ -186,33 +237,22 @@ document.addEventListener("DOMContentLoaded", () => {
         const rect = el.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
-
         const pos = getClientPos(e);
 
-        // 計算初始角度與距離
         const startAngle = Math.atan2(pos.y - centerY, pos.x - centerX);
         const startDist = Math.hypot(pos.x - centerX, pos.y - centerY);
-
         const initialRotation = parseFloat(el.dataset.rotation || 0);
         const initialScale = parseFloat(el.dataset.scale || 1);
 
         const onMove = (eMove) => {
             if (eMove.type === 'touchmove') eMove.preventDefault();
-
             const movePos = getClientPos(eMove);
-
-            // 1. 計算旋轉
             const currentAngle = Math.atan2(movePos.y - centerY, movePos.x - centerX);
-            const rotationChange = currentAngle - startAngle;
-            const rotationDeg = rotationChange * (180 / Math.PI);
-
-            // 2. 計算縮放
-            const currentDist = Math.hypot(movePos.x - centerX, movePos.y - centerY);
-            const scaleChange = currentDist / startDist;
+            const rotationDeg = (currentAngle - startAngle) * (180 / Math.PI);
+            const scaleChange = Math.hypot(movePos.x - centerX, movePos.y - centerY) / startDist;
 
             el.dataset.rotation = initialRotation + rotationDeg;
             el.dataset.scale = Math.max(0.3, initialScale * scaleChange);
-
             updateStickerVisuals(el);
         };
 
@@ -229,19 +269,14 @@ document.addEventListener("DOMContentLoaded", () => {
         document.addEventListener("touchend", onEnd);
     }
 
-    // --- 輔助函式: 更新畫面 (Render) ---
     function updateStickerVisuals(el) {
         if (!journal) return;
-        const journalRect = journal.getBoundingClientRect();
-
-        const x = parseFloat(el.dataset.x) * journalRect.width;
-        const y = parseFloat(el.dataset.y) * journalRect.height;
-        const rot = parseFloat(el.dataset.rotation || 0);
-        const scale = parseFloat(el.dataset.scale || 1);
-
+        const rect = journal.getBoundingClientRect();
+        const x = parseFloat(el.dataset.x) * rect.width;
+        const y = parseFloat(el.dataset.y) * rect.height;
         el.style.left = `${x}px`;
         el.style.top = `${y}px`;
-        el.style.transform = `translate(-50%, -50%) rotate(${rot}deg) scale(${scale})`;
+        el.style.transform = `translate(-50%, -50%) rotate(${el.dataset.rotation}deg) scale(${el.dataset.scale})`;
     }
 
     function activateSticker(el) {
@@ -249,40 +284,25 @@ document.addEventListener("DOMContentLoaded", () => {
         el.classList.add("active");
     }
 
-    // RWD 修正位置
     window.addEventListener("resize", () => {
-        document.querySelectorAll(".placed-sticker").forEach(el => {
-            updateStickerVisuals(el);
-        });
+        document.querySelectorAll(".placed-sticker").forEach(updateStickerVisuals);
     });
 
     // ==========================================
     // 功能 C: 下載圖片 & 顯示使用商品 (Update)
     // ==========================================
 
-    // 1. 定義商品資料庫 (必須跟 shop/main.js 的資料一致，才能正確連結)
-    // 如果圖片檔名跟這裡不一樣，請記得修改這裡的 img 路徑
-    const productDatabase = [
-        { id: 1, name: "BLUE OCEAN HOUR STICKER", price: "$20", img: "images/d1.png" },
-        { id: 2, name: "SUNDAY BLUSH STICKER", price: "$20", img: "images/d2.png" },
-        { id: 3, name: "LUCKY GREEN STICKER", price: "$20", img: "images/d3.png" },
-        { id: 4, name: "LEMON MOOD STICKER", price: "$20", img: "images/d4.png" },
-        { id: 5, name: "STRAWBERRY VIBES STICKER", price: "$20", img: "images/d5.png" },
-        { id: 6, name: "MONOTONE DIARY STICKER", price: "$20", img: "images/d6.png" },
-        { id: 7, name: "APPLE FLAVOR HAIRPIN", price: "$120", img: "images/d7.png" },
-        { id: 8, name: "STARFISH RING", price: "$200", img: "images/d8.png" },
-    ];
-
     if (downloadBtn && journal) {
         downloadBtn.addEventListener("click", () => {
-            // 1. 取消選取框 (避免截圖到框框)
+            // 1. 取消選取
             document.querySelectorAll(".placed-sticker.active").forEach(s => s.classList.remove("active"));
 
-            // 2. 執行截圖下載
+            // 2. 截圖
             if (typeof html2canvas !== 'undefined') {
                 html2canvas(journal, {
                     scale: 2,
-                    backgroundColor: null
+                    backgroundColor: null,
+                    useCORS: true 
                 }).then(canvas => {
                     const link = document.createElement("a");
                     link.download = "my-dakku.png";
@@ -296,33 +316,34 @@ document.addEventListener("DOMContentLoaded", () => {
                     alert("下載發生錯誤，請稍後再試。");
                 });
             } else {
-                alert("下載功能載入中，請稍後再試。");
+                alert("下載功能載入中...");
             }
-           
         });
     }
 
-    // --- 顯示使用商品清單 (下拉選單版) ---
+    // --- 顯示使用商品清單 (Update: 查詢 productsMap) ---
     function showUsedProducts() {
-        console.log("開啟商品清單...");
-
         const popup = document.getElementById("usedProductsPopup");
         const listContainer = document.getElementById("usedProductList");
-        const closeBtn = document.getElementById("closeProductPopupBtn");
+        
+        // 抓取手帳上的貼紙
+        const placedWrappers = document.querySelectorAll(".placed-sticker");
+        
+        const usedItems = new Set(); // 用 Set 避免重複商品
 
-        if (!popup || !listContainer) return;
-
-        const placedImages = document.querySelectorAll(".placed-sticker img");
-        const usedItems = new Set();
-        placedImages.forEach(img => {
-            const src = img.src;
-            const product = productDatabase.find(p => src.includes(p.img));
-            if (product) usedItems.add(product);
+        placedWrappers.forEach(wrapper => {
+            const pid = wrapper.dataset.productId;
+            
+            // 使用 ID 從我們一開始建立的 productsMap 中查找資料
+            if (pid && productsMap[pid]) {
+                usedItems.add(productsMap[pid]);
+            }
         });
 
         listContainer.innerHTML = "";
+        
         if (usedItems.size === 0) {
-            listContainer.innerHTML = '<p style="text-align:center; padding:15px; color:#999; font-size:12px;">尚未使用素材</p>';
+            listContainer.innerHTML = '<p style="text-align:center; padding:15px; color:#999; font-size:12px;">尚未使用素材或無法辨識商品</p>';
         } else {
             usedItems.forEach(p => {
                 const itemHTML = `
@@ -337,22 +358,27 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
 
-        // 顯示下拉選單
         popup.classList.add("active");
-
-        // 綁定關閉
-        if (closeBtn) {
-            closeBtn.onclick = (e) => {
-                e.stopPropagation(); // 防止點擊關閉時觸發其他事件
-                popup.classList.remove("active");
-            };
-        }
-
-        // 延遲一點點再綁定，避免按下載按鈕的瞬間就觸發關閉
+        
         setTimeout(() => {
+            const closeDropdown = (e) => {
+                 if (!popup.contains(e.target) && !downloadBtn.contains(e.target)) {
+                    popup.classList.remove("active");
+                    document.removeEventListener('click', closeDropdown);
+                 }
+            };
             document.addEventListener('click', closeDropdown);
         }, 100);
     }
+    
+    const closeBtn = document.getElementById("closeProductPopupBtn");
+    if (closeBtn) {
+        closeBtn.onclick = (e) => {
+            e.stopPropagation();
+            document.getElementById("usedProductsPopup").classList.remove("active");
+        };
+    }
+
     // ==========================================
     // 功能 D: 新手教學
     // ==========================================
@@ -386,7 +412,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const stepDotsContainer = document.getElementById("stepDots");
     const prevBtn = document.getElementById("prevStepBtn");
     const nextBtn = document.getElementById("nextStepBtn");
-    const closeBtn = document.getElementById("skipTutorial");
+    const closeTutorialBtn = document.getElementById("skipTutorial");
+    const helpBtn = document.getElementById("helpBtn");
 
     let currentStepIndex = 0;
 
@@ -397,6 +424,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 overlay.classList.add("active");
                 renderStep(0);
             }, 500);
+        }
+
+        if(helpBtn) {
+            helpBtn.addEventListener('click', function() {
+                currentStepIndex = 0;
+                renderStep(0);
+                overlay.classList.add('active');
+            });
         }
 
         nextBtn.addEventListener("click", () => {
@@ -415,7 +450,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        closeBtn.addEventListener("click", closeTutorial);
+        closeTutorialBtn.addEventListener("click", closeTutorial);
     }
 
     function renderStep(index) {
@@ -423,11 +458,9 @@ document.addEventListener("DOMContentLoaded", () => {
         stepTitle.textContent = step.title;
         stepDesc.textContent = step.desc;
         stepImage.src = step.img;
-
         stepImage.onerror = function () {
             this.src = 'https://via.placeholder.com/400x250/EFEEF2/3f4046?text=Step+' + (index + 1);
         };
-
         updateDots(index);
 
         if (index === 0) {
@@ -453,38 +486,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function closeTutorial() {
         overlay.classList.remove("active");
-        localStorage.setItem("hasSeenDakkuTutorial", "true");
+        sessionStorage.setItem("hasSeenDakkuTutorial", "true");
     }
-});
-document.addEventListener('DOMContentLoaded', function() {
-    
-    // 1. 抓取元素
-    const tutorialOverlay = document.querySelector('.tutorial-overlay');
-    const helpBtn = document.getElementById('helpBtn');
-    const closeTutorialBtn = document.querySelector('.close-tutorial-btn'); 
-    
-    // 2. 點擊 "?" 按鈕 -> 顯示彈窗
-    if(helpBtn && tutorialOverlay) {
-        helpBtn.addEventListener('click', function() {
-            tutorialOverlay.classList.add('active'); // 加回 active class
+
+    // ==========================================
+    // 功能 E: 按鈕填色動畫 (Ripple Effect)
+    // ==========================================
+    const rippleBtn = document.querySelector('.ripple-btn');
+    if (rippleBtn) {
+        rippleBtn.addEventListener('mousemove', (e) => {
+            const rect = rippleBtn.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            rippleBtn.style.setProperty('--x', x + 'px');
+            rippleBtn.style.setProperty('--y', y + 'px');
         });
     }
 });
-// ==========================================
-// 功能 E: 按鈕填色動畫 (Ripple Effect)
-// ==========================================
-const btn = document.querySelector('.ripple-btn');
-if (btn) {
-    btn.addEventListener('mousemove', (e) => {
-        const rect = btn.getBoundingClientRect();
-        // 計算滑鼠相對於按鈕左上角的座標
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-
-        // 設定 CSS 變數，讓 ::before 圓圈移到滑鼠位置
-        btn.style.setProperty('--x', x + 'px');
-        btn.style.setProperty('--y', y + 'px');
-    });
-}
-
-
