@@ -67,14 +67,23 @@
             <div class="icons">
                 <span class="material-symbols-outlined" id="searchBtn">search</span>
                 <span class="material-symbols-outlined">person</span>
+                <div class="cart-wrapper" style="position: relative; display: inline-block;">
                 <span class="material-symbols-outlined" id="cartIcon">shopping_cart</span>
-                <span id="cartCount" style="font-size:12px; vertical-align:top; display:none;">0</span>
+                <span id="cartCount" class="cart-badge">0</span>
             </div>
         </div>
         <div class="search-bar">
             <input type="text" placeholder="搜尋商品...">
             <button>GO</button>
         </div>
+        <div class="cart-dropdown">
+            <div class="cart-items"></div>
+            <div class="cart-footer">
+                <div class="cart-total">Total: $0</div>
+                <button id="checkoutBtn">CHECKOUT</button>
+            </div>
+        </div>
+        
     </header>
 
     <section class="banner">
@@ -152,4 +161,5 @@
 </body>
 
 </html>
+
 
