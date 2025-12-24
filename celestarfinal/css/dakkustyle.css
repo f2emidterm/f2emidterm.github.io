@@ -554,6 +554,36 @@ button,
     color: #3f4046;
 }
 
+/* ========================================= */
+/* 浮動教學按鈕 (Help Button)                 */
+/* ========================================= */
+.help-btn {
+    position: fixed;
+    bottom: 50px;
+    right: 30px; 
+    width: 50px;
+    height: 50px;
+    
+    background-color: #AEAEDE; 
+    color: #fff;
+    border: 2px solid #fff;  
+    border-radius: 50%;
+    font-size: 24px;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    z-index: 900; 
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.help-btn:hover {
+    transform: scale(1.15) rotate(15deg); 
+    background-color: #c5c5e9;
+    color:#3f4046
+}
+
 footer {
     text-align: left;
     font-size: 10px;
@@ -660,6 +690,11 @@ footer {
 
     .product-dropdown.active {
         transform: translateX(-50%) translateY(0);
+    }
+
+    .help-btn {
+        bottom: 50px;
+        right:50px;
     }
 }
 
@@ -824,11 +859,20 @@ footer {
         transform: translateX(-50%) translateY(0);
     }
 
+    .help-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+        bottom: 50px;
+        left: 20px;
+    }
+    
     footer {
         font-size: 9px;
         padding: 30px 15px 15px 15px;
     }
 }
+
 
 
 
