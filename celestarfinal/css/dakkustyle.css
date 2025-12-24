@@ -240,7 +240,13 @@ button,
 /* ========================================= */
 /* 3. Journal & Workspace (手帳區)           */
 /* ========================================= */
-
+.container {
+    width: 100%;
+    margin: 0 auto;       /* 上下0，左右自動(置中) */
+    display: flex;
+    flex-direction: column;
+    align-items: center;  /* 讓裡面的手帳區塊強制置中 */
+}
 /* Grid Layout Container */
 .journal-workspace {
     display: grid;
@@ -593,6 +599,7 @@ footer {
     padding: 50px 20px 20px 20px;
     margin-top: 100px;
     width: 100%;
+    box-sizing: border-box;
 }
 
 @media (min-width: 601px) and (max-width: 1024px) {
@@ -873,6 +880,7 @@ footer {
         padding: 30px 15px 15px 15px;
     }
 }
+
 
 
 
