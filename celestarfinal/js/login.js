@@ -1,87 +1,145 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-    // 1. 抓取 HTML 元素
+    // ============================================
+    //  0. Firebase 設定 (請填入你的)
+    // ============================================
+    const firebaseConfig = {
+        apiKey: "你的_API_KEY",
+        authDomain: "你的專案ID.firebaseapp.com",
+        projectId: "你的專案ID",
+        storageBucket: "你的專案ID.appspot.com",
+        messagingSenderId: "...",
+        appId: "..."
+    };
+
+    // 初始化檢查
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // ============================================
+    //  1. 抓取元素
+    // ============================================
     const loginForm = document.getElementById('loginForm');
     const emailInput = document.getElementById('emailInput');
     const passwordInput = document.getElementById('passwordInput');
     const errorMsg = document.getElementById('error-msg');
     
-    // 區塊
+    // 區塊與顯示
     const loginSection = document.getElementById('login-section');
     const profileSection = document.getElementById('profile-section');
-    
-    // 資料顯示
     const userEmailDisplay = document.getElementById('userEmailDisplay');
     const logoutBtn = document.getElementById('logoutBtn');
+    const submitBtn = loginForm ? loginForm.querySelector('button') : null;
 
     // ============================================
-    //  初始化檢查：模擬「記住登入狀態」
+    //  2. 監聽登入狀態 (自動切換畫面)
     // ============================================
-    const savedUser = localStorage.getItem('celestar_user');
-    if (savedUser) {
-        // 如果 localStorage 裡面有名字，直接顯示會員頁
-        showProfile(savedUser);
-    } else {
-        // 否則顯示登入頁
-        showLogin();
-    }
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            // 已登入 -> 顯示會員頁
+            console.log("已登入:", user.email);
+            showProfile(user.email);
+        } else {
+            // 未登入 -> 顯示表單
+            showLogin();
+        }
+    });
 
     // ============================================
-    //  功能 1：處理登入 (Fake Login)
+    //  3. 「無腦登入」邏輯核心
     // ============================================
     if (loginForm) {
         loginForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // 防止表單真的送出
-
+            e.preventDefault();
             const email = emailInput.value.trim();
             const password = passwordInput.value.trim();
 
-            // 簡單驗證：只要格式對 (HTML5 type="email" 會幫忙擋)，且密碼不為空
-            if (email && password) {
-                
-                // 模擬讀取中的延遲感 (0.5秒)
-                const originalBtnText = loginForm.querySelector('button').innerText;
-                loginForm.querySelector('button').innerText = "Logging in...";
-                
-                setTimeout(() => {
-                    // 1. 儲存假資料到瀏覽器
-                    localStorage.setItem('celestar_user', email);
-                    
-                    // 2. 切換畫面
-                    alert("登入成功！(測試模式)");
-                    showProfile(email);
-                    
-                    // 3. 還原按鈕文字 & 清空密碼
-                    loginForm.querySelector('button').innerText = originalBtnText;
-                    passwordInput.value = ''; 
-                    errorMsg.innerText = '';
-                    
-                }, 500);
-
-            } else {
-                errorMsg.innerText = "請輸入有效的帳號與密碼";
+            // 基本防呆
+            if (!email || !password) {
+                errorMsg.innerText = "請輸入帳號密碼";
+                return;
             }
+            if (password.length < 6) {
+                errorMsg.innerText = "Firebase 規定密碼最少要 6 碼喔！";
+                return;
+            }
+
+            // UI 鎖定
+            const originalText = submitBtn.innerText;
+            submitBtn.innerText = "處理中...";
+            submitBtn.disabled = true;
+            errorMsg.innerText = "";
+
+            // ★ 執行無縫登入
+            seamlessLogin(email, password, originalText);
         });
     }
 
+    // 這是一個「試圖登入，失敗就自動註冊」的函式
+    function seamlessLogin(email, password, btnText) {
+        
+        // 1. 先試著登入
+        auth.signInWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                // A. 登入成功 (代表是舊會員)
+                console.log("登入成功 (舊會員)");
+                resetBtn(btnText);
+                // onAuthStateChanged 會自動切換畫面，不用做事
+            })
+            .catch((error) => {
+                // B. 登入失敗 -> 判斷原因
+                if (error.code === 'auth/user-not-found') {
+                    
+                    console.log("帳號不存在，自動執行註冊程序...");
+                    // 2. 自動註冊
+                    return auth.createUserWithEmailAndPassword(email, password)
+                        .then((userCredential) => {
+                            // ★ 3. 註冊成功，立刻寫入資料庫
+                            const user = userCredential.user;
+                            return db.collection('users').doc(user.uid).set({
+                                email: email,
+                                createdAt: new Date(), // 紀錄建立時間
+                                memberLevel: "一般會員" // 預留欄位
+                            });
+                        })
+                        .then(() => {
+                            console.log("註冊並寫入資料庫成功");
+                            resetBtn(btnText);
+                            alert("歡迎新朋友！已自動為您註冊並登入。");
+                        });
+
+                } else if (error.code === 'auth/wrong-password') {
+                    // C. 帳號存在但密碼錯 (這無法通關，必須擋)
+                    resetBtn(btnText);
+                    errorMsg.innerText = "這個帳號已經註冊過囉，但密碼不對！";
+                } else {
+                    // D. 其他錯誤 (格式不對、網路斷線等)
+                    resetBtn(btnText);
+                    errorMsg.innerText = error.message;
+                }
+            })
+            .catch((regError) => {
+                // 這是抓取「自動註冊」過程中的錯誤
+                resetBtn(btnText);
+                console.error(regError);
+                errorMsg.innerText = "註冊發生錯誤: " + regError.message;
+            });
+    }
+
     // ============================================
-    //  功能 2：處理登出
+    //  4. 登出
     // ============================================
     if (logoutBtn) {
         logoutBtn.addEventListener('click', function() {
-            // 1. 清除 localStorage
-            localStorage.removeItem('celestar_user');
-            
-            // 2. 跳出提示
-            alert("已登出");
-            
-            // 3. 切換回登入頁
-            showLogin();
+            auth.signOut().then(() => alert("已登出"));
         });
     }
 
     // ============================================
-    //  輔助函式：切換畫面用
+    //  輔助函式
     // ============================================
     function showProfile(email) {
         loginSection.style.display = 'none';
@@ -92,5 +150,14 @@ document.addEventListener('DOMContentLoaded', function() {
     function showLogin() {
         loginSection.style.display = 'block';
         profileSection.style.display = 'none';
+        if(emailInput) emailInput.value = '';
+        if(passwordInput) passwordInput.value = '';
+    }
+
+    function resetBtn(text) {
+        if(submitBtn) {
+            submitBtn.innerText = text;
+            submitBtn.disabled = false;
+        }
     }
 });
