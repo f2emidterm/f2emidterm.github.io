@@ -640,6 +640,8 @@ footer {
 
     .journal-book {
         max-width: 100%;
+        min-width: 0;
+        overflow: hidden;
     }
 
     .sticker-panel {
@@ -654,6 +656,7 @@ footer {
         background-color: #F3F0F7;
         border: 2px dashed #AEAEDE;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        box-sizing: border-box;
     }
 
     .sticker-panel-bg {
@@ -880,6 +883,7 @@ footer {
         padding: 30px 15px 15px 15px;
     }
 }
+
 
 
 
