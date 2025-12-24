@@ -136,7 +136,13 @@ header {
         .search-bar button:hover {
             background-color: #9d9dd1;
         }
+#personicon {
+    transition: transform 0.2s ease;
+}
 
+#personicon:hover {
+    transform: scale(1.1);
+}
 /* ========================================= */
 /* 購物車下拉選單樣式                        */
 /* ========================================= */
@@ -578,6 +584,7 @@ header {
         top: 60px;    /* 配合 Header 高度 */
     }
 }
+
 
 
 
