@@ -647,6 +647,7 @@ footer {
     .sticker-panel {
         order: 2;
         width: 100%;
+        max-width: 100%;
         padding-top: 0;
         left: auto;
         position: relative;
@@ -883,4 +884,5 @@ footer {
         padding: 30px 15px 15px 15px;
     }
 }
+
 
