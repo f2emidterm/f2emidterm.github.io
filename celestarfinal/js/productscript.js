@@ -186,15 +186,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             localStorage.setItem("shopCart", JSON.stringify(cart));
 
             // 5. 觸發自定義事件，通知 Header 更新畫面
-            window.dispatchEvent(new Event("cartUpdated"));
-
-            // 6. 顯示即時回饋 (例如打開購物車)
-            // 這裡我們模擬點擊購物車按鈕，讓它滑出來
-            const cartIcon = document.getElementById("cartIcon");
-            if (cartIcon) cartIcon.click();
+            window.dispatchEvent(new Event("cartUpdated"));;
 
             // 或者是簡單的 Alert
-            // alert('Added to cart!');
+            alert('已加入購物車!');
         });
     }
 
@@ -231,4 +226,5 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 });
+
 
