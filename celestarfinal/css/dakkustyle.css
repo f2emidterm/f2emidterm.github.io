@@ -651,7 +651,7 @@ footer {
         padding-top: 0;
         left: auto;
         position: relative;
-        padding: 30px 50px;
+        padding: 30px 35px;
         display: flex;
         justify-content: center;
         background-color: #F3F0F7;
@@ -884,6 +884,7 @@ footer {
         padding: 30px 15px 15px 15px;
     }
 }
+
 
 
 
