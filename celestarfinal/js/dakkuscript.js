@@ -322,33 +322,50 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // --- 顯示使用商品清單 (Update: 查詢 productsMap) ---
+    // --- 顯示使用商品清單 (Update: 改為顯示貼紙圖，但連結到商品) ---
     function showUsedProducts() {
         const popup = document.getElementById("usedProductsPopup");
         const listContainer = document.getElementById("usedProductList");
         
-        // 抓取手帳上的貼紙
+        // 抓取手帳上的貼紙外框
         const placedWrappers = document.querySelectorAll(".placed-sticker");
         
-        const usedItems = new Set(); // 用 Set 避免重複商品
+        // 使用 Map 來確保每個商品只出現一次 (Key: 商品ID, Value: 顯示資料)
+        const usedItemsMap = new Map();
 
         placedWrappers.forEach(wrapper => {
             const pid = wrapper.dataset.productId;
             
-            // 使用 ID 從我們一開始建立的 productsMap 中查找資料
-            if (pid && productsMap[pid]) {
-                usedItems.add(productsMap[pid]);
+            // 找出該 wrapper 裡面的圖片元素，抓取它的 src (貼紙本體的圖)
+            const stickerImg = wrapper.querySelector("img");
+            const stickerSrc = stickerImg ? stickerImg.src : null;
+
+            // 如果有商品ID，且該商品存在於我們的對照表中
+            if (pid && productsMap[pid] && stickerSrc) {
+                
+                // 如果這個商品還沒被加入清單，才加入 (避免重複)
+                if (!usedItemsMap.has(pid)) {
+                    // 複製一份商品資料，避免修改到原本的 Global 資料
+                    const itemData = { ...productsMap[pid] };
+                    
+                    // ★★★ 關鍵修改：把顯示圖片換成「貼紙本身的圖」 ★★★
+                    itemData.img = stickerSrc; 
+                    
+                    usedItemsMap.set(pid, itemData);
+                }
             }
         });
 
         listContainer.innerHTML = "";
         
-        if (usedItems.size === 0) {
+        if (usedItemsMap.size === 0) {
             listContainer.innerHTML = '<p style="text-align:center; padding:15px; color:#999; font-size:12px;">尚未使用素材或無法辨識商品</p>';
         } else {
-            usedItems.forEach(p => {
+            // 遍歷 Map 產生 HTML
+            usedItemsMap.forEach(p => {
                 const itemHTML = `
                     <a href="product.html?id=${p.id}" class="used-product-item" target="_blank">
-                        <img src="${p.img}" class="used-product-thumb" alt="${p.name}">
+                        <img src="${p.img}" class="used-product-thumb" alt="${p.name}" style="object-fit: contain;"> 
                         <div class="used-product-info">
                             <div class="used-product-name">${p.name}</div>
                         </div>
@@ -357,6 +374,19 @@ document.addEventListener("DOMContentLoaded", async () => {
                 listContainer.innerHTML += itemHTML;
             });
         }
+
+        popup.classList.add("active");
+        
+        setTimeout(() => {
+            const closeDropdown = (e) => {
+                 if (!popup.contains(e.target) && !downloadBtn.contains(e.target)) {
+                    popup.classList.remove("active");
+                    document.removeEventListener('click', closeDropdown);
+                 }
+            };
+            document.addEventListener('click', closeDropdown);
+        }, 100);
+    }
 
         popup.classList.add("active");
         
@@ -503,3 +533,4 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 });
+
