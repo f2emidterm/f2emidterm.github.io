@@ -147,6 +147,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 購買按鈕 (已修正：顯示商品名稱)
     if (buyBtn) {
         buyBtn.addEventListener('click', () => {
+            const currentSelection = document.querySelector('.select-selected').textContent.trim();
+
+            if (currentSelection === '請選擇款式') {
+                alert('請先選取款式！');
+                return;
+            }
             alert(`準備購買: ${currentProductName}\n數量: ${quantity}\n總價: $${unitPrice * quantity}`);
         });
     }
@@ -157,7 +163,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 加入購物車
     if (cartBtn) {
         cartBtn.addEventListener('click', () => {
+            const currentSelection = selectText.textContent.trim();
 
+            // 檢查是否還停留在預設文字 "請選擇款式"
+            if (currentSelection === '請選擇款式') {
+                alert('請先選取款式！'); // 跳出提示視窗
+                return; // ⛔️ 重要：這裡的 return 會直接結束函式，不執行後面的加入購物車動作
+            }
             // 1. 準備要存的商品資料
             // 如果有選規格(selectSelected)，記得加上規格名稱，這裡示範基本的
             const item = {
@@ -226,5 +238,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 });
+
 
 
