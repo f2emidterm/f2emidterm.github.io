@@ -725,7 +725,7 @@ footer {
         flex-direction: column;
         align-items: center;
         padding: 20px 0px;
-        gap: 0px;
+        gap: 30px;
         height: auto;
     }
 
@@ -816,7 +816,7 @@ footer {
         width: 90%;
         max-width: 300px;
         left: 50%;
-        top: 0px;
+        top: 80px;
         transform: translateX(-50%) translateY(-10px);
     }
 
@@ -829,6 +829,7 @@ footer {
         padding: 30px 15px 15px 15px;
     }
 }
+
 
 
 
