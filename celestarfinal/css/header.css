@@ -14,6 +14,10 @@ header {
     justify-content: space-between;
 }
 
+.menu-btn {
+    z-index: 2001; /* 確保比 Header 和遮罩都高 */
+}
+
 /* 左側區塊 */
 .header-left {
     display: flex;
@@ -144,21 +148,50 @@ header {
         transform: scale(1.1);
     }
 
+/* 修改購物車圖示的容器設定，讓小紅點可以定位 */
+.cart-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+/* 小紅點樣式 (漂亮的圓圈) */
+.cart-badge {
+    position: absolute;
+    top: -5px;     /* 往上移 */
+    right: -8px;   /* 往右移 */
+    background-color: #ff4757; /* 紅色背景 */
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 50%; /* 變圓形 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    z-index: 10;
+    pointer-events: none; /* 讓點擊紅點也能觸發購物車 */
+    display: none; /* 預設隱藏，有數量才顯示 */
+}
+
+/* 確保下拉選單樣式正確 (你原本的有些對，這裡幫你微調確保顯示) */
 .cart-dropdown {
     position: absolute;
-    top: 100%; /* 接在 Header 下方 */
-    right: 0;
-    width: 350px; /* 電腦版寬度 */
-    max-height: 80vh; /* 避免太長超出螢幕 */
+    top: 100%;
+    right: 20px; /* 稍微靠右一點 */
+    width: 320px;
     background-color: #fff;
     border: 1px solid #AEAEDE;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    /* 預設隱藏 (滑動效果) */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
     transition: all 0.3s ease;
-    z-index: 900;
+    z-index: 1000; /* 確保在最上面 */
     display: flex;
     flex-direction: column;
 }
@@ -503,3 +536,4 @@ header {
             display: block;
         }
 }
+
