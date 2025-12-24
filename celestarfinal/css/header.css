@@ -163,7 +163,7 @@ header {
     right: -8px; 
     background-color: #AEAEDE; 
     color: white;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: bold;
     text-align: center;
     min-width: 16px;
@@ -172,7 +172,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1px;
+    line-height: 1;
     z-index: 10;
     pointer-events: none; /* 讓點擊紅點也能觸發購物車 */
     display: none; /* 預設隱藏，有數量才顯示 */
@@ -303,15 +303,6 @@ header {
         background-color: #222;
     }
 
-/* RWD 手機版調整 */
-@media (max-width: 600px) {
-    .cart-dropdown {
-        width: 100%; /* 手機版滿版 */
-        right: 0;
-        border-left: none;
-        border-right: none;
-    }
-}
 /* ========================================= */
 /* RWD 響應式設定                           */
 /* ========================================= */
@@ -426,6 +417,51 @@ header {
         font-size: 20px;
         margin-left: 8px;
     }
+    .cart-wrapper {
+        position: static; /* 手機版解除相對定位，讓下拉選單參考整個 Header */
+    }
+
+    .cart-dropdown {
+        position: fixed; /* 改為 Fixed，佔滿下方螢幕 */
+        top: 60px;       /* Header 的高度 (需與你的 padding-top 配合) */
+        left: 0;
+        right: 0;
+        width: 100%;     /* 滿版寬度 */
+        margin: 0;
+        border: none;    /* 手機版通常不需要邊框 */
+        border-top: 1px solid #eee;
+        box-shadow: 0 10px 10px rgba(0,0,0,0.1);
+        
+        /* 限制高度，避免商品太多時無法結帳 */
+        max-height: calc(100vh - 60px); 
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* 讓商品列表區域可以滾動，但結帳按鈕固定在底部 */
+    .cart-items {
+        max-height: none; /* 解除原本的高度限制 */
+        flex: 1;          /* 佔滿剩餘空間 */
+        overflow-y: auto; /* 允許垂直滾動 */
+        padding: 15px 20px;
+    }
+
+    .cart-footer {
+        padding: 15px 20px; /* 加大一點點觸控區域 */
+        background-color: #fff; /* 確保底部背景不透明 */
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.05); /* 增加一點上陰影區隔 */
+    }
+
+    /* 稍微加大手機版的字體與按鈕，方便手指點擊 */
+    .cart-item-title {
+        font-size: 15px;
+    }
+
+    .qty-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 16px;
+    }
 }
 
 @media (min-width: 601px) and (max-width: 1024px) {
@@ -535,7 +571,13 @@ header {
         .menu-overlay.active {
             display: block;
         }
+    .cart-dropdown {
+        width: 300px; /* 平板稍微窄一點點 */
+        right: 0;     /* 對齊右邊緣，避免超出螢幕 */
+        top: 60px;    /* 配合 Header 高度 */
+    }
 }
+
 
 
 
