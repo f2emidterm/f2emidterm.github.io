@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>INTO CELESTAR</title>
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/login.css" />
+    <link rel="stylesheet" href="css/header.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+</head>
+
+<body>
+
+    <header>
+        <div class="header-left">
+            <span class="material-symbols-outlined menu-btn">menu</span>
+
+            <div class="mobile-menu">
+                <a href="index.html">HOME</a>
+                <a href="shop.html">SHOP</a>
+                <a href="dakku.html">DAKKU</a>
+                <a href="aboutus.html">ABOUT US</a>
+            </div>
+
+            <div class="menu-overlay"></div>
+            <nav id="mainNav">
+                <a href="index.html">HOME</a>
+                <a href="shop.html">SHOP</a>
+                <a href="dakku.html">DAKKU</a>
+                <a href="aboutus.html">ABOUT US</a>
+            </nav>
+        </div>
+
+        <div class="header-center">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="images/nlogo.png" alt="CELESTAR Logo">
+                </a>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <div class="icons">
+                <span class="material-symbols-outlined" id="searchBtn">search</span>
+                <a href="login.html"><span class="material-symbols-outlined" >person</span></a>
+                <div class="cart-wrapper" style="position: relative; display: inline-block;">
+                    <span class="material-symbols-outlined" id="cartIcon">shopping_cart</span>
+                    <span id="cartCount" class="cart-badge">0</span>
+                </div>
+            </div>
+            <div class="search-bar">
+                <input type="text" placeholder="搜尋商品...">
+                <button>GO</button>
+            </div>
+            <div class="cart-dropdown">
+                <div class="cart-items"></div>
+                <div class="cart-footer">
+                    <div class="cart-total">Total: $0</div>
+                    <button id="checkoutBtn">CHECKOUT</button>
+                </div>
+            </div>
+
+    </header>
+    
+    <div class="bg">
+        <div class="login-workspace">
+
+            <div id="login-section" class="auth-card">
+                <h2 class="auth-title">MEMBER LOGIN</h2>
+                <p class="auth-subtitle">歡迎回到 CELESTAR 宇宙!</p>
+
+                <form id="loginForm">
+                    <div class="input-group">
+                        <label>Email</label>
+                        <input type="email" id="emailInput" placeholder="name@example.com" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="passwordInput" placeholder="Enter your password" required>
+                    </div>
+                    <button type="submit" class="primary-btn auth-btn">LOGIN</button>
+                </form>
+                <p id="error-msg" style="color: #ff6b6b; font-size: 12px; margin-top: 10px;"></p>
+            </div>
+
+            <div id="profile-section" class="auth-card" style="display: none;">
+                <div class="profile-header">
+                    <div class="avatar-circle">
+                        <span class="material-symbols-outlined">person</span>
+                    </div>
+                    <h2 class="auth-title">HELLO!</h2>
+                    <p id="userEmailDisplay" class="auth-subtitle">user@email.com</p>
+                </div>
+
+                <div class="profile-actions">
+                    <button class="secondary-btn">ORDER HISTORY</button>
+                    <button id="logoutBtn" class="primary-btn auth-btn">LOGOUT</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        COPYRIGHT © 2025 CELESTAR <br>
+        For academic purposes only; non-profit testing site.<br>
+        Email : JWKJFKAJ@xxxmail.com CONTACT NUMBER : 09XXX45X5X <br>
+        Address: heven999 | Business Registration Number: 44545adjkz | Business License: 4543Dkjlkf
+    </footer>
+
+    <script src="js/login.js"></script>
+    <script type="module" src="js/header.js"></script>
+</body>
+
+</html>
