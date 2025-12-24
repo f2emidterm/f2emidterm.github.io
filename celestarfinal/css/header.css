@@ -156,28 +156,29 @@ header {
     cursor: pointer;
 }
 
-/* 小紅點樣式 (漂亮的圓圈) */
+/* 小點樣式 */
 .cart-badge {
     position: absolute;
-    top: -5px;     /* 往上移 */
-    right: -8px;   /* 往右移 */
-    background-color: #ff4757; /* 紅色背景 */
+    top: -5px; 
+    right: -8px; 
+    background-color: #AEAEDE; 
     color: white;
     font-size: 10px;
     font-weight: bold;
+    text-align: center;
     min-width: 16px;
     height: 16px;
-    border-radius: 50%; /* 變圓形 */
+    border-radius: 50%; 
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2px;
+    padding: 1px;
     z-index: 10;
     pointer-events: none; /* 讓點擊紅點也能觸發購物車 */
     display: none; /* 預設隱藏，有數量才顯示 */
 }
 
-/* 確保下拉選單樣式正確 (你原本的有些對，這裡幫你微調確保顯示) */
+/* 確保下拉選單樣式正確*/
 .cart-dropdown {
     position: absolute;
     top: 100%;
@@ -535,5 +536,6 @@ header {
             display: block;
         }
 }
+
 
 
