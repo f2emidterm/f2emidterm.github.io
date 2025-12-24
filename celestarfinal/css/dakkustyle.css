@@ -406,7 +406,7 @@ button,
 
 .ripple-btn {
     position: relative;
-    padding: 12px 24px;
+    padding: 12px 44px;
     background: #fff;
     color: #3f4046;
     border: 1px solid #AEAEDE;
@@ -829,6 +829,7 @@ footer {
         padding: 30px 15px 15px 15px;
     }
 }
+
 
 
 
