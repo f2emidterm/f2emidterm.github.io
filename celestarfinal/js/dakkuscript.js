@@ -456,6 +456,20 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("hasSeenDakkuTutorial", "true");
     }
 });
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // 1. 抓取元素
+    const tutorialOverlay = document.querySelector('.tutorial-overlay');
+    const helpBtn = document.getElementById('helpBtn');
+    const closeTutorialBtn = document.querySelector('.close-tutorial-btn'); 
+    
+    // 2. 點擊 "?" 按鈕 -> 顯示彈窗
+    if(helpBtn && tutorialOverlay) {
+        helpBtn.addEventListener('click', function() {
+            tutorialOverlay.classList.add('active'); // 加回 active class
+        });
+    }
+});
 // ==========================================
 // 功能 E: 按鈕填色動畫 (Ripple Effect)
 // ==========================================
@@ -472,4 +486,5 @@ if (btn) {
         btn.style.setProperty('--y', y + 'px');
     });
 }
+
 
