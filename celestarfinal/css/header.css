@@ -153,7 +153,6 @@ header {
     position: relative;
     display: inline-flex;
     align-items: center;
-    cursor: pointer;
 }
 
 /* 小點樣式 */
@@ -259,7 +258,7 @@ header {
 
 .qty-btn {
     background: transparent;
-    backdround-color: #333;
+    backdround-color: #eee;
     transition: 0.2s;
     border: none;
     width: 20px;
@@ -574,10 +573,11 @@ header {
         }
     .cart-dropdown {
         width: 300px; /* 平板稍微窄一點點 */
-        right: 30;     /* 對齊右邊緣，避免超出螢幕 */
+        right: 20px;     /* 對齊右邊緣，避免超出螢幕 */
         top: 60px;    /* 配合 Header 高度 */
     }
 }
+
 
 
 
