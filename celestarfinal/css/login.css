@@ -375,10 +375,10 @@ footer {
 }
 
 .modal-image {
-    max-width: 90%;
-    max-height: 90vh;
+    max-width: 70%;
+    max-height: 80vh;
     border: 3px solid #fff;
-    box-shadow: 0 0 25px rgba(0,0,0,0.5);
+    box-shadow: 0 0 25px rgb(140 94 153 / 50%);
     animation: zoomIn 0.3s ease;
 }
 
@@ -481,6 +481,7 @@ footer {
         padding: 30px 10px;
     }
 }
+
 
 
 
