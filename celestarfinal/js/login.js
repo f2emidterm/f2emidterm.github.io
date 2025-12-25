@@ -4,37 +4,23 @@
 import { db } from './firebase.js';
 
 // ============================================
-//  2. 引入 Auth 和 Firestore 的功能
-//  (版本配合你 main.js 用的 10.7.1)
+//  2. 只引入 Firestore 功能 (完全不用 Auth)
 // ============================================
 import { 
-    getAuth, 
-    signInWithEmailAndPassword, 
-    createUserWithEmailAndPassword, 
-    signOut, 
-    onAuthStateChanged 
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-import { 
     doc, 
+    getDoc, 
     setDoc, 
     serverTimestamp 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // ============================================
-//  ★ 關鍵：就地建立 auth 物件
-//  原理：既然 db 已經連上 App 了，我們就問 db 它的 App 是誰
+//  UI 元素
 // ============================================
-const app = db.app; 
-const auth = getAuth(app); // 這樣就有 auth 可以用了！
-
-// ============================================
-//  以下是登入/註冊/登出邏輯 (標準流程)
-// ============================================
-
 const loginForm = document.getElementById('loginForm');
-const emailInput = document.getElementById('emailInput');
-const passwordInput = document.getElementById('passwordInput');
+const emailInput = document.getElementById('emailInput'); 
+// 這裡雖然叫 emailInput，但在 HTML 裡你可以當作 "Username" 輸入框
+// 建議去 HTML 把 type="email" 改成 type="text" 方便輸入
+
 const errorMsg = document.getElementById('error-msg');
 const loginSection = document.getElementById('login-section');
 const profileSection = document.getElementById('profile-section');
@@ -42,95 +28,102 @@ const userEmailDisplay = document.getElementById('userEmailDisplay');
 const logoutBtn = document.getElementById('logoutBtn');
 const submitBtn = loginForm ? loginForm.querySelector('button') : null;
 
-// --- 1. 監聽登入狀態 ---
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        showProfile(user.email);
+// ============================================
+//  ★ 初始化：檢查 LocalStorage (記住登入狀態)
+// ============================================
+document.addEventListener("DOMContentLoaded", () => {
+    const savedUser = localStorage.getItem("currentUser");
+    if (savedUser) {
+        showProfile(savedUser);
     } else {
         showLogin();
     }
 });
 
-// --- 2. 表單提交 (登入或自動註冊) ---
+// ============================================
+//  ★ 核心邏輯：查詢或建立使用者
+// ============================================
 if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        const email = emailInput.value.trim();
-        const password = passwordInput.value.trim();
+        const username = emailInput.value.trim();
 
-        if (!email || !password) {
-            errorMsg.innerText = "請輸入帳號密碼";
+        if (!username) {
+            errorMsg.innerText = "請輸入名字";
             return;
         }
 
+        // UI 鎖定
         const originalBtnText = submitBtn.innerText;
-        submitBtn.innerText = "處理中...";
+        submitBtn.innerText = "查詢中...";
         submitBtn.disabled = true;
         errorMsg.innerText = "";
 
         try {
-            // A. 先嘗試直接登入
-            await signInWithEmailAndPassword(auth, email, password);
-            alert("登入成功！");
-            resetButton(originalBtnText);
+            // 1. 設定文件參照：把「使用者名字」直接當作 ID
+            // collection: "users", documentId: username
+            const userDocRef = doc(db, "users", username);
             
-        } catch (error) {
-            // B. 如果錯誤是「帳號不存在」，則轉為自動註冊
-            if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
-                console.log("帳號不存在，自動註冊...");
-                
-                try {
-                    // 註冊帳號
-                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                    
-                    // 寫入使用者資料到 Firestore (使用匯入的 db)
-                    await setDoc(doc(db, "users", userCredential.user.uid), {
-                        email: email,
-                        createdAt: serverTimestamp(),
-                        role: "member"
-                    });
+            // 2. 去資料庫讀讀看
+            const docSnap = await getDoc(userDocRef);
 
-                    alert("註冊成功並已登入！");
-                    resetButton(originalBtnText);
-
-                } catch (regError) {
-                    console.error("註冊失敗", regError);
-                    errorMsg.innerText = "註冊失敗: " + regError.message;
-                    resetButton(originalBtnText);
-                }
-
-            } else if (error.code === 'auth/wrong-password') {
-                errorMsg.innerText = "密碼錯誤！";
-                resetButton(originalBtnText);
+            if (docSnap.exists()) {
+                // --- A. 舊用戶 (資料存在) ---
+                console.log("歡迎回來:", docSnap.data());
+                alert(`歡迎回來，${username}！`);
             } else {
-                console.error("登入錯誤", error);
-                errorMsg.innerText = error.message;
-                resetButton(originalBtnText);
+                // --- B. 新用戶 (資料不存在 -> 寫入) ---
+                console.log("新用戶，建立資料...");
+                await setDoc(userDocRef, {
+                    username: username,
+                    createdAt: serverTimestamp(),
+                    role: "member",
+                    loginCount: 1
+                });
+                alert(`註冊成功！你好，${username}！`);
             }
+
+            // 3. 登入成功處理
+            // 把名字存在瀏覽器裡，這樣重新整理才不會登出
+            localStorage.setItem("currentUser", username);
+            
+            showProfile(username);
+            resetButton(originalBtnText);
+
+        } catch (error) {
+            console.error("資料庫錯誤:", error);
+            errorMsg.innerText = "連線錯誤，請稍後再試";
+            resetButton(originalBtnText);
         }
     });
 }
 
-// --- 3. 登出功能 ---
+// ============================================
+//  登出功能
+// ============================================
 if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
-        signOut(auth).then(() => alert("已登出"));
+        // 清除 LocalStorage
+        localStorage.removeItem("currentUser");
+        alert("已登出");
+        showLogin();
     });
 }
 
-// --- 4. 畫面切換 ---
-function showProfile(email) {
+// ============================================
+//  畫面切換函式
+// ============================================
+function showProfile(name) {
     if(loginSection) loginSection.style.display = 'none';
     if(profileSection) profileSection.style.display = 'block';
-    if(userEmailDisplay) userEmailDisplay.innerText = email;
+    if(userEmailDisplay) userEmailDisplay.innerText = "Hi, " + name;
 }
 
 function showLogin() {
     if(loginSection) loginSection.style.display = 'block';
     if(profileSection) profileSection.style.display = 'none';
     if(emailInput) emailInput.value = '';
-    if(passwordInput) passwordInput.value = '';
 }
 
 function resetButton(text) {
