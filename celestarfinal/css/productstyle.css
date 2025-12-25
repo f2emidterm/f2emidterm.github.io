@@ -123,7 +123,6 @@ main {
     border: 1px solid #3f4046;
     color: #333;
     padding: 12px 12px;
-    cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -152,7 +151,6 @@ main {
 
 .select-items div {
     padding: 10px 15px;
-    cursor: pointer;
     transition: background-color 0.2s;
 }
 
@@ -406,5 +404,6 @@ footer {
     width: 100%;
   }
 }
+
 
 
