@@ -1,9 +1,8 @@
-
 // js/product.js
 
 // 1. 引入 Firebase 功能
 import { db } from './firebase.js';
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
 
@@ -31,8 +30,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // --- (C) 全域變數 (用來存商品狀態) ---
     let quantity = 1;
-    let unitPrice = 0;        // 存單價 (解決 NaN 問題)
-    let currentProductName = ""; // 存商品名稱 (解決 Alert 顯示問題)
+    let unitPrice = 0;        
+    let currentProductName = ""; 
 
     // 如果網址沒有 ID
     if (!productId) {
@@ -49,15 +48,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             const product = docSnap.data();
             console.log("從 Firebase 讀到的資料:", product);
 
-            // 1. 處理商品名稱
             currentProductName = product.name;
-
-            // 2. 處理價格 (解決 NaN 問題)
-            // 先轉成字串，把 "$" 符號拿掉，再轉成數字
             let cleanPrice = String(product.price).replace(/[^0-9.]/g, '');
             unitPrice = Number(cleanPrice);
 
-            // 3. 渲染畫面
             renderProduct(product);
         } else {
             main.innerHTML = "<p>找不到此商品 (ID 不存在)</p>";
@@ -69,19 +63,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // --- (E) 渲染畫面函式 ---
     function renderProduct(product) {
-        // 填入文字
         document.querySelector(".product-info h2").textContent = product.name;
-        document.querySelector(".product-info p").textContent = `$${product.price}`; // 顯示處理過的價格
+        document.querySelector(".product-info p").textContent = `$${product.price}`;
 
-        // 主圖
         const imgSrc = product.img ? product.img : "https://via.placeholder.com/400?text=No+Image";
         const mainImg = document.querySelector(".main-img img");
         mainImg.src = imgSrc;
 
-        // 縮圖 (Thumbs)
         const thumbsContainer = document.querySelector(".thumbs");
         thumbsContainer.innerHTML = "";
-        const thumbsList = product.thumbs || []; // 防止沒有 thumbs 欄位報錯
+        const thumbsList = product.thumbs || [];
 
         if (thumbsList.length > 0) {
             thumbsList.forEach(src => {
@@ -94,7 +85,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 });
             });
         } else {
-            // 沒有縮圖時顯示預設方塊
             const emptyDiv = document.createElement("div");
             emptyDiv.style.width = "80px";
             emptyDiv.style.height = "80px";
@@ -102,7 +92,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             thumbsContainer.appendChild(emptyDiv);
         }
 
-        // 商品描述
         const descSection = document.querySelector(".description");
         const description = product.desc || "暫無商品描述";
         descSection.innerHTML = `
@@ -110,7 +99,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             <p>${description}</p><br>
         `;
 
-        // 初始化隱藏總價區塊
         if (quantitySection) quantitySection.style.display = "none";
         if (totalInfo) totalInfo.style.display = "none";
     }
@@ -119,14 +107,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function updateTotal() {
         if (totalQty) totalQty.textContent = quantity;
-
-        // 這裡做計算，因為 unitPrice 已經轉成數字了，所以不會 NaN
         if (totalPrice) totalPrice.textContent = unitPrice * quantity;
-
         if (totalInfo) totalInfo.style.display = "block";
     }
 
-    // 數量 -
     if (minusBtn) {
         minusBtn.addEventListener('click', () => {
             if (quantity > 1) quantity--;
@@ -135,7 +119,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // 數量 +
     if (plusBtn) {
         plusBtn.addEventListener('click', () => {
             quantity++;
@@ -144,69 +127,115 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // 購買按鈕 (已修正：顯示商品名稱)
+    // ============================================
+    // 🔥 修改重點：直接購買 (Buy Now) 邏輯
+    // ============================================
     if (buyBtn) {
-        buyBtn.addEventListener('click', () => {
+        buyBtn.addEventListener('click', async () => { // 注意這裡變成 async
             const currentSelection = document.querySelector('.select-selected').textContent.trim();
 
+            // 1. 檢查規格選了沒
             if (currentSelection === '請選擇款式') {
                 alert('請先選取款式！');
                 return;
             }
-            alert(`準備購買: ${currentProductName}\n數量: ${quantity}\n總價: $${unitPrice * quantity}`);
+
+            // 2. 🔥 檢查是否登入
+            const currentUser = localStorage.getItem("currentUser");
+            if (!currentUser) {
+                // 如果沒登入，跳出提醒並導向登入頁
+                alert("請先登入會員才能進行購買！\n(將跳轉至登入頁面)");
+                window.location.href = "login.html"; 
+                return;
+            }
+
+            // 3. 準備訂單資料
+            const total = unitPrice * quantity;
+            const orderItem = {
+                name: currentProductName,
+                price: unitPrice,
+                qty: quantity,
+                // 因為是直接購買單一商品，我們也把它包成陣列格式，這樣資料庫格式才統一
+                img: document.querySelector(".main-img img").src || "",
+                spec: currentSelection // 把選的規格也記下來
+            };
+
+            // 4. 確認購買
+            const confirmMsg = `您好! ${currentUser}\n準備購買:\n- ${orderItem.name} (${currentSelection}) x${quantity}\n\n總金額: $${total}\n\n是否確認下單？`;
+            
+            if(!confirm(confirmMsg)) return;
+
+            // 5. 🔥 寫入 Firebase
+            try {
+                buyBtn.textContent = "Processing...";
+                buyBtn.disabled = true;
+
+                // 注意：這裡的 items 是一個陣列，即使只有一項，也用陣列包起來
+                // 這樣跟購物車結帳的資料結構才會長一樣 ([{...}, {...}])
+                await addDoc(collection(db, "orders"), {
+                    items: [orderItem], 
+                    totalAmount: total,
+                    orderBy: currentUser,
+                    createdAt: serverTimestamp(),
+                    status: "new"
+                });
+
+                alert("您已訂購成功!\n訂單紀錄可於會員中心查詢･ﾟ✧*:･ﾟ");
+                
+                // 購買成功後通常不轉頁，或者可以轉去會員中心
+                // window.location.href = "member.html"; 
+
+            } catch (error) {
+                console.error("Error adding order: ", error);
+                alert("Order failed. Please try again.");
+            } finally {
+                buyBtn.textContent = "BUY NOW";
+                buyBtn.disabled = false;
+            }
         });
     }
 
-    // 加入購物車
-    // ... (前面的代碼不變)
-
-    // 加入購物車
+    // ============================================
+    // 加入購物車 (保持原樣，因為邏輯是對的)
+    // ============================================
     if (cartBtn) {
         cartBtn.addEventListener('click', () => {
             const currentSelection = document.querySelector('.select-selected').textContent.trim();
-            // 檢查是否還停留在預設文字 "請選擇款式"
+            
             if (currentSelection === '請選擇款式') {
-                alert('請先選取款式！'); // 跳出提示視窗
-                return; // ⛔️ 重要：這裡的 return 會直接結束函式，不執行後面的加入購物車動作
+                alert('請先選取款式！');
+                return;
             }
-            // 1. 準備要存的商品資料
-            // 如果有選規格(selectSelected)，記得加上規格名稱，這裡示範基本的
+
             const item = {
                 id: productId,
                 name: currentProductName,
                 price: unitPrice,
                 img: document.querySelector(".main-img img").src,
-                qty: quantity // 這裡是你頁面上選擇的數量
+                qty: quantity,
+                spec: currentSelection // 把規格也存進去
             };
 
-            // 2. 讀取目前的購物車 (如果沒有就給空陣列)
             let cart = JSON.parse(localStorage.getItem("shopCart")) || [];
-
-            // 3. 檢查商品是否已經在車內
+            
+            // 判斷重複時，要連同「規格」一起判斷才準確 (例如同商品但不同尺寸視為不同項)
+            // 這裡簡單處理，先只判斷 ID
             const existingItem = cart.find(i => i.id === item.id);
 
             if (existingItem) {
-                // 如果有了，就加上新的數量
                 existingItem.qty += item.qty;
             } else {
-                // 如果沒有，就推入新商品
                 cart.push(item);
             }
 
-            // 4. 存回 localStorage
             localStorage.setItem("shopCart", JSON.stringify(cart));
-
-            // 5. 觸發自定義事件，通知 Header 更新畫面
             window.dispatchEvent(new Event("cartUpdated"));;
 
-            // 或者是簡單的 Alert
             alert('已加入購物車!');
         });
     }
 
-    // ... (後面的代碼不變)
-
-    // 下拉選單邏輯 (完全保留你原本的功能)
+    // 下拉選單邏輯
     if (selectSelected && selectItems) {
         selectSelected.addEventListener("click", (e) => {
             e.stopPropagation();
@@ -237,7 +266,3 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 });
-
-
-
-
