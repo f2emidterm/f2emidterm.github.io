@@ -1,9 +1,9 @@
 // ===========================================
-// js/header.js (全功能整合版)
+// js/header.js (包含選單、購物車、以及讀取 product1 這種 ID 的功能)
 // ===========================================
 
 import { db } from './firebase.js';
-// ★★★ 注意這裡：多引入了 doc, getDoc 用來讀取單一商品 ★★★
+// ★★★ 這裡一定要引入 doc 和 getDoc 才能抓特定 ID 的文件 ★★★
 import { collection, addDoc, serverTimestamp, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 console.log("✅ header.js 已載入...");
@@ -11,18 +11,18 @@ console.log("✅ header.js 已載入...");
 document.addEventListener("DOMContentLoaded", () => {
     
     // ===========================
-    // 0. 特殊功能：商品詳情頁邏輯
-    // (只有在 product.html 且有該容器時才會執行)
+    // 0. 特殊功能：偵測是否在商品頁，是的話就去抓資料
     // ===========================
     const productDetailContainer = document.getElementById("product-detail-container");
     
+    // 如果網頁裡有這個容器，代表現在是 product.html
     if (productDetailContainer) {
-        console.log("📦 偵測到詳情頁容器，開始讀取商品資料...");
+        console.log("📦 偵測到詳情頁容器，準備抓取 ID...");
         loadProductDetail(productDetailContainer);
     }
 
     // ===========================
-    // 1. Header 選單邏輯
+    // 1. Header 選單邏輯 (保持不變)
     // ===========================
     const menuBtn = document.querySelector(".menu-btn");
     const mobileMenu = document.querySelector(".mobile-menu");
@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ===========================
-    // 2. 搜尋框邏輯
+    // 2. 搜尋框邏輯 (保持不變)
     // ===========================
     const searchBtn = document.getElementById("searchBtn");
     const searchBar = document.querySelector(".search-bar");
@@ -74,7 +74,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const performSearch = () => {
             const query = searchInput.value.trim();
             if (query) {
-                // 這裡搜尋還是用文字，沒問題
                 window.location.href = `search.html?q=${encodeURIComponent(query)}`;
             }
         };
@@ -94,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ===========================
-    // 3. 購物車邏輯
+    // 3. 購物車邏輯 (保持不變)
     // ===========================
     const cartIcon = document.getElementById("cartIcon");
     const cartDropdown = document.querySelector(".cart-dropdown");
@@ -182,13 +181,12 @@ document.addEventListener("DOMContentLoaded", () => {
         renderCart();
     }
     
-    // 監聽自定義事件 (當詳情頁加入購物車時觸發)
     window.addEventListener("cartUpdated", () => {
         renderCart();
     });
 
     // ===========================
-    // 4. 結帳功能
+    // 4. 結帳功能 (保持不變)
     // ===========================
     if (checkoutBtn) {
         checkoutBtn.addEventListener("click", async () => {
@@ -251,42 +249,51 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
     
-    // 初始化執行一次購物車渲染
     renderCart();
 });
 
-// ===========================================
-// 5. 獨立函式：讀取商品詳情 (使用 doc.id)
-// ===========================================
+// =========================================================
+// 5. 核心函式：讀取商品詳情 (用 ID 抓 product1 這種文件名)
+// =========================================================
 async function loadProductDetail(container) {
+    // 1. 抓取網址參數
     const params = new URLSearchParams(window.location.search);
-    const productId = params.get("id"); // 這裡抓的是網址上的 ?id=xxxx
+    const productId = params.get("id"); // 這裡會抓到 "product1"
 
     if (!productId) {
-        container.innerHTML = '<div style="text-align:center; padding:50px;">錯誤：網址沒有商品 ID</div>';
+        container.innerHTML = '<div style="text-align:center; padding:50px;">錯誤：網址沒有 ID 參數</div>';
         return;
     }
 
     try {
-        console.log("正在讀取商品 ID:", productId);
-        // 使用 doc(db, "products", ID) 這是最準確的抓法
+        console.log(`正在資料庫 products 資料夾中尋找文件名為 "${productId}" 的檔案...`);
+        
+        // ★★★ 關鍵在這裡 ★★★
+        // doc(db, "products", productId) 
+        // 意思就是：去 db 的 products 集合裡，抓叫做 productId (例如 product1) 的那份文件
         const docRef = doc(db, "products", productId);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
+            console.log("找到商品了！", docSnap.data());
             const data = docSnap.data();
+            // 這裡傳入 docSnap.id (就是 product1) 方便之後加購物車
             renderDetailHTML(container, data, docSnap.id);
         } else {
-            container.innerHTML = '<div style="text-align:center; padding:50px;">找不到此商品 (ID 不存在)</div>';
+            console.warn("找不到文件:", productId);
+            container.innerHTML = `<div style="text-align:center; padding:50px;">
+                找不到商品: ${productId}<br>
+                (請確認 Firebase 裡的 Document ID 是否真的是這個名字)
+            </div>`;
         }
 
     } catch (error) {
         console.error("讀取商品失敗:", error);
-        container.innerHTML = '<div style="text-align:center; padding:50px;">系統發生錯誤。</div>';
+        container.innerHTML = '<div style="text-align:center; padding:50px;">系統發生錯誤，請查看 Console。</div>';
     }
 }
 
-// 產生詳細頁 HTML
+// 產生 HTML 畫面
 function renderDetailHTML(container, product, id) {
     const imgSrc = product.img ? product.img : (product.image ? product.image : "https://via.placeholder.com/400?text=No+Image");
     let displayPrice = product.price;
@@ -314,7 +321,7 @@ function renderDetailHTML(container, product, id) {
         </div>
     `;
 
-    // 綁定加減與加入購物車按鈕
+    // 綁定按鈕
     const btnMinus = document.getElementById("btnMinus");
     const btnPlus = document.getElementById("btnPlus");
     const qtyInput = document.getElementById("qtyInput");
@@ -335,7 +342,8 @@ function renderDetailHTML(container, product, id) {
         addToCartBtn.addEventListener("click", () => {
             let cart = JSON.parse(localStorage.getItem("shopCart")) || [];
             
-            const existingItemIndex = cart.findIndex(c => c.id === id); // 這裡用 ID 比對
+            // 檢查購物車裡有沒有這個 ID (product1)
+            const existingItemIndex = cart.findIndex(c => c.id === id);
             const qty = parseInt(qtyInput.value);
 
             if (existingItemIndex > -1) {
@@ -344,7 +352,7 @@ function renderDetailHTML(container, product, id) {
                 cart.push({
                     id: id,
                     name: product.name,
-                    price: parseInt(product.price),
+                    price: parseInt(product.price), // 確保是數字
                     img: imgSrc,
                     qty: qty
                 });
@@ -352,7 +360,7 @@ function renderDetailHTML(container, product, id) {
 
             localStorage.setItem("shopCart", JSON.stringify(cart));
             alert(`${product.name} 已加入購物車！`);
-            window.dispatchEvent(new Event("cartUpdated")); // 通知購物車更新
+            window.dispatchEvent(new Event("cartUpdated"));
         });
     }
 }
