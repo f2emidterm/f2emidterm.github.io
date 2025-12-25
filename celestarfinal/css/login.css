@@ -130,19 +130,67 @@ button,
     box-shadow: 5px 5px 0 rgba(162, 162, 169, 0.6);
 }
 
+/* ============================================
+   ★ Avatar & Edit Button Styles (修正版)
+   ============================================ */
+
+/* 1. 外殼：負責定位與置中，大小跟原本頭像一樣 */
+.avatar-wrapper {
+    position: relative;   /* 讓按鈕可以根據它定位 */
+    width: 80px;          /* 寬度 */
+    height: 80px;         /* 高度 */
+    margin: 0 auto 15px;  /* ★ 關鍵：原本的置中設定移來這裡 */
+}
+
+/* 2. 頭像圈圈：填滿外殼，負責顯示圖片與裁切 */
 .avatar-circle {
-    width: 80px;
-    height: 80px;
+    width: 100%;
+    height: 100%;
     background-color: #F3F0F7;
-    
-    margin: 0 auto 15px;
+    margin: 0;            /* 讓 Wrapper 控制位置 */
     display: flex;
     justify-content: center;
     align-items: center;
     color: #AEAEDE;
+    border-radius: 50%;   /* 確保是圓形 */
+    overflow: hidden;     /* 圖片超出切掉 */
+    cursor: default;      /* 預設游標 */
 }
+
+/* 當有圖片時，滑鼠變放大鏡 */
+.avatar-circle.has-image {
+    cursor: zoom-in;
+}
+
 .avatar-circle .material-icons {
     font-size: 40px;
+}
+
+/* 3. 鉛筆按鈕：定位在外殼右側 */
+.edit-btn {
+    position: absolute;
+    bottom: 0;
+    right: -35px;         /* ★ 關鍵：往右推，不重疊 */
+    
+    width: 28px;
+    height: 28px;
+    background-color: #AEAEDE;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    color: #fff;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    z-index: 10;
+    transition: transform 0.2s;
+}
+
+.edit-btn:hover {
+    transform: scale(1.1);
+    background-color: #9a9ad9;
 }
 
 .profile-actions {
@@ -271,14 +319,6 @@ footer {
    Avatar Upload Feature (頭像上傳功能樣式)
    ============================================ */
 
-/* 1. 容器設定 */
-#avatarContainer {
-    position: relative; /* 讓內部的照片和 Loading 可以絕對定位 */
-    overflow: hidden;   /* 確保圖片不會超出格子 */
-    cursor: pointer;    /* 滑鼠移過去變手指 */
-    /* 注意：這裡不設定 border-radius，完全沿用你原本 .avatar-circle 的設定 */
-}
-
 /* 2. 照片設定 */
 #userAvatar {
     width: 100%;        /* 寬度撐滿 */
@@ -318,91 +358,49 @@ footer {
 }
 
 /* ============================================
-   Avatar Wrapper & Edit Button (頭像與編輯按鈕修正版)
+   ★ Image Zoom Modal (圖片放大視窗樣式)
    ============================================ */
-
-/* 1. 外層容器：繼承原本 avatar-circle 的大小與位置設定 */
-.avatar-wrapper {
-    position: relative;
-    width: 80px;          /* 跟原本頭像一樣寬 */
-    height: 80px;         /* 跟原本頭像一樣高 */
-    margin: 0 auto 15px;  /* ★ 關鍵：原本的置中設定移來這裡 */
-}
-
-/* 2. 原本的頭像圈圈：現在只要填滿容器就好 */
-.avatar-circle {
-    /* 覆蓋原本的 margin，因為已經由 wrapper 控制了 */
-    margin: 0 !important; 
+.image-zoom-modal {
+    display: none; /* 預設隱藏 */
+    position: fixed;
+    z-index: 9999;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    /* 確保這兩個屬性還在，維持形狀與裁切 */
-    position: relative;
-    overflow: hidden; 
-    /* 點擊放大游標 */
-    cursor: zoom-in;
-}
-
-/* 預設圖標時不要顯示放大游標 */
-.avatar-circle:has(#defaultIcon[style*="display: block"]) {
-    cursor: default;
-}
-
-/* 3. 編輯小按鈕：定位在容器的「右側外面」 */
-.edit-avatar-btn {
-    position: absolute;
-    bottom: 0;       /* 對齊底部 */
-    right: -35px;    /* ★ 關鍵：往右推 35px，完全離開圖片範圍 */
-    
-    width: 28px;     /* 稍微大一點點比較好按 */
-    height: 28px;
-    border-radius: 50%;
-    background-color: #AEAEDE;
-    border: 2px solid #fff;
-    color: white;
-    
-    display: flex;
+    background-color: rgba(0, 0, 0, 0.9); /* 深色背景 */
     justify-content: center;
     align-items: center;
-    cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    transition: transform 0.2s;
-    padding: 0;
-    z-index: 20;     /* 確保在最上層 */
 }
 
-.edit-avatar-btn:hover {
-    background-color: #9a9ad9;
-    transform: scale(1.1);
+.image-zoom-modal.active {
+    display: flex;
 }
 
-/* 4. 圖片放大視窗樣式 (這段維持不變) */
-.image-zoom-modal {
-    background: rgba(0, 0, 0, 0.85);
-}
 .modal-image {
-    margin: auto;
-    display: block;
     max-width: 90%;
-    max-height: 80vh;
-    object-fit: contain;
-    border: 2px solid #fff;
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    max-height: 90vh;
+    border: 3px solid #fff;
+    box-shadow: 0 0 25px rgba(0,0,0,0.5);
     animation: zoomIn 0.3s ease;
 }
+
 @keyframes zoomIn {
     from {transform:scale(0.8); opacity:0} 
     to {transform:scale(1); opacity:1}
 }
+
 .close-zoom {
     position: absolute;
     top: 20px;
     right: 40px;
-    color: #f1f1f1;
+    color: #fff;
     font-size: 40px;
-    font-weight: bold;
     cursor: pointer;
-    z-index: 1001;
+    font-weight: bold;
+    z-index: 10000;
 }
+
 /* ============================================
    RWD: Tablet & Small Laptops
    範圍: 601px ~ 1024px
@@ -486,11 +484,3 @@ footer {
         padding: 30px 10px;
     }
 }
-
-
-
-
-
-
-
-
