@@ -132,7 +132,7 @@ if (avatarContainer && uploadInput) {
 
         // 限制 800KB (防止 Firestore 爆掉)
         if (file.size > 800 * 1024) {
-            alert("圖片太大了！請選一張小於 800KB 的圖片");
+            alert("圖片太大了！請選一張小於 800KB 的圖片><");
             return;
         }
 
@@ -217,7 +217,7 @@ if (historyBtn) {
                 card.className = 'order-card';
                 card.innerHTML = `
                     <div class="order-header">
-                        <span>📅 ${dateStr}</span>
+                        <span>${dateStr}</span>
                         <span style="color:${order.status === 'new' ? '#AEAEDE' : '#333'}">
                             ${order.status ? order.status.toUpperCase() : 'COMPLETED'}
                         </span>
@@ -307,3 +307,4 @@ function resetButton(text) {
         submitBtn.disabled = false;
     }
 }
+
