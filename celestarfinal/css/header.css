@@ -16,6 +16,11 @@ header {
 
 .menu-btn {
     z-index: 2001; /* 確保比 Header 和遮罩都高 */
+    transition: transform 0.2s ease;
+}
+
+.menu-btn:hover {
+    transform: scale(1.1);
 }
 
 /* 左側區塊 */
@@ -598,6 +603,7 @@ header {
         padding:8px;
     }
 }
+
 
 
 
