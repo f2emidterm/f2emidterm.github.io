@@ -152,6 +152,111 @@ button,
     margin-top: 30px;
 }
 
+/* ===========================
+   彈跳視窗 (Modal) 樣式
+   =========================== */
+.modal-overlay {
+    display: none; /* 預設隱藏 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* 半透明黑色背景 */
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(2px);
+}
+
+.modal-overlay.active {
+    display: flex; /* 加上 active class 就顯示 */
+}
+
+.modal-content {
+    background: #fff;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh; /* 太長要有捲軸 */
+    padding: 25px;
+    border: 2px dashed #AEAEDE;
+    box-shadow: 0 10px 25px rgba(174, 174, 222, 0.4);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    animation: popIn 0.3s ease;
+}
+
+@keyframes popIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #F3F0F7;
+    padding-bottom: 10px;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: #333;
+    letter-spacing: 1px;
+}
+
+.close-modal {
+    font-size: 28px;
+    color: #aaa;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.close-modal:hover {
+    color: #AEAEDE;
+}
+
+.history-list {
+    overflow-y: auto; /* 內容太多時可以捲動 */
+    padding-right: 5px;
+}
+
+/* 單筆訂單卡片 */
+.order-card {
+    background: #F9F9F9;
+    border: 1px solid #eee;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    text-align: left;
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 10px;
+    border-bottom: 1px dashed #ddd;
+    padding-bottom: 5px;
+}
+
+.order-items {
+    font-size: 14px;
+    color: #444;
+    line-height: 1.6;
+}
+
+.order-total {
+    margin-top: 10px;
+    text-align: right;
+    font-weight: bold;
+    color: #AEAEDE;
+    font-size: 16px;
+}
+
 footer {
     text-align: left;
     font-size: 10px;
@@ -161,4 +266,5 @@ footer {
     padding: 50px 20px 20px 20px;
     margin-top: 10px;
 }
+
 
