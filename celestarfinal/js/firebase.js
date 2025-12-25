@@ -1,6 +1,6 @@
 // js/firebase.js
 
-// §ï¥Îºô§}¤Ş¤J (CDN)
+// æ”¹ç”¨ç¶²å€å¼•å…¥ (CDN)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
@@ -17,5 +17,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// ­«­n¡G¤@©w­n export db¡A³o¼Ë main.js ¤~®³±o¨ì
-export { db };
+// é‡è¦ï¼šä¸€å®šè¦ export dbï¼Œé€™æ¨£ main.js æ‰æ‹¿å¾—åˆ°
+
+export { auth,db };
