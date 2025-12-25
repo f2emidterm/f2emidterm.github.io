@@ -295,7 +295,6 @@ footer {
     /* 4. Footer 調整 */
     footer {
         padding: 40px 20px;
-        text-align: center;
     }
 }
 
@@ -348,10 +347,10 @@ footer {
 
     /* 8. Footer：文字置中即可，不需大改 */
     footer {
-        text-align: center;
         padding: 30px 10px;
     }
 }
+
 
 
 
