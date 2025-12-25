@@ -138,6 +138,7 @@ header {
         }
 #personicon {
     transition: transform 0.2s ease;
+    color: #222;
 }
 
 #personicon:hover {
@@ -586,6 +587,7 @@ header {
         top: 60px;    /* 配合 Header 高度 */
     }
 }
+
 
 
 
