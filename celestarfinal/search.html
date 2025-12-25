@@ -1,0 +1,113 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Search Results - CELESTAR SHOP</title>
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/shopstyle.css" />
+    <link rel="stylesheet" href="css/header.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+
+    <style>
+        .search-results-header {
+            text-align: center;
+            padding: 40px 20px 10px;
+            max-width: 1000px;
+            margin: 0 auto;
+            color: #3f4046;
+        }
+
+            .search-results-header h2 {
+                font-weight: 500;
+                font-size: 24px;
+                margin-bottom: 10px;
+            }
+
+            .search-results-header p {
+                color: #666;
+                font-size: 14px;
+            }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <span class="material-symbols-outlined menu-btn">menu</span>
+            <div class="mobile-menu">
+                <a href="index.html">HOME</a>
+                <a href="shop.html">SHOP</a>
+                <a href="dakku.html">DAKKU</a>
+                <a href="aboutus.html">ABOUT US</a>
+            </div>
+            <div class="menu-overlay"></div>
+            <nav id="mainNav">
+                <a href="index.html">HOME</a>
+                <a href="shop.html">SHOP</a>
+                <a href="dakku.html">DAKKU</a>
+                <a href="aboutus.html">ABOUT US</a>
+            </nav>
+        </div>
+
+        <div class="header-center">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="images/nlogo.png" alt="CELESTAR Logo">
+                </a>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <div class="icons">
+                <span class="material-symbols-outlined" id="searchBtn">search</span>
+                <a href="login.html"><span class="material-symbols-outlined" id="personicon">person</span></a>
+                <div class="cart-wrapper" style="position: relative; display: inline-block;">
+                    <span class="material-symbols-outlined" id="cartIcon">shopping_cart</span>
+                    <span id="cartCount" class="cart-badge">0</span>
+                </div>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="搜尋商品...">
+                <button id="searchSubmitBtn">GO</button>
+            </div>
+            <div class="cart-dropdown">
+                <div class="cart-items"></div>
+                <div class="cart-footer">
+                    <div class="cart-total">Total: $0</div>
+                    <button id="checkoutBtn">CHECKOUT</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="products-bg">
+        <div class="search-results-header">
+            <h2>Search Results</h2>
+            <p id="searchQueryDisplay">Searching for "..."</p>
+        </div>
+
+        <section class="products">
+            <div class="product-card"></div>
+        </section>
+
+        <div class="pagination" id="pagination">
+            <span id="prev">&lt;</span>
+            <span id="page1">1</span>
+            <span id="page2">2</span>
+            <span id="next">&gt;</span>
+        </div>
+    </div>
+
+    <footer>
+        COPYRIGHT © 2025 CELESTAR <br>
+        For academic purposes only; non-profit testing site.<br>
+        Email : JWKJFKAJ@xxxmail.com   CONTACT NUMBER : 09XXX45X5X <br>
+        Address: heven999 | Business Registration Number: 44545adjkz | Business License: 4543Dkjlkf
+    </footer>
+
+    <script type="module" src="js/searchscript.js"></script>
+    <script type="module" src="js/header.js"></script>
+    <script type="module" src="js/firebase.js"></script>
+
+</body>
+</html>
