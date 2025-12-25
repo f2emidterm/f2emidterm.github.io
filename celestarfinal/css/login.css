@@ -275,13 +275,13 @@ footer {
     
     /* 1. 調整工作區高度與內距 */
     .login-workspace {
-        min-height: 70vh; /* 平板高度較小，不需要太高 */
+        min-height: 70vh; 
         padding: 40px;
     }
 
     /* 2. 登入卡片微調 */
     .auth-card {
-        max-width: 380px; /* 稍微縮小一點點 */
+        max-width: 380px; 
         padding: 35px;
         box-shadow: 0 4px 12px rgba(174, 174, 222, 0.15);
     }
@@ -305,23 +305,10 @@ footer {
    ============================================ */
 @media screen and (max-width: 600px) {
 
-    /* 1. 取消自訂游標 (手機無滑鼠) */
     body, a, button, .icons span, .product-card {
         cursor: auto; 
     }
 
-    /* 2. 登入區塊佈局調整 */
-    .login-workspace {
-        /* 改為靠上對齊，並加上 padding-top */
-        /* 這樣鍵盤跳出來時，輸入框比較不會被遮住 */
-        align-items: flex-start; 
-        padding-top: 50px; 
-        padding-left: 15px;
-        padding-right: 15px;
-        min-height: auto; /* 手機上不需要強制撐開高度 */
-    }
-
-    /* 3. 登入卡片瘦身 */
     .auth-card {
         width: 100%; /* 寬度佔滿 */
         max-width: 100%;
@@ -331,22 +318,21 @@ footer {
     }
 
     .auth-title {
-        font-size: 20px; /* 標題縮小 */
+        font-size: 20px;
     }
 
-    /* 4. 輸入框與按鈕 */
     .input-group input {
-        padding: 10px; /* 輸入框變扁一點 */
-        font-size: 16px; /* 防止 iOS 縮放 (字體 < 16px iOS 會自動放大) */
+        padding: 10px; 
+        font-size: 16px; 
     }
 
     .auth-btn, .secondary-btn {
-        padding: 12px; /* 按鈕好按即可 */
+        padding: 12px; 
     }
 
     /* 5. 彈跳視窗 (Modal) 手機版 */
     .modal-content {
-        width: 92%; /* 幾乎佔滿螢幕 */
+        width: 72%;
         padding: 20px;
         max-height: 80vh;
         margin-top: 20px;
@@ -395,3 +381,4 @@ footer {
         line-height: 1.8;
     }
 }
+
