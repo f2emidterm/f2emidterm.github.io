@@ -181,7 +181,7 @@ button,
     align-items: center;
     cursor: pointer;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-    z-index: 10;
+    z-index: 1;
     transition: transform 0.2s;
 }
 
@@ -481,6 +481,7 @@ footer {
         padding: 30px 10px;
     }
 }
+
 
 
 
