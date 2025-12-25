@@ -152,7 +152,6 @@ button,
     justify-content: center;
     align-items: center;
     color: #AEAEDE;
-    border-radius: 50%;   /* 確保是圓形 */
     overflow: hidden;     /* 圖片超出切掉 */
     cursor: default;      /* 預設游標 */
 }
@@ -484,3 +483,4 @@ footer {
         padding: 30px 10px;
     }
 }
+
