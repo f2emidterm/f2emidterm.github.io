@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", () => {
         checkoutBtn.addEventListener("click", async () => {
             const currentUser = localStorage.getItem("currentUser");
             if (!currentUser) {
-                alert("請先登入會員才能進行購買！");
+                alert("請先登入會員才能進行購買！\n(將跳轉至登入頁面)");
                 window.location.href = "login.html"; 
                 return;
             }
@@ -364,3 +364,4 @@ function renderDetailHTML(container, product, id) {
         });
     }
 }
+
