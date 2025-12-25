@@ -153,13 +153,8 @@ button,
     align-items: center;
     color: #AEAEDE;
     overflow: hidden;     /* 圖片超出切掉 */
-    cursor: default;      /* 預設游標 */
 }
 
-/* 當有圖片時，滑鼠變放大鏡 */
-.avatar-circle.has-image {
-    cursor: zoom-in;
-}
 
 .avatar-circle .material-icons {
     font-size: 40px;
@@ -179,7 +174,6 @@ button,
     display: flex;
     justify-content: center;
     align-items: center;
-    cursor: pointer;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
     z-index: 1;
     transition: transform 0.2s;
@@ -255,7 +249,6 @@ button,
 .close-modal {
     font-size: 28px;
     color: #aaa;
-    cursor: pointer;
     line-height: 1;
 }
 
@@ -393,7 +386,6 @@ footer {
     right: 40px;
     color: #fff;
     font-size: 40px;
-    cursor: pointer;
     font-weight: bold;
     z-index: 10000;
 }
@@ -481,6 +473,7 @@ footer {
         padding: 30px 10px;
     }
 }
+
 
 
 
