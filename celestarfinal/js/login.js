@@ -162,7 +162,7 @@ if (historyBtn) {
                 card.className = 'order-card';
                 card.innerHTML = `
                     <div class="order-header">
-                        <span>📅 ${dateStr}</span>
+                        <span>${dateStr}</span>
                         <span style="color:${order.status === 'new' ? '#AEAEDE' : '#333'}">
                             ${order.status ? order.status.toUpperCase() : 'COMPLETED'}
                         </span>
@@ -221,3 +221,4 @@ function resetButton(text) {
         submitBtn.disabled = false;
     }
 }
+
