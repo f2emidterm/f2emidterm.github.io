@@ -155,7 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (!currentUser) {
                 // 如果沒抓到人 -> 彈窗警告 -> 跳轉登入頁
-                alert("請先登入會員才能結帳！\n(購物車商品會幫您保留)");
+                alert("請先登入會員才能結帳！");
                 window.location.href = "login.html"; 
                 return; // 程式到這裡停止，不執行下面的結帳
             }
@@ -212,3 +212,4 @@ document.addEventListener("DOMContentLoaded", () => {
     
     renderCart();
 });
+
