@@ -18,6 +18,10 @@ header {
     z-index: 2001; /* 確保比 Header 和遮罩都高 */
 }
 
+.menu-btn:hover {
+        transform: scale(1.1);
+    }
+
 /* 左側區塊 */
 .header-left {
     display: flex;
@@ -598,6 +602,7 @@ header {
         padding:8px;
     }
 }
+
 
 
 
