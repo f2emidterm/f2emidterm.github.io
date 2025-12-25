@@ -130,7 +130,8 @@ if (logoutBtn) {
 if (editAvatarBtn && uploadInput) {
     // 1. 點擊「小鉛筆按鈕」 -> 觸發選檔
     editAvatarBtn.addEventListener('click', (e) => {
-        e.stopPropagation(); // 防止事件冒泡
+        // 雖然這裡有 stopPropagation，但為了保險，下面的放大功能也要加檢查
+        e.stopPropagation(); 
         uploadInput.click();
     });
 
@@ -171,9 +172,18 @@ if (editAvatarBtn && uploadInput) {
     });
 }
 
-// --- 功能 B: 點擊頭像放大檢視 ---
+// --- 功能 B: 點擊頭像放大檢視 (★ 這裡有重要修改) ---
 if (avatarContainer && imageZoomModal && zoomedImage) {
-    avatarContainer.addEventListener('click', () => {
+    // 注意這裡多加了 (e) 參數，用來檢查點擊事件
+    avatarContainer.addEventListener('click', (e) => {
+        
+        // ★ 關鍵修改：檢查點擊的目標是否來自於「編輯按鈕」
+        // e.target.closest('#editAvatarBtn') 會檢查點到的元素 (或其祖先) 是不是編輯按鈕
+        if (e.target.closest('#editAvatarBtn')) {
+            // 如果是點到鉛筆，就什麼都不做，直接結束這個函式
+            return;
+        }
+
         // 只有在「有顯示圖片」的時候才觸發放大
         if (userAvatar.style.display !== 'none' && userAvatar.src) {
             zoomedImage.src = userAvatar.src; // 把大圖的來源設為目前的頭像
