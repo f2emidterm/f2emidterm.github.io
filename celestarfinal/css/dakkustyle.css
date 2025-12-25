@@ -597,7 +597,7 @@ footer {
     background-color: #EFEEF2;
     border-top: 1px solid #AEAEDE;
     padding: 50px 20px 20px 20px;
-    margin-top: 100px;
+    margin-top: 200px;
     width: 100%;
     box-sizing: border-box;
 }
@@ -884,6 +884,7 @@ footer {
         padding: 30px 15px 15px 15px;
     }
 }
+
 
 
 
