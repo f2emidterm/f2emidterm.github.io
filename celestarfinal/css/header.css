@@ -591,14 +591,16 @@ header {
         margin-right: 25px;     /* 對齊右邊緣，避免超出螢幕 */
         top: 60px;    /* 配合 Header 高度 */
     }
+
+    .cart-badge {
+        font-size: 10px;
+    }
+    
+    .search-bar{
+        right:6%;
+        padding:8px;
+    }
 }
-
-
-
-
-
-
-
 
 
 
