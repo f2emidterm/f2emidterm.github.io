@@ -63,8 +63,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 img.alt = "sticker";
                 img.crossOrigin = "anonymous"; // 避免截圖跨域問題
 
-                // ★★★ 關鍵：連結貼紙與商品 ★★★
-                // 假設你在 stickers 集合的文件裡，有一個欄位叫 'productId' 儲存對應的商品 ID
                 if (data.productId) {
                     img.dataset.productId = data.productId;
                 } else {
@@ -431,13 +429,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     let currentStepIndex = 0;
 
     if (overlay) {
-        const hasSeenTutorial = sessionStorage.getItem("hasSeenDakkuTutorial");
-        if (!hasSeenTutorial) {
+        //const hasSeenTutorial = sessionStorage.getItem("hasSeenDakkuTutorial");
+        //if (!hasSeenTutorial) {
             setTimeout(() => {
                 overlay.classList.add("active");
                 renderStep(0);
             }, 500);
-        }
+        //}
 
         if(helpBtn) {
             helpBtn.addEventListener('click', function() {
@@ -516,3 +514,4 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 });
+
