@@ -19,5 +19,6 @@ const db = getFirestore(app);
 
 // 重要：一定要 export db，這樣 main.js 才拿得到
 
-export { auth,db };
+export { db };
+
 
