@@ -1,10 +1,19 @@
-// 引入 Firebase (依照你原本的路徑)
+// ===========================================
+// js/header.js (除錯版)
+// ===========================================
+
+// 1. 嘗試引入 Firebase
+// 如果你的 firebase.js 路徑錯了，或者 API Key 有問題，瀏覽器會直接在這裡報錯停止
 import { db } from './firebase.js';
 import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+console.log("✅ header.js 已載入，正在等待 DOM...");
+
 document.addEventListener("DOMContentLoaded", () => {
+    console.log("✅ DOM 載入完成，開始綁定按鈕...");
+
     // ===========================
-    // 1. Header 選單邏輯 (維持原樣)
+    // 1. Header 選單邏輯
     // ===========================
     const menuBtn = document.querySelector(".menu-btn");
     const mobileMenu = document.querySelector(".mobile-menu");
@@ -32,45 +41,58 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ===========================
-    // 2. 搜尋框邏輯 (UI開關 + 🔥跳轉功能)
+    // 2. 搜尋框邏輯
     // ===========================
-    const searchBtn = document.getElementById("searchBtn"); // 放大鏡 icon
-    const searchBar = document.querySelector(".search-bar"); // 整個搜尋列區塊
+    const searchBtn = document.getElementById("searchBtn");
+    const searchBar = document.querySelector(".search-bar");
+
+    // ★ 除錯點 1：檢查搜尋元素是否存在
+    if (!searchBtn) console.error("❌ 找不到 ID 為 'searchBtn' 的按鈕 (放大鏡)");
+    if (!searchBar) console.error("❌ 找不到 Class 為 '.search-bar' 的元素");
 
     if (searchBtn && searchBar) {
-        // (1) 點擊放大鏡：開關搜尋框
+        console.log("✅ 搜尋功能綁定成功！");
+        
+        // (1) 點擊放大鏡
         searchBtn.addEventListener("click", (e) => {
+            console.log("🖱️ 點擊了放大鏡");
             e.stopPropagation();
-            searchBar.classList.toggle("active");
-            // 打開搜尋框時，自動讓游標停在輸入框內
-            if(searchBar.classList.contains("active")){
+            searchBar.classList.toggle("active"); // 切換 active class
+            
+            // 檢查 CSS 是否生效
+            if (searchBar.classList.contains("active")) {
+                console.log("🔎 搜尋框已開啟 (Class Added)");
                 const input = searchBar.querySelector("input");
                 if(input) input.focus();
+            } else {
+                console.log("🙈 搜尋框已關閉");
             }
+            
             document.querySelector(".cart-dropdown")?.classList.remove("active");
         });
+
         searchBar.addEventListener("click", (e) => e.stopPropagation());
 
-        // 🔥 (2) 執行搜尋功能的邏輯 (寫在這裡！)
+        // (2) 搜尋執行邏輯
         const searchInput = searchBar.querySelector("input");
-        const searchSubmitBtn = searchBar.querySelector("button"); // GO 按鈕
+        const searchSubmitBtn = searchBar.querySelector("button");
 
         const performSearch = () => {
             const query = searchInput.value.trim();
+            console.log("🚀 準備搜尋:", query);
             if (query) {
-                // 跳轉到 search.html 並帶上關鍵字參數
                 window.location.href = `search.html?q=${encodeURIComponent(query)}`;
+            } else {
+                console.warn("⚠️ 請輸入關鍵字再搜尋");
             }
         };
 
         if (searchSubmitBtn && searchInput) {
-            // 點擊 GO 按鈕
             searchSubmitBtn.addEventListener("click", (e) => {
-                e.preventDefault(); // 防止表單預設提交
+                e.preventDefault();
                 performSearch();
             });
 
-            // 在輸入框按下 Enter 鍵
             searchInput.addEventListener("keypress", (e) => {
                 if (e.key === "Enter") {
                     e.preventDefault();
@@ -90,19 +112,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const checkoutBtn = document.getElementById("checkoutBtn");
     const cartCountBadge = document.getElementById("cartCount");
 
-    // 切換顯示
+    // ★ 除錯點 2：檢查購物車元素
+    if (!cartIcon) console.error("❌ 找不到 ID 為 'cartIcon' 的購物車圖示");
+    if (!cartDropdown) console.error("❌ 找不到 Class 為 '.cart-dropdown' 的元素");
+
     if (cartIcon && cartDropdown) {
+        console.log("✅ 購物車功能綁定成功！");
+        
         cartIcon.addEventListener("click", (e) => {
+            console.log("🛒 點擊了購物車");
             e.stopPropagation();
             cartDropdown.classList.toggle("active");
             if(searchBar) searchBar.classList.remove("active");
             renderCart();
         });
+        
         cartDropdown.addEventListener("click", (e) => e.stopPropagation());
     }
 
     // 點擊外部關閉
-    document.addEventListener("click", () => {
+    document.addEventListener("click", (e) => {
+        // console.log("點擊了頁面其他地方"); // 這行太吵可以註解掉
         if(searchBar) searchBar.classList.remove("active");
         if(cartDropdown) cartDropdown.classList.remove("active");
     });
@@ -117,12 +147,14 @@ document.addEventListener("DOMContentLoaded", () => {
             cartCountBadge.style.display = totalCount > 0 ? "inline-block" : "none";
         }
 
+        if(!cartItemsContainer) return; // 防呆
+
         cartItemsContainer.innerHTML = "";
         let totalPrice = 0;
 
         if (cart.length === 0) {
             cartItemsContainer.innerHTML = '<div class="cart-empty">Cart is empty.</div>';
-            cartTotalEl.textContent = "Total: $0";
+            if(cartTotalEl) cartTotalEl.textContent = "Total: $0";
             return;
         }
 
@@ -147,7 +179,7 @@ document.addEventListener("DOMContentLoaded", () => {
             cartItemsContainer.appendChild(div);
         });
 
-        cartTotalEl.textContent = `Total: $${totalPrice}`;
+        if(cartTotalEl) cartTotalEl.textContent = `Total: $${totalPrice}`;
 
         document.querySelectorAll(".qty-btn").forEach(btn => {
             btn.addEventListener("click", (e) => {
@@ -185,7 +217,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // ===========================
     if (checkoutBtn) {
         checkoutBtn.addEventListener("click", async () => {
-            
+            console.log("💳 點擊結帳按鈕");
+
             // 1. 檢查登入
             const currentUser = localStorage.getItem("currentUser");
             if (!currentUser) {
