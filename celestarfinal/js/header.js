@@ -146,22 +146,21 @@ document.addEventListener("DOMContentLoaded", () => {
     // ===========================
     // 🔥 6. 結帳功能 (修改重點在這裡)
     // ===========================
+    // ===========================
+    // 🔥 6. 結帳功能 (修復資料重複問題版)
+    // ===========================
     if (checkoutBtn) {
         checkoutBtn.addEventListener("click", async () => {
             
-            // ★ 第一步：檢查是否登入
-            // 我們去 localStorage 抓剛剛 login.js 存進去的 "currentUser"
+            // 1. 檢查登入
             const currentUser = localStorage.getItem("currentUser");
-
             if (!currentUser) {
-                // 如果沒抓到人 -> 彈窗警告 -> 跳轉登入頁
                 alert("請先登入會員才能結帳！");
                 window.location.href = "login.html"; 
-                return; // 程式到這裡停止，不執行下面的結帳
+                return;
             }
 
-            // --- 以下是登入後的結帳流程 ---
-
+            // 2. 讀取購物車
             const cart = JSON.parse(localStorage.getItem("shopCart")) || [];
             
             if (cart.length === 0) {
@@ -169,33 +168,51 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
+            // 3. 計算總價
             const total = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
             
-            // 摘要彈窗 (可選)
+            // ==========================================
+            // ★ 關鍵修正：資料清洗 (Data Sanitization)
+            // 不要直接存 cart，我們手動建立一個乾淨的新陣列
+            // 這能確保 A 就是 A，B 就是 B，不會有殘留的 bug
+            // ==========================================
+            const finalOrderItems = cart.map(item => {
+                return {
+                    name: item.name,
+                    // 強制轉成數字，避免 "100" 字串導致計算錯誤
+                    price: Number(item.price),
+                    qty: Number(item.qty),
+                    // 如果有圖片網址就存，沒有就存空字串
+                    img: item.img || "" 
+                };
+            });
+
+            // 4. 製作確認清單文字
             let orderSummary = `Hi ${currentUser}, confirm your order:\n\n`;
-            cart.forEach(i => {
+            finalOrderItems.forEach(i => {
                 orderSummary += `- ${i.name} x${i.qty} ($${i.price * i.qty})\n`;
             });
             orderSummary += `\nTotal: $${total}`;
 
-            if(!confirm(orderSummary)) return; // 讓使用者按確定才送出
+            // 5. 使用者確認
+            if(!confirm(orderSummary)) return; 
 
-            // 寫入 Firebase
+            // 6. 寫入 Firebase
             try {
                 checkoutBtn.textContent = "Processing...";
                 checkoutBtn.disabled = true;
 
                 await addDoc(collection(db, "orders"), {
-                    items: cart,
+                    items: finalOrderItems, // ★ 這裡改傳我們清洗過的乾淨資料
                     totalAmount: total,
-                    orderBy: currentUser, // ★ 關鍵：把「是誰買的」寫進資料庫
+                    orderBy: currentUser,
                     createdAt: serverTimestamp(),
                     status: "new"
                 });
 
                 alert("Order placed successfully!");
                 
-                // 結帳成功才清空購物車
+                // 清空購物車
                 localStorage.removeItem("shopCart");
                 renderCart();
                 cartDropdown.classList.remove("active");
@@ -212,4 +229,5 @@ document.addEventListener("DOMContentLoaded", () => {
     
     renderCart();
 });
+
 
