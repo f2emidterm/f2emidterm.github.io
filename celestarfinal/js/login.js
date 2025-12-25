@@ -25,6 +25,7 @@ import {
 // ============================================
 const loginForm = document.getElementById('loginForm');
 const emailInput = document.getElementById('emailInput'); 
+const passwordInput = document.getElementById('passwordInput');
 const errorMsg = document.getElementById('error-msg');
 const loginSection = document.getElementById('login-section');
 const profileSection = document.getElementById('profile-section');
@@ -315,6 +316,7 @@ function showLogin() {
     if(loginSection) loginSection.style.display = 'block';
     if(profileSection) profileSection.style.display = 'none';
     if(emailInput) emailInput.value = '';
+    if(passwordInput) passwordInput.value = '';
     
     updateAvatarView(null);
 }
@@ -345,4 +347,5 @@ function resetButton(text) {
         submitBtn.disabled = false;
     }
 }
+
 
