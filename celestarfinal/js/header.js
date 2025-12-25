@@ -4,7 +4,7 @@ import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/fir
 
 document.addEventListener("DOMContentLoaded", () => {
     // ===========================
-    // 原有的 Header 邏輯 (漢堡選單 & 搜尋)
+    // Header 邏輯 (維持原樣)
     // ===========================
     const menuBtn = document.querySelector(".menu-btn");
     const mobileMenu = document.querySelector(".mobile-menu");
@@ -38,14 +38,13 @@ document.addEventListener("DOMContentLoaded", () => {
         searchBtn.addEventListener("click", (e) => {
             e.stopPropagation();
             searchBar.classList.toggle("active");
-            // 打開搜尋時，關閉購物車
             document.querySelector(".cart-dropdown")?.classList.remove("active");
         });
         searchBar.addEventListener("click", (e) => e.stopPropagation());
     }
 
     // ===========================
-    // 🔥 新增：購物車邏輯
+    // 購物車邏輯
     // ===========================
     const cartIcon = document.getElementById("cartIcon");
     const cartDropdown = document.querySelector(".cart-dropdown");
@@ -54,36 +53,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const checkoutBtn = document.getElementById("checkoutBtn");
     const cartCountBadge = document.getElementById("cartCount");
 
-    // 1. 切換購物車顯示/隱藏
+    // 1. 切換顯示
     if (cartIcon && cartDropdown) {
         cartIcon.addEventListener("click", (e) => {
-            e.stopPropagation(); // 阻止冒泡
-            cartDropdown.classList.toggle("active");
-            
-            // 打開購物車時，關閉搜尋列
-            if(searchBar) searchBar.classList.remove("active");
-            
-            renderCart(); // 打開時重新渲染，確保資料最新
-        });
-
-        // 點擊購物車內部不關閉
-        cartDropdown.addEventListener("click", (e) => {
             e.stopPropagation();
+            cartDropdown.classList.toggle("active");
+            if(searchBar) searchBar.classList.remove("active");
+            renderCart();
         });
+        cartDropdown.addEventListener("click", (e) => e.stopPropagation());
     }
 
-    // 2. 點擊網頁其他地方，關閉所有下拉視窗
+    // 2. 點擊外部關閉
     document.addEventListener("click", () => {
         if(searchBar) searchBar.classList.remove("active");
         if(cartDropdown) cartDropdown.classList.remove("active");
     });
 
-    // 3. 渲染購物車畫面 (核心功能)
+    // 3. 渲染購物車
     function renderCart() {
-        // 從 LocalStorage 讀取資料
         const cart = JSON.parse(localStorage.getItem("shopCart")) || [];
         
-        // 更新小紅點數量 (可選)
         if(cartCountBadge) {
             const totalCount = cart.reduce((acc, item) => acc + item.qty, 0);
             cartCountBadge.textContent = totalCount;
@@ -122,7 +112,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         cartTotalEl.textContent = `Total: $${totalPrice}`;
 
-        // 綁定加減按鈕事件
         document.querySelectorAll(".qty-btn").forEach(btn => {
             btn.addEventListener("click", (e) => {
                 const idx = e.target.dataset.index;
@@ -132,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 4. 更新商品數量
+    // 4. 更新數量
     function updateCartItem(index, isPlus) {
         let cart = JSON.parse(localStorage.getItem("shopCart")) || [];
         
@@ -142,29 +131,37 @@ document.addEventListener("DOMContentLoaded", () => {
             cart[index].qty--;
         }
 
-        // 如果數量歸零，移除該商品
         if (cart[index].qty <= 0) {
-            // 使用 confirm 讓使用者確認是否刪除 (可選)
-            // if(confirm("Remove this item?")) {
-                cart.splice(index, 1);
-            // } else {
-            //    cart[index].qty = 1; // 反悔的話設回1
-            // }
+            cart.splice(index, 1);
         }
 
         localStorage.setItem("shopCart", JSON.stringify(cart));
-        renderCart(); // 重新渲染
+        renderCart();
     }
 
-    // 5. 監聽 "cartUpdated" 事件 (由 product.js 觸發)
-    // 這樣在商品頁按加入購物車時，Header 會知道要更新
     window.addEventListener("cartUpdated", () => {
         renderCart();
     });
 
-    // 6. 結帳功能 (寫入 Firebase)
+    // ===========================
+    // 🔥 6. 結帳功能 (修改重點在這裡)
+    // ===========================
     if (checkoutBtn) {
         checkoutBtn.addEventListener("click", async () => {
+            
+            // ★ 第一步：檢查是否登入
+            // 我們去 localStorage 抓剛剛 login.js 存進去的 "currentUser"
+            const currentUser = localStorage.getItem("currentUser");
+
+            if (!currentUser) {
+                // 如果沒抓到人 -> 彈窗警告 -> 跳轉登入頁
+                alert("請先登入會員才能結帳！\n(購物車商品會幫您保留)");
+                window.location.href = "login.html"; 
+                return; // 程式到這裡停止，不執行下面的結帳
+            }
+
+            // --- 以下是登入後的結帳流程 ---
+
             const cart = JSON.parse(localStorage.getItem("shopCart")) || [];
             
             if (cart.length === 0) {
@@ -174,15 +171,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const total = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
             
-            // 製作訂單摘要字串
-            let orderSummary = "Order Summary:\n";
+            // 摘要彈窗 (可選)
+            let orderSummary = `Hi ${currentUser}, confirm your order:\n\n`;
             cart.forEach(i => {
                 orderSummary += `- ${i.name} x${i.qty} ($${i.price * i.qty})\n`;
             });
             orderSummary += `\nTotal: $${total}`;
 
-            // 彈出視窗
-            alert(orderSummary);
+            if(!confirm(orderSummary)) return; // 讓使用者按確定才送出
 
             // 寫入 Firebase
             try {
@@ -192,13 +188,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 await addDoc(collection(db, "orders"), {
                     items: cart,
                     totalAmount: total,
+                    orderBy: currentUser, // ★ 關鍵：把「是誰買的」寫進資料庫
                     createdAt: serverTimestamp(),
                     status: "new"
                 });
 
                 alert("Order placed successfully!");
                 
-                // 清空購物車
+                // 結帳成功才清空購物車
                 localStorage.removeItem("shopCart");
                 renderCart();
                 cartDropdown.classList.remove("active");
@@ -213,7 +210,5 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
     
-    // 初始化時渲染一次 (避免重新整理後小紅點消失)
     renderCart();
 });
-
