@@ -70,14 +70,12 @@
         </div>
 
         <section class="products" id="productsContainer">
-            <div class="no-products">Searching database...</div>
+            <div style="grid-column: 1/-1; text-align: center; padding: 50px;">
+                Searching database...
+            </div>
         </section>
 
-        <div class="pagination" id="pagination" style="display:none;">
-            <span id="prev">&lt;</span>
-            <span id="page1" class="page-active">1</span>
-            <span id="next">&gt;</span>
-        </div>
+        <div style="height: 50px;"></div>
     </div>
 
     <footer>
@@ -88,6 +86,7 @@
     </footer>
 
     <script type="module" src="js/header.js"></script>
+    
     <script type="module">
         import { db } from './js/firebase.js';
         import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -99,6 +98,7 @@
             const displayEl = document.getElementById("searchQueryDisplay");
             const container = document.getElementById("productsContainer");
 
+            // 若無搜尋字
             if (!query) {
                 displayEl.textContent = "";
                 container.innerHTML = '<div class="no-products">Please enter a keyword to search.</div>';
@@ -108,7 +108,7 @@
             displayEl.textContent = `Results for "${query}"`;
 
             try {
-                // 取得所有商品
+                // 1. 抓取資料
                 const querySnapshot = await getDocs(collection(db, "products"));
                 let matches = [];
                 const searchLower = query.toLowerCase();
@@ -118,11 +118,13 @@
                     const name = data.name ? data.name.toLowerCase() : "";
                     const category = data.category ? data.category.toLowerCase() : "";
                     
+                    // 比對搜尋字
                     if (name.includes(searchLower) || category.includes(searchLower)) {
                         matches.push({ id: doc.id, ...data });
                     }
                 });
 
+                // 2. 渲染 (使用與 shopscript.js 相同的結構)
                 renderProducts(matches, container);
 
             } catch (error) {
@@ -131,32 +133,36 @@
             }
         });
 
-        // ★ 重點：這裡生成的 HTML 結構完全對應你的 CSS
         function renderProducts(products, container) {
             container.innerHTML = "";
 
             if (products.length === 0) {
-                container.innerHTML = `<div class="no-products">No results found for your search.</div>`;
+                container.innerHTML = `<div class="no-products">No results found 😢</div>`;
                 return;
             }
 
-            products.forEach(product => {
-                let imgUrl = product.image || product.img || "images/default.png"; 
+            products.forEach(p => {
+                // 圖片處理 (參照你的邏輯)
+                const imgSrc = p.img ? p.img : (p.image ? p.image : "https://via.placeholder.com/200/cccccc/808080?text=No+Image");
+                
+                // 價格處理 (參照你的邏輯)
+                let displayPrice = p.price;
+                if (!String(displayPrice).includes("$")) {
+                    displayPrice = `$${displayPrice}`;
+                }
 
                 const card = document.createElement("div");
                 card.className = "product-card";
                 
-                // 這裡的結構： product-img -> img, product-name, product-price
-                // 我把整個卡片包成連結，點擊去詳細頁 (假設有 product_detail.html)
-                // 如果沒有詳細頁，可以改回單純顯示
+                // ★ 這裡的連結改成 product.html，並帶入 id
                 card.innerHTML = `
-                    <a href="product_detail.html?id=${product.id}">
-                        <div class="product-img">
-                            <img src="${imgUrl}" alt="${product.name}">
-                        </div>
-                        <div class="product-name">${product.name}</div>
-                        <div class="product-price">$${product.price}</div>
-                    </a>
+                  <a href="product.html?id=${p.id}">
+                    <div class="product-img">
+                      <img src="${imgSrc}" alt="${p.name}">
+                    </div>
+                    <div class="product-name">${p.name}</div>
+                    <div class="product-price">${displayPrice}</div>
+                  </a>
                 `;
                 container.appendChild(card);
             });
