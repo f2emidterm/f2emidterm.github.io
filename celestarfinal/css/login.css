@@ -358,14 +358,14 @@ footer {
    ★ Image Zoom Modal (圖片放大視窗樣式)
    ============================================ */
 .image-zoom-modal {
-    display: none; /* 預設隱藏 */
+    display: none; 
     position: fixed;
     z-index: 9999;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.9); /* 深色背景 */
+    background-color: rgba(0, 0, 0, 0.2); 
     justify-content: center;
     align-items: center;
 }
@@ -481,5 +481,6 @@ footer {
         padding: 30px 10px;
     }
 }
+
 
 
