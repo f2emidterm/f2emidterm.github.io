@@ -72,7 +72,7 @@ if (loginForm) {
         
         const username = emailInput.value.trim();
         if (!username) {
-            errorMsg.innerText = "請輸入名字";
+            errorMsg.innerText = "請輸入email";
             return;
         }
 
@@ -130,9 +130,14 @@ if (logoutBtn) {
 if (editAvatarBtn && uploadInput) {
     // 1. 點擊「小鉛筆按鈕」 -> 觸發選檔
     editAvatarBtn.addEventListener('click', (e) => {
-        // 雖然這裡有 stopPropagation，但為了保險，下面的放大功能也要加檢查
+        e.stopPropagation(); // 防止鉛筆本身的點擊傳出去
+        uploadInput.click(); // 程式觸發 input 點擊
+    });
+
+    // ★★★ 關鍵修正：這裡加這一段！ ★★★
+    // 當程式點擊 input 時，阻止這個點擊事件往上傳給 avatarContainer
+    uploadInput.addEventListener('click', (e) => {
         e.stopPropagation(); 
-        uploadInput.click();
     });
 
     // 2. 選檔後處理 (Base64 上傳)
@@ -340,3 +345,4 @@ function resetButton(text) {
         submitBtn.disabled = false;
     }
 }
+
