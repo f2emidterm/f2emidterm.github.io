@@ -169,7 +169,7 @@ header {
     right: -8px; 
     background-color: #AEAEDE; 
     color: white;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: bold;
     text-align: center;
     min-width: 16px;
@@ -178,7 +178,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    line-height: 1;
+    padding: 1px;
     z-index: 10;
     pointer-events: none; /* 讓點擊紅點也能觸發購物車 */
     display: none; /* 預設隱藏，有數量才顯示 */
@@ -587,13 +587,13 @@ header {
             display: block;
         }
     .cart-dropdown {
-        width: 300px; /* 平板稍微窄一點點 */
-        margin-right: 25px;     /* 對齊右邊緣，避免超出螢幕 */
-        top: 60px;    /* 配合 Header 高度 */
+        width: 300px; 
+        margin-right: 25px;   
+        top: 60px;  
     }
 
     .cart-badge {
-        font-size: 10px;
+        font-size: 10px !important;
     }
     
     .search-bar{
@@ -601,6 +601,7 @@ header {
         padding:8px;
     }
 }
+
 
 
 
