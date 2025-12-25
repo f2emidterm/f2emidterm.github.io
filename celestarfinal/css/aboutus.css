@@ -146,10 +146,13 @@ button,
     color: #333;
 }
 
-.about-window:first-of-type .close-btn:hover {
-    background-color: #DFDCE9;
+.about-window:first-of-type .close-btn{
     color: #FF0000;
     font-weight:bold;
+}
+
+.about-window:first-of-type .close-btn:hover {
+    background-color: #DFDCE9;
 }
 
 .about-window:first-of-type .close-btn {
@@ -864,6 +867,7 @@ footer {
         align-self: center;     
     }
 }
+
 
 
 
