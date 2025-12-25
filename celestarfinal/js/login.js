@@ -1,7 +1,7 @@
 // js/login.js
 
 // 1. ★ 從你的設定檔匯入 auth 和 db
-import { auth, db } from './firebase.js';
+import { db } from './firebase.js';
 
 // 2. 引入需要的 Firebase 功能函數 (不用 initializeApp 了)
 import { 
@@ -122,5 +122,6 @@ function resetButton(text) {
         submitBtn.disabled = false;
     }
 }
+
 
 
