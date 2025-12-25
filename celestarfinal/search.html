@@ -1,36 +1,18 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Search Results - CELESTAR SHOP</title>
     <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="css/shopstyle.css" />
+    
     <link rel="stylesheet" href="css/header.css" />
+    <link rel="stylesheet" href="css/search.css" />
+    
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
-
-    <style>
-        .search-results-header {
-            text-align: center;
-            padding: 40px 20px 10px;
-            max-width: 1000px;
-            margin: 0 auto;
-            color: #3f4046;
-        }
-
-            .search-results-header h2 {
-                font-weight: 500;
-                font-size: 24px;
-                margin-bottom: 10px;
-            }
-
-            .search-results-header p {
-                color: #666;
-                font-size: 14px;
-            }
-    </style>
 </head>
 <body>
+
     <header>
         <div class="header-left">
             <span class="material-symbols-outlined menu-btn">menu</span>
@@ -81,19 +63,19 @@
     </header>
 
     <div class="products-bg">
-        <div class="search-results-header">
+        
+        <div class="search-header">
             <h2>Search Results</h2>
-            <p id="searchQueryDisplay">Searching for "..."</p>
+            <p id="searchQueryDisplay">Loading...</p>
         </div>
 
-        <section class="products">
-            <div class="product-card"></div>
+        <section class="products" id="productsContainer">
+            <div class="no-products">Searching database...</div>
         </section>
 
-        <div class="pagination" id="pagination">
+        <div class="pagination" id="pagination" style="display:none;">
             <span id="prev">&lt;</span>
-            <span id="page1">1</span>
-            <span id="page2">2</span>
+            <span id="page1" class="page-active">1</span>
             <span id="next">&gt;</span>
         </div>
     </div>
@@ -101,13 +83,84 @@
     <footer>
         COPYRIGHT © 2025 CELESTAR <br>
         For academic purposes only; non-profit testing site.<br>
-        Email : JWKJFKAJ@xxxmail.com   CONTACT NUMBER : 09XXX45X5X <br>
-        Address: heven999 | Business Registration Number: 44545adjkz | Business License: 4543Dkjlkf
+        Email : JWKJFKAJ@xxxmail.com    CONTACT NUMBER : 09XXX45X5X <br>
+        Address: heven999 | Business Registration Number: 44545adjkz | Business License: 4543Dkjlkf
     </footer>
 
     <script type="module" src="js/header.js"></script>
-    <script type="module" src="js/firebase.js"></script>
+    <script type="module">
+        import { db } from './js/firebase.js';
+        import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+        document.addEventListener("DOMContentLoaded", async () => {
+            const params = new URLSearchParams(window.location.search);
+            const query = params.get("q");
+            
+            const displayEl = document.getElementById("searchQueryDisplay");
+            const container = document.getElementById("productsContainer");
+
+            if (!query) {
+                displayEl.textContent = "";
+                container.innerHTML = '<div class="no-products">Please enter a keyword to search.</div>';
+                return;
+            }
+
+            displayEl.textContent = `Results for "${query}"`;
+
+            try {
+                // 取得所有商品
+                const querySnapshot = await getDocs(collection(db, "products"));
+                let matches = [];
+                const searchLower = query.toLowerCase();
+
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const name = data.name ? data.name.toLowerCase() : "";
+                    const category = data.category ? data.category.toLowerCase() : "";
+                    
+                    if (name.includes(searchLower) || category.includes(searchLower)) {
+                        matches.push({ id: doc.id, ...data });
+                    }
+                });
+
+                renderProducts(matches, container);
+
+            } catch (error) {
+                console.error("Error:", error);
+                container.innerHTML = `<div class="no-products">Error loading products.</div>`;
+            }
+        });
+
+        // ★ 重點：這裡生成的 HTML 結構完全對應你的 CSS
+        function renderProducts(products, container) {
+            container.innerHTML = "";
+
+            if (products.length === 0) {
+                container.innerHTML = `<div class="no-products">No results found for your search.</div>`;
+                return;
+            }
+
+            products.forEach(product => {
+                let imgUrl = product.image || product.img || "images/default.png"; 
+
+                const card = document.createElement("div");
+                card.className = "product-card";
+                
+                // 這裡的結構： product-img -> img, product-name, product-price
+                // 我把整個卡片包成連結，點擊去詳細頁 (假設有 product_detail.html)
+                // 如果沒有詳細頁，可以改回單純顯示
+                card.innerHTML = `
+                    <a href="product_detail.html?id=${product.id}">
+                        <div class="product-img">
+                            <img src="${imgUrl}" alt="${product.name}">
+                        </div>
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-price">$${product.price}</div>
+                    </a>
+                `;
+                container.appendChild(card);
+            });
+        }
+    </script>
 </body>
-
 </html>
