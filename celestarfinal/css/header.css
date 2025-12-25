@@ -502,7 +502,6 @@ header {
         transform: translateY(-50%);
         font-size: 30px;
         z-index: 2001;
-        cursor: pointer;
     }
 
     .header-center {
@@ -599,6 +598,7 @@ header {
         padding:8px;
     }
 }
+
 
 
 
