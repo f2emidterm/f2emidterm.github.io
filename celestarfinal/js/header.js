@@ -1,16 +1,25 @@
 // ===========================================
-// js/header.js (除錯版)
+// js/header.js (全功能整合版)
 // ===========================================
 
-// 1. 嘗試引入 Firebase
-// 如果你的 firebase.js 路徑錯了，或者 API Key 有問題，瀏覽器會直接在這裡報錯停止
 import { db } from './firebase.js';
-import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+// ★★★ 注意這裡：多引入了 doc, getDoc 用來讀取單一商品 ★★★
+import { collection, addDoc, serverTimestamp, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-console.log("✅ header.js 已載入，正在等待 DOM...");
+console.log("✅ header.js 已載入...");
 
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("✅ DOM 載入完成，開始綁定按鈕...");
+    
+    // ===========================
+    // 0. 特殊功能：商品詳情頁邏輯
+    // (只有在 product.html 且有該容器時才會執行)
+    // ===========================
+    const productDetailContainer = document.getElementById("product-detail-container");
+    
+    if (productDetailContainer) {
+        console.log("📦 偵測到詳情頁容器，開始讀取商品資料...");
+        loadProductDetail(productDetailContainer);
+    }
 
     // ===========================
     // 1. Header 選單邏輯
@@ -46,44 +55,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchBtn = document.getElementById("searchBtn");
     const searchBar = document.querySelector(".search-bar");
 
-    // ★ 除錯點 1：檢查搜尋元素是否存在
-    if (!searchBtn) console.error("❌ 找不到 ID 為 'searchBtn' 的按鈕 (放大鏡)");
-    if (!searchBar) console.error("❌ 找不到 Class 為 '.search-bar' 的元素");
-
     if (searchBtn && searchBar) {
-        console.log("✅ 搜尋功能綁定成功！");
-        
-        // (1) 點擊放大鏡
         searchBtn.addEventListener("click", (e) => {
-            console.log("🖱️ 點擊了放大鏡");
             e.stopPropagation();
-            searchBar.classList.toggle("active"); // 切換 active class
-            
-            // 檢查 CSS 是否生效
+            searchBar.classList.toggle("active");
             if (searchBar.classList.contains("active")) {
-                console.log("🔎 搜尋框已開啟 (Class Added)");
                 const input = searchBar.querySelector("input");
                 if(input) input.focus();
-            } else {
-                console.log("🙈 搜尋框已關閉");
             }
-            
             document.querySelector(".cart-dropdown")?.classList.remove("active");
         });
 
         searchBar.addEventListener("click", (e) => e.stopPropagation());
 
-        // (2) 搜尋執行邏輯
         const searchInput = searchBar.querySelector("input");
         const searchSubmitBtn = searchBar.querySelector("button");
 
         const performSearch = () => {
             const query = searchInput.value.trim();
-            console.log("🚀 準備搜尋:", query);
             if (query) {
+                // 這裡搜尋還是用文字，沒問題
                 window.location.href = `search.html?q=${encodeURIComponent(query)}`;
-            } else {
-                console.warn("⚠️ 請輸入關鍵字再搜尋");
             }
         };
 
@@ -92,7 +84,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 e.preventDefault();
                 performSearch();
             });
-
             searchInput.addEventListener("keypress", (e) => {
                 if (e.key === "Enter") {
                     e.preventDefault();
@@ -112,27 +103,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const checkoutBtn = document.getElementById("checkoutBtn");
     const cartCountBadge = document.getElementById("cartCount");
 
-    // ★ 除錯點 2：檢查購物車元素
-    if (!cartIcon) console.error("❌ 找不到 ID 為 'cartIcon' 的購物車圖示");
-    if (!cartDropdown) console.error("❌ 找不到 Class 為 '.cart-dropdown' 的元素");
-
     if (cartIcon && cartDropdown) {
-        console.log("✅ 購物車功能綁定成功！");
-        
         cartIcon.addEventListener("click", (e) => {
-            console.log("🛒 點擊了購物車");
             e.stopPropagation();
             cartDropdown.classList.toggle("active");
             if(searchBar) searchBar.classList.remove("active");
             renderCart();
         });
-        
         cartDropdown.addEventListener("click", (e) => e.stopPropagation());
     }
 
-    // 點擊外部關閉
-    document.addEventListener("click", (e) => {
-        // console.log("點擊了頁面其他地方"); // 這行太吵可以註解掉
+    document.addEventListener("click", () => {
         if(searchBar) searchBar.classList.remove("active");
         if(cartDropdown) cartDropdown.classList.remove("active");
     });
@@ -147,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
             cartCountBadge.style.display = totalCount > 0 ? "inline-block" : "none";
         }
 
-        if(!cartItemsContainer) return; // 防呆
+        if(!cartItemsContainer) return;
 
         cartItemsContainer.innerHTML = "";
         let totalPrice = 0;
@@ -190,24 +171,18 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 更新數量
     function updateCartItem(index, isPlus) {
         let cart = JSON.parse(localStorage.getItem("shopCart")) || [];
+        if (isPlus) cart[index].qty++;
+        else cart[index].qty--;
         
-        if (isPlus) {
-            cart[index].qty++;
-        } else {
-            cart[index].qty--;
-        }
-
-        if (cart[index].qty <= 0) {
-            cart.splice(index, 1);
-        }
-
+        if (cart[index].qty <= 0) cart.splice(index, 1);
+        
         localStorage.setItem("shopCart", JSON.stringify(cart));
         renderCart();
     }
-
+    
+    // 監聽自定義事件 (當詳情頁加入購物車時觸發)
     window.addEventListener("cartUpdated", () => {
         renderCart();
     });
@@ -217,28 +192,21 @@ document.addEventListener("DOMContentLoaded", () => {
     // ===========================
     if (checkoutBtn) {
         checkoutBtn.addEventListener("click", async () => {
-            console.log("💳 點擊結帳按鈕");
-
-            // 1. 檢查登入
             const currentUser = localStorage.getItem("currentUser");
             if (!currentUser) {
-                alert("請先登入會員才能進行購買！\n(將跳轉至登入頁面)");
+                alert("請先登入會員才能進行購買！");
                 window.location.href = "login.html"; 
                 return;
             }
 
-            // 2. 讀取購物車
             const cart = JSON.parse(localStorage.getItem("shopCart")) || [];
-            
             if (cart.length === 0) {
                 alert("Cart is empty!");
                 return;
             }
 
-            // 3. 計算總價
             const total = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
             
-            // 資料清洗
             const finalOrderItems = cart.map(item => {
                 return {
                     name: item.name,
@@ -248,17 +216,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 };
             });
 
-            // 4. 確認清單
             let orderSummary = `您好! ${currentUser}\n準備購買:\n`;
             finalOrderItems.forEach(i => {
                 orderSummary += `- ${i.name} x${i.qty} ($${i.price * i.qty})\n`;
             });
             orderSummary += `\n總金額： $${total}\n\n是否確認下單？`;
 
-            // 5. 使用者確認
             if(!confirm(orderSummary)) return; 
 
-            // 6. 寫入 Firebase
             try {
                 checkoutBtn.textContent = "Processing...";
                 checkoutBtn.disabled = true;
@@ -271,9 +236,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     status: "new"
                 });
 
-                alert("您已訂購成功!\n訂單紀錄可於會員中心查詢･ﾟ✧*:･ﾟ");
-                
-                // 清空購物車
+                alert("您已訂購成功!\n訂單紀錄可於會員中心查詢");
                 localStorage.removeItem("shopCart");
                 renderCart();
                 cartDropdown.classList.remove("active");
@@ -288,5 +251,108 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
     
+    // 初始化執行一次購物車渲染
     renderCart();
 });
+
+// ===========================================
+// 5. 獨立函式：讀取商品詳情 (使用 doc.id)
+// ===========================================
+async function loadProductDetail(container) {
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get("id"); // 這裡抓的是網址上的 ?id=xxxx
+
+    if (!productId) {
+        container.innerHTML = '<div style="text-align:center; padding:50px;">錯誤：網址沒有商品 ID</div>';
+        return;
+    }
+
+    try {
+        console.log("正在讀取商品 ID:", productId);
+        // 使用 doc(db, "products", ID) 這是最準確的抓法
+        const docRef = doc(db, "products", productId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            renderDetailHTML(container, data, docSnap.id);
+        } else {
+            container.innerHTML = '<div style="text-align:center; padding:50px;">找不到此商品 (ID 不存在)</div>';
+        }
+
+    } catch (error) {
+        console.error("讀取商品失敗:", error);
+        container.innerHTML = '<div style="text-align:center; padding:50px;">系統發生錯誤。</div>';
+    }
+}
+
+// 產生詳細頁 HTML
+function renderDetailHTML(container, product, id) {
+    const imgSrc = product.img ? product.img : (product.image ? product.image : "https://via.placeholder.com/400?text=No+Image");
+    let displayPrice = product.price;
+    if (!String(displayPrice).includes("$")) displayPrice = `$${displayPrice}`;
+
+    container.innerHTML = `
+        <div class="detail-wrapper">
+            <div class="detail-img">
+                <img src="${imgSrc}" alt="${product.name}">
+            </div>
+            <div class="detail-info">
+                <h1 class="detail-title">${product.name}</h1>
+                <div class="detail-price">${displayPrice}</div>
+                <p class="detail-desc">${product.description || "此商品暫無詳細描述。"}</p>
+                
+                <div class="action-area">
+                    <div class="qty-selector">
+                        <button id="btnMinus">-</button>
+                        <input type="number" id="qtyInput" value="1" min="1" readonly>
+                        <button id="btnPlus">+</button>
+                    </div>
+                    <button id="addToCartBtn" class="add-cart-btn">ADD TO CART</button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // 綁定加減與加入購物車按鈕
+    const btnMinus = document.getElementById("btnMinus");
+    const btnPlus = document.getElementById("btnPlus");
+    const qtyInput = document.getElementById("qtyInput");
+    const addToCartBtn = document.getElementById("addToCartBtn");
+
+    if (btnMinus && btnPlus && qtyInput) {
+        btnMinus.addEventListener("click", () => {
+            let val = parseInt(qtyInput.value);
+            if (val > 1) qtyInput.value = val - 1;
+        });
+        btnPlus.addEventListener("click", () => {
+            let val = parseInt(qtyInput.value);
+            qtyInput.value = val + 1;
+        });
+    }
+
+    if (addToCartBtn) {
+        addToCartBtn.addEventListener("click", () => {
+            let cart = JSON.parse(localStorage.getItem("shopCart")) || [];
+            
+            const existingItemIndex = cart.findIndex(c => c.id === id); // 這裡用 ID 比對
+            const qty = parseInt(qtyInput.value);
+
+            if (existingItemIndex > -1) {
+                cart[existingItemIndex].qty += qty;
+            } else {
+                cart.push({
+                    id: id,
+                    name: product.name,
+                    price: parseInt(product.price),
+                    img: imgSrc,
+                    qty: qty
+                });
+            }
+
+            localStorage.setItem("shopCart", JSON.stringify(cart));
+            alert(`${product.name} 已加入購物車！`);
+            window.dispatchEvent(new Event("cartUpdated")); // 通知購物車更新
+        });
+    }
+}
