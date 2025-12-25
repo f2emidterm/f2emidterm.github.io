@@ -1,162 +1,259 @@
-// ===========================================
-// js/searchscript.js (除錯增強版)
-// ===========================================
+// 引入 Firebase (依照你原本的路徑)
 import { db } from './firebase.js';
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// 全域變數
-let products = []; 
-let currentPage = 1;
+document.addEventListener("DOMContentLoaded", () => {
+    // ===========================
+    // 1. Header 選單邏輯 (維持原樣)
+    // ===========================
+    const menuBtn = document.querySelector(".menu-btn");
+    const mobileMenu = document.querySelector(".mobile-menu");
+    const overlay = document.querySelector(".menu-overlay");
 
-// 1. 取得網址上的搜尋關鍵字
-const params = new URLSearchParams(window.location.search);
-// 轉小寫 + 去除前後空白，確保精準度
-const searchQuery = params.get("q") ? params.get("q").toLowerCase().trim() : "";
-
-// 更新標題
-const resultTitle = document.getElementById("searchQueryDisplay");
-if(resultTitle) {
-    resultTitle.textContent = searchQuery 
-        ? `Results for keyword: "${params.get("q")}"`
-        : "Showing all products";
-}
-
-function getPerPage() {
-    return window.innerWidth <= 600 ? 10 : 16;
-}
-
-// ===========================================
-// 2. 從 Firebase 抓資料
-// ===========================================
-async function fetchProducts() {
-    const grid = document.querySelector(".products");
-    if (!grid) return;
-
-    grid.innerHTML = '<div style="width:100%;text-align:center;padding:20px;">Loading results...</div>';
-
-    try {
-        console.log("正在連接 Firebase...");
-        const querySnapshot = await getDocs(collection(db, "products"));
-        products = [];
-
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            // ★ 除錯點 1：看看這裡印出來的物件，有沒有 'name' 這個屬性？
-            // console.log("讀取到商品:", data); 
-            
-            products.push({
-                ...data,
-                id: doc.id
-            });
+    if (menuBtn && mobileMenu && overlay) {
+        menuBtn.addEventListener("click", () => {
+            mobileMenu.classList.toggle("active");
+            overlay.classList.toggle("active");
+            menuBtn.textContent = mobileMenu.classList.contains("active") ? "close" : "menu";
+        });
+        
+        overlay.addEventListener("click", () => {
+            mobileMenu.classList.remove("active");
+            overlay.classList.remove("active");
+            menuBtn.textContent = "menu";
         });
 
-        console.log(`總共下載了 ${products.length} 個商品`);
-        renderProducts();
-
-    } catch (error) {
-        console.error("讀取失敗:", error);
-        grid.innerHTML = '<div style="color:red;text-align:center;">Failed to load products.</div>';
+        mobileMenu.querySelectorAll("a").forEach(link => {
+            link.addEventListener("click", () => {
+                mobileMenu.classList.remove("active");
+                overlay.classList.remove("active");
+            });
+        });
     }
-}
 
-// ===========================================
-// 3. 渲染邏輯 (關鍵修改)
-// ===========================================
-function renderProducts() {
-    updatePaginationVisuals();
-    const grid = document.querySelector(".products");
-    grid.innerHTML = "";
+    // ===========================
+    // 2. 搜尋框邏輯 (UI開關 + 🔥跳轉功能)
+    // ===========================
+    const searchBtn = document.getElementById("searchBtn"); // 放大鏡 icon
+    const searchBar = document.querySelector(".search-bar"); // 整個搜尋列區塊
 
-    console.log("目前搜尋關鍵字:", searchQuery);
+    if (searchBtn && searchBar) {
+        // (1) 點擊放大鏡：開關搜尋框
+        searchBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            searchBar.classList.toggle("active");
+            // 打開搜尋框時，自動讓游標停在輸入框內
+            if(searchBar.classList.contains("active")){
+                const input = searchBar.querySelector("input");
+                if(input) input.focus();
+            }
+            document.querySelector(".cart-dropdown")?.classList.remove("active");
+        });
+        searchBar.addEventListener("click", (e) => e.stopPropagation());
 
-    // ★ 關鍵過濾邏輯
-    const filtered = products.filter((p) => {
-        // 如果沒有輸入關鍵字，就顯示全部
-        if (!searchQuery) return true; 
+        // 🔥 (2) 執行搜尋功能的邏輯 (寫在這裡！)
+        const searchInput = searchBar.querySelector("input");
+        const searchSubmitBtn = searchBar.querySelector("button"); // GO 按鈕
 
-        // 1. 取得名稱 (防呆：如果沒有 name 欄位，就用空字串代替)
-        // 請確認這裡的 p.name 是否對應你 Firebase 的欄位！
-        const name = p.name ? String(p.name).toLowerCase().trim() : "";
-        
-        // 2. 也可以順便搜尋分類 (category)
-        const category = p.category ? String(p.category).toLowerCase().trim() : "";
+        const performSearch = () => {
+            const query = searchInput.value.trim();
+            if (query) {
+                // 跳轉到 search.html 並帶上關鍵字參數
+                window.location.href = `search.html?q=${encodeURIComponent(query)}`;
+            }
+        };
 
-        // ★ 除錯點 2：印出比對過程 (如果找不到，請把這行取消註解)
-        // if (name.includes(searchQuery)) {
-        //     console.log(`找到匹配: ${name} (關鍵字: ${searchQuery})`);
-        // }
+        if (searchSubmitBtn && searchInput) {
+            // 點擊 GO 按鈕
+            searchSubmitBtn.addEventListener("click", (e) => {
+                e.preventDefault(); // 防止表單預設提交
+                performSearch();
+            });
 
-        // 只要名稱或分類包含關鍵字，就回傳 true
-        return name.includes(searchQuery) || category.includes(searchQuery);
+            // 在輸入框按下 Enter 鍵
+            searchInput.addEventListener("keypress", (e) => {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    performSearch();
+                }
+            });
+        }
+    }
+
+    // ===========================
+    // 3. 購物車邏輯
+    // ===========================
+    const cartIcon = document.getElementById("cartIcon");
+    const cartDropdown = document.querySelector(".cart-dropdown");
+    const cartItemsContainer = document.querySelector(".cart-items");
+    const cartTotalEl = document.querySelector(".cart-total");
+    const checkoutBtn = document.getElementById("checkoutBtn");
+    const cartCountBadge = document.getElementById("cartCount");
+
+    // 切換顯示
+    if (cartIcon && cartDropdown) {
+        cartIcon.addEventListener("click", (e) => {
+            e.stopPropagation();
+            cartDropdown.classList.toggle("active");
+            if(searchBar) searchBar.classList.remove("active");
+            renderCart();
+        });
+        cartDropdown.addEventListener("click", (e) => e.stopPropagation());
+    }
+
+    // 點擊外部關閉
+    document.addEventListener("click", () => {
+        if(searchBar) searchBar.classList.remove("active");
+        if(cartDropdown) cartDropdown.classList.remove("active");
     });
 
-    console.log(`過濾後剩下 ${filtered.length} 個商品`);
-
-    // --- 以下為分頁與渲染 (維持原樣) ---
-    const perPage = getPerPage();
-    const start = (currentPage - 1) * perPage;
-    const end = start + perPage;
-    const pageItems = filtered.slice(start, end);
-
-    if (pageItems.length === 0) {
-        grid.innerHTML = `
-            <div class="no-products" style="grid-column:1/-1; text-align:center; padding:50px; color:#888;">
-                <span class="material-symbols-outlined" style="font-size:48px; margin-bottom:10px;">search_off</span><br>
-                No products found for "${params.get("q")}".
-            </div>`;
-        return;
-    }
-
-    pageItems.forEach((p) => {
-        const card = document.createElement("div");
-        card.className = "product-card";
-        const imgSrc = p.img ? p.img : "https://via.placeholder.com/200/cccccc/808080?text=No+Image";
+    // 渲染購物車
+    function renderCart() {
+        const cart = JSON.parse(localStorage.getItem("shopCart")) || [];
         
-        let displayPrice = p.price;
-        if (!String(displayPrice).includes("$")) {
-            displayPrice = `$${displayPrice}`;
+        if(cartCountBadge) {
+            const totalCount = cart.reduce((acc, item) => acc + item.qty, 0);
+            cartCountBadge.textContent = totalCount;
+            cartCountBadge.style.display = totalCount > 0 ? "inline-block" : "none";
         }
 
-        card.innerHTML = `
-          <a href="product.html?id=${p.id}">
-            <div class="product-img">
-              <img src="${imgSrc}" alt="${p.name}">
-            </div>
-            <div class="product-name">${p.name}</div>
-            <div class="product-price">${displayPrice}</div>
-          </a>
-        `;
-        grid.appendChild(card);
+        cartItemsContainer.innerHTML = "";
+        let totalPrice = 0;
+
+        if (cart.length === 0) {
+            cartItemsContainer.innerHTML = '<div class="cart-empty">Cart is empty.</div>';
+            cartTotalEl.textContent = "Total: $0";
+            return;
+        }
+
+        cart.forEach((item, index) => {
+            const itemTotal = item.price * item.qty;
+            totalPrice += itemTotal;
+
+            const div = document.createElement("div");
+            div.className = "cart-item";
+            div.innerHTML = `
+                <img src="${item.img}" alt="${item.name}">
+                <div class="cart-item-info">
+                    <div class="cart-item-title">${item.name}</div>
+                    <div class="cart-item-price">$${item.price} x ${item.qty}</div>
+                </div>
+                <div class="cart-controls">
+                    <button class="qty-btn minus" data-index="${index}">-</button>
+                    <span>${item.qty}</span>
+                    <button class="qty-btn plus" data-index="${index}">+</button>
+                </div>
+            `;
+            cartItemsContainer.appendChild(div);
+        });
+
+        cartTotalEl.textContent = `Total: $${totalPrice}`;
+
+        document.querySelectorAll(".qty-btn").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const idx = e.target.dataset.index;
+                const isPlus = e.target.classList.contains("plus");
+                updateCartItem(idx, isPlus);
+            });
+        });
+    }
+
+    // 更新數量
+    function updateCartItem(index, isPlus) {
+        let cart = JSON.parse(localStorage.getItem("shopCart")) || [];
+        
+        if (isPlus) {
+            cart[index].qty++;
+        } else {
+            cart[index].qty--;
+        }
+
+        if (cart[index].qty <= 0) {
+            cart.splice(index, 1);
+        }
+
+        localStorage.setItem("shopCart", JSON.stringify(cart));
+        renderCart();
+    }
+
+    window.addEventListener("cartUpdated", () => {
+        renderCart();
     });
+
+    // ===========================
+    // 4. 結帳功能
+    // ===========================
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener("click", async () => {
+            
+            // 1. 檢查登入
+            const currentUser = localStorage.getItem("currentUser");
+            if (!currentUser) {
+                alert("請先登入會員才能進行購買！\n(將跳轉至登入頁面)");
+                window.location.href = "login.html"; 
+                return;
+            }
+
+            // 2. 讀取購物車
+            const cart = JSON.parse(localStorage.getItem("shopCart")) || [];
+            
+            if (cart.length === 0) {
+                alert("Cart is empty!");
+                return;
+            }
+
+            // 3. 計算總價
+            const total = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+            
+            // 資料清洗
+            const finalOrderItems = cart.map(item => {
+                return {
+                    name: item.name,
+                    price: Number(item.price),
+                    qty: Number(item.qty),
+                    img: item.img || "" 
+                };
+            });
+
+            // 4. 確認清單
+            let orderSummary = `您好! ${currentUser}\n準備購買:\n`;
+            finalOrderItems.forEach(i => {
+                orderSummary += `- ${i.name} x${i.qty} ($${i.price * i.qty})\n`;
+            });
+            orderSummary += `\n總金額： $${total}\n\n是否確認下單？`;
+
+            // 5. 使用者確認
+            if(!confirm(orderSummary)) return; 
+
+            // 6. 寫入 Firebase
+            try {
+                checkoutBtn.textContent = "Processing...";
+                checkoutBtn.disabled = true;
+
+                await addDoc(collection(db, "orders"), {
+                    items: finalOrderItems,
+                    totalAmount: total,
+                    orderBy: currentUser,
+                    createdAt: serverTimestamp(),
+                    status: "new"
+                });
+
+                alert("您已訂購成功!\n訂單紀錄可於會員中心查詢･ﾟ✧*:･ﾟ");
+                
+                // 清空購物車
+                localStorage.removeItem("shopCart");
+                renderCart();
+                cartDropdown.classList.remove("active");
+
+            } catch (error) {
+                console.error("Error adding order: ", error);
+                alert("Order failed. Please try again.");
+            } finally {
+                checkoutBtn.textContent = "CHECKOUT";
+                checkoutBtn.disabled = false;
+            }
+        });
+    }
     
-    // 補位排版
-    const fillCount = perPage - pageItems.length;
-    if (fillCount > 0 && pageItems.length > 0) { 
-        for (let i = 0; i < fillCount; i++) {
-            const card = document.createElement("div");
-            card.className = "product-card";
-            card.style.visibility = "hidden"; 
-            grid.appendChild(card);
-        }
-    }
-}
-
-// 分頁與事件
-function updatePaginationVisuals() {
-    document.querySelectorAll(".pagination span").forEach(el => el.classList.remove("page-active"));
-    const currentBtn = document.getElementById(`page${currentPage}`);
-    if (currentBtn) currentBtn.classList.add("page-active");
-}
-
-const btnPage1 = document.getElementById("page1");
-const btnPage2 = document.getElementById("page2");
-const btnPrev = document.getElementById("prev");
-const btnNext = document.getElementById("next");
-
-if (btnPage1) btnPage1.addEventListener("click", () => { if (currentPage !== 1) { currentPage = 1; renderProducts(); }});
-if (btnPage2) btnPage2.addEventListener("click", () => { if (currentPage !== 2) { currentPage = 2; renderProducts(); }});
-if (btnPrev) btnPrev.addEventListener("click", () => { if (currentPage > 1) { currentPage--; renderProducts(); }});
-if (btnNext) btnNext.addEventListener("click", () => { if (currentPage < 2) { currentPage++; renderProducts(); }});
-
-window.addEventListener("resize", () => renderProducts());
-document.addEventListener("DOMContentLoaded", () => fetchProducts());
+    renderCart();
+});
