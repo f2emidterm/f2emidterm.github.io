@@ -1,6 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
+    
+    // 直接呼叫功能就好，Firebase 會自己抓已經啟動的那個實體
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-    // 1. 抓取 HTML 元素
+    // ============================================
+    //  1. 抓取 HTML 元素
+    // ============================================
     const loginForm = document.getElementById('loginForm');
     const emailInput = document.getElementById('emailInput');
     const passwordInput = document.getElementById('passwordInput');
@@ -13,85 +19,108 @@ document.addEventListener('DOMContentLoaded', function() {
     // 資料顯示
     const userEmailDisplay = document.getElementById('userEmailDisplay');
     const logoutBtn = document.getElementById('logoutBtn');
+    
+    const submitBtn = loginForm ? loginForm.querySelector('button') : null;
 
     // ============================================
-    //  初始化檢查：模擬「記住登入狀態」
+    //  ★ 初始化檢查 (監聽登入狀態)
     // ============================================
-    const savedUser = localStorage.getItem('celestar_user');
-    if (savedUser) {
-        // 如果 localStorage 裡面有名字，直接顯示會員頁
-        showProfile(savedUser);
-    } else {
-        // 否則顯示登入頁
-        showLogin();
-    }
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            console.log("偵測到已登入：", user.email);
+            showProfile(user.email);
+        } else {
+            showLogin();
+        }
+    });
 
     // ============================================
-    //  功能 1：處理登入 (Fake Login)
+    //  功能 1：處理登入 / 自動註冊
     // ============================================
     if (loginForm) {
         loginForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // 防止表單真的送出
-
+            e.preventDefault(); 
             const email = emailInput.value.trim();
             const password = passwordInput.value.trim();
 
-            // 簡單驗證：只要格式對 (HTML5 type="email" 會幫忙擋)，且密碼不為空
             if (email && password) {
+                const originalBtnText = submitBtn.innerText;
+                submitBtn.innerText = "處理中...";
+                submitBtn.disabled = true;
                 
-                // 模擬讀取中的延遲感 (0.5秒)
-                const originalBtnText = loginForm.querySelector('button').innerText;
-                loginForm.querySelector('button').innerText = "Logging in...";
-                
-                setTimeout(() => {
-                    // 1. 儲存假資料到瀏覽器
-                    localStorage.setItem('celestar_user', email);
-                    
-                    // 2. 切換畫面
-                    alert("登入成功！(測試模式)");
-                    showProfile(email);
-                    
-                    // 3. 還原按鈕文字 & 清空密碼
-                    loginForm.querySelector('button').innerText = originalBtnText;
-                    passwordInput.value = ''; 
-                    errorMsg.innerText = '';
-                    
-                }, 500);
+                // 開始登入
+                auth.signInWithEmailAndPassword(email, password)
+                    .then(() => {
+                        alert("登入成功！");
+                        resetButton(originalBtnText);
+                    })
+                    .catch((error) => {
+                        // 沒帳號 -> 自動註冊
+                        if (error.code === 'auth/user-not-found') {
+                            console.log("帳號不存在，自動註冊...");
+                            
+                            auth.createUserWithEmailAndPassword(email, password)
+                                .then((cred) => {
+                                    // 寫入資料庫
+                                    return db.collection('users').doc(cred.user.uid).set({
+                                        email: email,
+                                        createdAt: new Date(),
+                                        role: 'member'
+                                    });
+                                })
+                                .then(() => {
+                                    alert("註冊並登入成功！");
+                                    resetButton(originalBtnText);
+                                })
+                                .catch((regError) => {
+                                    errorMsg.innerText = "註冊失敗: " + regError.message;
+                                    resetButton(originalBtnText);
+                                });
 
+                        } else if (error.code === 'auth/wrong-password') {
+                            errorMsg.innerText = "密碼錯誤！";
+                            resetButton(originalBtnText);
+                        } else {
+                            errorMsg.innerText = error.message;
+                            resetButton(originalBtnText);
+                        }
+                    });
             } else {
-                errorMsg.innerText = "請輸入有效的帳號與密碼";
+                errorMsg.innerText = "請輸入帳號密碼";
             }
         });
     }
 
     // ============================================
-    //  功能 2：處理登出
+    //  功能 2：登出
     // ============================================
     if (logoutBtn) {
         logoutBtn.addEventListener('click', function() {
-            // 1. 清除 localStorage
-            localStorage.removeItem('celestar_user');
-            
-            // 2. 跳出提示
-            alert("已登出");
-            
-            // 3. 切換回登入頁
-            showLogin();
+            auth.signOut().then(() => alert("已登出"));
         });
     }
 
     // ============================================
-    //  輔助函式：切換畫面用
+    //  輔助函式
     // ============================================
     function showProfile(email) {
         loginSection.style.display = 'none';
         profileSection.style.display = 'block';
         userEmailDisplay.innerText = email;
+        if(errorMsg) errorMsg.innerText = '';
     }
 
     function showLogin() {
         loginSection.style.display = 'block';
         profileSection.style.display = 'none';
+        if(emailInput) emailInput.value = '';
+        if(passwordInput) passwordInput.value = '';
     }
 
+    function resetButton(text) {
+        if (submitBtn) {
+            submitBtn.innerText = text;
+            submitBtn.disabled = false;
+        }
+    }
 });
