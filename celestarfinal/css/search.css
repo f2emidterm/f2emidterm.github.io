@@ -42,7 +42,7 @@ a, button, .icons span, .product-card {
     max-width: 1000px;
     margin: 30px auto 10px auto;
     padding: 0 20px;
-    text-align: center;
+    text-align: start;
 }
 
 .search-header h2 {
@@ -173,4 +173,5 @@ footer {
     padding: 0 30px;
   }
 }
+
 
