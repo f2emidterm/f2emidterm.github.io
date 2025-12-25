@@ -320,7 +320,6 @@ button,
 .placed-sticker.active {
     outline: 2px dashed #AEAEDE;
     z-index: 100 !important;
-    cursor: grab;
 }
 
 /* 貼紙上的控制按鈕 (預設隱藏) */
@@ -334,7 +333,6 @@ button,
     display: none;
     justify-content: center;
     align-items: center;
-    cursor: pointer;
     font-size: 16px;
     color: #3f4046;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
@@ -354,7 +352,6 @@ button,
 .btn-transform {
     bottom: -12px;
     right: -12px;
-    cursor: nwse-resize;
     color: #AEAEDE;
 }
 
@@ -885,6 +882,7 @@ footer {
         padding: 30px 15px 15px 15px;
     }
 }
+
 
 
 
