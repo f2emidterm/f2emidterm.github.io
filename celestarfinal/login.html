@@ -95,8 +95,19 @@
                 </div>
 
                 <div class="profile-actions">
-                    <button class="secondary-btn">ORDER HISTORY</button>
+                    <button id="historyBtn" class="secondary-btn">ORDER HISTORY</button>
                     <button id="logoutBtn" class="primary-btn auth-btn">LOGOUT</button>
+                </div>
+                <div id="historyModal" class="modal-overlay">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>ORDER HISTORY</h3>
+                            <span class="close-modal">&times;</span>
+                        </div>
+                        <div id="historyList" class="history-list">
+                            <p>Loading...</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -117,6 +128,7 @@
 
 
 </html>
+
 
 
 
