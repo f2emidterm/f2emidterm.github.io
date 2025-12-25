@@ -23,7 +23,7 @@ a,
 button,
 .icons span,
 .product-card {
-    cursor: url("../images/starr.png")1 16, pointer;
+    cursor: url("../images/starr.png")1 16, auto;
 }
 
 .bg::before {
@@ -882,6 +882,7 @@ footer {
         padding: 30px 15px 15px 15px;
     }
 }
+
 
 
 
