@@ -5,7 +5,6 @@ body {
     color: #333;
     padding-top: 70px;
     cursor: url("../images/starr.png") 1 16, auto;
-    /* 確保頁面內容少時，Footer 也會在最下面 */
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -16,13 +15,12 @@ a, button, .icons span, .product-card {
 }
 
 /* =========================================
-   背景設定 (完全參照 Shop)
+   背景設定 
    ========================================= */
 .products-bg {
     background-attachment: fixed; 
     padding: 10px 0;
     overflow: hidden;
-    /* 讓這個區塊自動撐滿剩餘空間，確保 Footer 被推到底部 */
     flex: 1; 
 }
 
@@ -38,25 +36,25 @@ a, button, .icons span, .product-card {
 }
 
 /* =========================================
-   搜尋標題 (為了配合 Shop 風格稍微加的)
+   搜尋標題 
    ========================================= */
 .search-header {
     max-width: 1000px;
-    margin: 30px auto 10px auto; /* 上邊距配合 Shop 的 spacing */
+    margin: 30px auto 10px auto;
     padding: 0 20px;
     text-align: center;
 }
 
 .search-header h2 {
     font-weight: 500;
-    font-size: 24px;
+    font-size: 18px;
     color: #3f4046;
     margin-bottom: 5px;
 }
 
 .search-header p {
     color: #666;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 /* =========================================
@@ -175,3 +173,4 @@ footer {
     padding: 0 30px;
   }
 }
+
