@@ -6,7 +6,7 @@
 import { db } from './firebase.js';
 
 // ============================================
-//  2. 引入 Firestore 功能 (使用 Base64 不需要 Storage)
+//  2. 引入 Firestore 功能
 // ============================================
 import { 
     doc, 
@@ -38,12 +38,18 @@ const historyModal = document.getElementById('historyModal');
 const closeModal = document.querySelector('.close-modal');
 const historyList = document.getElementById('historyList');
 
-// ★ 頭像上傳相關
+// ★ 頭像相關元素
 const avatarContainer = document.getElementById('avatarContainer');
-const uploadInput = document.getElementById('uploadInput');
 const userAvatar = document.getElementById('userAvatar');
 const defaultIcon = document.getElementById('defaultIcon');
+// 上傳相關
+const uploadInput = document.getElementById('uploadInput');
 const uploadLoading = document.getElementById('uploadLoading');
+const editAvatarBtn = document.getElementById('editAvatarBtn'); // 新增：編輯按鈕
+// 放大檢視相關
+const imageZoomModal = document.getElementById('imageZoomModal'); // 新增：放大視窗
+const zoomedImage = document.getElementById('zoomedImage');     // 新增：放大後的圖片
+const closeZoom = document.querySelector('.close-zoom');        // 新增：關閉放大
 
 // ============================================
 //  初始化：檢查登入狀態
@@ -117,20 +123,22 @@ if (logoutBtn) {
 }
 
 // ============================================
-//  ★ 頭像上傳 (Base64 方法)
+//  ★ 頭像功能 (修改重點)
 // ============================================
-if (avatarContainer && uploadInput) {
-    // 點擊圓圈 -> 觸發選檔
-    avatarContainer.addEventListener('click', () => {
+
+// --- 功能 A: 編輯/上傳頭像 ---
+if (editAvatarBtn && uploadInput) {
+    // 1. 點擊「小鉛筆按鈕」 -> 觸發選檔
+    editAvatarBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // 防止事件冒泡
         uploadInput.click();
     });
 
-    // 選檔後處理
+    // 2. 選檔後處理 (Base64 上傳)
     uploadInput.addEventListener('change', async (e) => {
         const file = e.target.files[0];
         if (!file) return;
 
-        // 限制 800KB (防止 Firestore 爆掉)
         if (file.size > 800 * 1024) {
             alert("圖片太大了！請選一張小於 800KB 的圖片><");
             return;
@@ -139,26 +147,18 @@ if (avatarContainer && uploadInput) {
         const currentUser = localStorage.getItem("currentUser");
         if (!currentUser) return;
 
-        // 顯示 Loading
         if(uploadLoading) uploadLoading.style.display = "flex";
 
         const reader = new FileReader();
-        
-        // 當讀取完成時
         reader.onload = async function(event) {
             const base64String = event.target.result;
-
             try {
-                // 存入 Firestore
                 const userDocRef = doc(db, "users", currentUser);
                 await updateDoc(userDocRef, {
                     photoURL: base64String
                 });
-
-                // 更新畫面
                 updateAvatarView(base64String);
                 console.log("頭像更新成功");
-
             } catch (error) {
                 console.error("Upload Error:", error);
                 alert("上傳失敗，請稍後再試");
@@ -167,11 +167,36 @@ if (avatarContainer && uploadInput) {
                 uploadInput.value = ''; 
             }
         };
-
-        // 開始讀取圖片
         reader.readAsDataURL(file);
     });
 }
+
+// --- 功能 B: 點擊頭像放大檢視 ---
+if (avatarContainer && imageZoomModal && zoomedImage) {
+    avatarContainer.addEventListener('click', () => {
+        // 只有在「有顯示圖片」的時候才觸發放大
+        if (userAvatar.style.display !== 'none' && userAvatar.src) {
+            zoomedImage.src = userAvatar.src; // 把大圖的來源設為目前的頭像
+            imageZoomModal.classList.add('active'); // 顯示視窗
+        }
+    });
+}
+
+// --- 功能 C: 關閉放大視窗 ---
+if (closeZoom) {
+    closeZoom.addEventListener('click', () => {
+        imageZoomModal.classList.remove('active');
+    });
+}
+if (imageZoomModal) {
+    imageZoomModal.addEventListener('click', (e) => {
+        // 點擊背景或圖片本身都可以關閉
+        if (e.target === imageZoomModal || e.target === zoomedImage) {
+            imageZoomModal.classList.remove('active');
+        }
+    });
+}
+
 
 // ============================================
 //  歷史訂單 (彈窗功能)
@@ -200,7 +225,6 @@ if (historyBtn) {
                 orders.push({ id: doc.id, ...doc.data() });
             });
             
-            // 排序：最新的在上面
             orders.sort((a, b) => b.createdAt - a.createdAt);
 
             orders.forEach(order => {
@@ -235,7 +259,7 @@ if (historyBtn) {
     });
 }
 
-// 關閉視窗
+// 關閉訂單視窗
 if (closeModal) {
     closeModal.addEventListener('click', () => {
         historyModal.classList.remove('active');
@@ -253,7 +277,6 @@ if (historyModal) {
 //  共用函式
 // ============================================
 
-// 顯示個人頁面 (含抓取頭像)
 async function showProfile(name) {
     if(loginSection) loginSection.style.display = 'none';
     if(profileSection) profileSection.style.display = 'block';
@@ -273,31 +296,31 @@ async function showProfile(name) {
     }
 }
 
-// 顯示登入頁面
 function showLogin() {
     if(loginSection) loginSection.style.display = 'block';
     if(profileSection) profileSection.style.display = 'none';
     if(emailInput) emailInput.value = '';
     
-    updateAvatarView(null); // 重置為預設圖示
+    updateAvatarView(null);
 }
 
-// 切換頭像顯示狀態
 function updateAvatarView(src) {
     if (src) {
-        // 有圖片：顯示 img，隱藏 icon
         if(userAvatar) {
             userAvatar.src = src;
             userAvatar.style.display = "block";
         }
         if(defaultIcon) defaultIcon.style.display = "none";
+        // 有圖片時，容器游標變放大鏡
+        if(avatarContainer) avatarContainer.style.cursor = "zoom-in";
     } else {
-        // 沒圖片：隱藏 img，顯示 icon
         if(userAvatar) {
             userAvatar.src = "";
             userAvatar.style.display = "none";
         }
         if(defaultIcon) defaultIcon.style.display = "block";
+        // 沒圖片時，容器游標變回預設
+        if(avatarContainer) avatarContainer.style.cursor = "default";
     }
 }
 
@@ -307,4 +330,3 @@ function resetButton(text) {
         submitBtn.disabled = false;
     }
 }
-
