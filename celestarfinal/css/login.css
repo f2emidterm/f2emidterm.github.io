@@ -162,7 +162,7 @@ button,
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* 半透明黑色背景 */
+    background: rgba(0, 0, 0, 0.2); /* 半透明黑色背景 */
     z-index: 1000;
     justify-content: center;
     align-items: center;
@@ -266,5 +266,6 @@ footer {
     padding: 50px 20px 20px 20px;
     margin-top: 10px;
 }
+
 
 
