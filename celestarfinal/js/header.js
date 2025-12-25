@@ -155,7 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // 1. 檢查登入
             const currentUser = localStorage.getItem("currentUser");
             if (!currentUser) {
-                alert("請先登入會員才能結帳！");
+                alert("請先登入會員才能進行購買！\n(將跳轉至登入頁面)");
                 window.location.href = "login.html"; 
                 return;
             }
@@ -188,11 +188,11 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             // 4. 製作確認清單文字
-            let orderSummary = `您好! ${currentUser}, 請確認以下訂單：\n\n`;
+            let orderSummary = `您好! ${currentUser}\n準備購買:\n`;
             finalOrderItems.forEach(i => {
                 orderSummary += `- ${i.name} x${i.qty} ($${i.price * i.qty})\n`;
             });
-            orderSummary += `\n總額： $${total}`;
+            orderSummary += `\n總金額： $${total}`;
 
             // 5. 使用者確認
             if(!confirm(orderSummary)) return; 
@@ -229,6 +229,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
     renderCart();
 });
+
 
 
 
