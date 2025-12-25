@@ -303,82 +303,61 @@ footer {
    RWD: Mobile Devices
    範圍: 600px 以下
    ============================================ */
+/* ...保留原本上面的所有 CSS (body 到 footer) ... */
+
+/* ============================================
+   極簡 RWD: 只做防爆版處理，維持原本設計風格
+   ============================================ */
 @media screen and (max-width: 600px) {
 
-    body, a, button, .icons span, .product-card {
-        cursor: auto; 
+    /* 1. 全局容器設定：防止內容撐破螢幕 */
+    body {
+        overflow-x: hidden; /* 防止橫向捲軸 */
     }
 
+    /* 2. 登入區塊：維持原本置中，只縮小內距 */
+    .login-workspace {
+        /* 維持原本的 Flex置中，不改成靠上 */
+        min-height: 80vh; 
+        padding: 20px 10px; /* 左右留一點縫隙 */
+    }
+
+    /* 3. 卡片本體：寬度適應螢幕，但保留陰影與設計 */
     .auth-card {
-        width: 100%; /* 寬度佔滿 */
-        max-width: 100%;
-        padding: 25px 20px; /* 內距縮小 */
-        box-shadow: none; /* 手機版通常去掉陰影比較乾淨，或留很淡 */
-        border: 2px dashed #AEAEDE; /* 維持邊框風格 */
+        width: 100%;
+        max-width: 90%; /* 手機上佔 90% 寬度，看起來比較像原本的比例 */
+        margin: 0 auto;
+        padding: 30px 20px; /* 稍微減少內距，但不用太多 */
+        /* 保留原本的 box-shadow 和 border，不取消 */
     }
-
-    .auth-title {
-        font-size: 20px;
-    }
-
+    
+    /* 4. 輸入框：優化手機輸入體驗，但樣式不變 */
     .input-group input {
-        padding: 10px; 
-        font-size: 16px; 
+        font-size: 16px; /* 關鍵：防止 iPhone 輸入時自動放大畫面 */
     }
 
+    /* 5. 按鈕：確保好點擊 */
     .auth-btn, .secondary-btn {
-        padding: 12px; 
+        padding: 15px; /* 維持原本大小 */
     }
 
-    /* 5. 彈跳視窗 (Modal) 手機版 */
+    /* 6. 彈跳視窗 (Modal) */
     .modal-content {
-        width: 72%;
-        padding: 20px;
+        width: 85%; /* 稍微寬一點 */
         max-height: 80vh;
-        margin-top: 20px;
+        padding: 20px;
     }
 
-    .modal-header h3 {
-        font-size: 18px;
-    }
-
+    /* 7. 關閉按鈕：手機上稍微大一點點才好點 */
     .close-modal {
-        font-size: 32px; /* 叉叉大一點比較好點 */
         padding: 5px;
     }
 
-    /* 6. 訂單歷史列表優化 */
-    .order-card {
-        padding: 15px 10px;
-    }
-
-    .order-header {
-        flex-direction: column; /* 日期與狀態變垂直排列 */
-        align-items: flex-start;
-        gap: 5px;
-    }
-
-    .order-items {
-        font-size: 13px;
-        margin-top: 10px;
-        margin-bottom: 10px;
-        padding-left: 5px;
-        border-left: 2px solid #F3F0F7; /* 增加一點層次感 */
-    }
-
-    .order-total {
-        font-size: 15px;
-        text-align: right;
-        padding-top: 5px;
-        border-top: 1px dashed #eee;
-    }
-
-    /* 7. Footer */
+    /* 8. Footer：文字置中即可，不需大改 */
     footer {
         text-align: center;
-        padding: 30px 15px;
-        font-size: 10px;
-        line-height: 1.8;
+        padding: 30px 10px;
     }
 }
+
 
