@@ -72,7 +72,6 @@ header {
 
 .icons span {
     margin-left: 10px;
-    cursor: pointer;
 }
 /* ========================================= */
 /* 搜尋列樣式                                */
@@ -302,7 +301,6 @@ header {
     background-color: #AEAEDE;
     color: white;
     border: none;
-    cursor: pointer;
     font-weight: bold;
     transition: 0.3s;
 }
@@ -601,6 +599,7 @@ header {
         padding:8px;
     }
 }
+
 
 
 
