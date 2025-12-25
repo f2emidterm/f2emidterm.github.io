@@ -188,11 +188,11 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             // 4. 製作確認清單文字
-            let orderSummary = `Hi ${currentUser}, confirm your order:\n\n`;
+            let orderSummary = `您好! ${currentUser}, 請確認以下訂單：\n\n`;
             finalOrderItems.forEach(i => {
                 orderSummary += `- ${i.name} x${i.qty} ($${i.price * i.qty})\n`;
             });
-            orderSummary += `\nTotal: $${total}`;
+            orderSummary += `\n總額： $${total}`;
 
             // 5. 使用者確認
             if(!confirm(orderSummary)) return; 
@@ -210,7 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     status: "new"
                 });
 
-                alert("Order placed successfully!");
+                alert("您已訂購成功!\n訂單紀錄可於會員中心查詢･ﾟ✧*:･ﾟ");
                 
                 // 清空購物車
                 localStorage.removeItem("shopCart");
@@ -229,5 +229,6 @@ document.addEventListener("DOMContentLoaded", () => {
     
     renderCart();
 });
+
 
 
