@@ -1,126 +1,125 @@
-document.addEventListener('DOMContentLoaded', function() {
-    
-    // 直接呼叫功能就好，Firebase 會自己抓已經啟動的那個實體
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+// js/login.js
 
-    // ============================================
-    //  1. 抓取 HTML 元素
-    // ============================================
-    const loginForm = document.getElementById('loginForm');
-    const emailInput = document.getElementById('emailInput');
-    const passwordInput = document.getElementById('passwordInput');
-    const errorMsg = document.getElementById('error-msg');
-    
-    // 區塊
-    const loginSection = document.getElementById('login-section');
-    const profileSection = document.getElementById('profile-section');
-    
-    // 資料顯示
-    const userEmailDisplay = document.getElementById('userEmailDisplay');
-    const logoutBtn = document.getElementById('logoutBtn');
-    
-    const submitBtn = loginForm ? loginForm.querySelector('button') : null;
+// 1. ★ 從你的設定檔匯入 auth 和 db
+// 注意：路徑 './firebase-config.js' 很重要，同層資料夾要加 ./
+import { auth, db } from './firebase-config.js';
 
-    // ============================================
-    //  ★ 初始化檢查 (監聽登入狀態)
-    // ============================================
-    auth.onAuthStateChanged((user) => {
-        if (user) {
-            console.log("偵測到已登入：", user.email);
-            showProfile(user.email);
-        } else {
-            showLogin();
-        }
-    });
+// 2. 引入需要的 Firebase 功能函數 (不用 initializeApp 了)
+import { 
+    signInWithEmailAndPassword, 
+    createUserWithEmailAndPassword, 
+    signOut, 
+    onAuthStateChanged 
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { 
+    doc, 
+    setDoc, 
+    serverTimestamp 
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-    // ============================================
-    //  功能 1：處理登入 / 自動註冊
-    // ============================================
-    if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault(); 
-            const email = emailInput.value.trim();
-            const password = passwordInput.value.trim();
+// ============================================
+//  3. 以下邏輯完全不用動，直接複製即可
+// ============================================
 
-            if (email && password) {
-                const originalBtnText = submitBtn.innerText;
-                submitBtn.innerText = "處理中...";
-                submitBtn.disabled = true;
-                
-                // 開始登入
-                auth.signInWithEmailAndPassword(email, password)
-                    .then(() => {
-                        alert("登入成功！");
-                        resetButton(originalBtnText);
-                    })
-                    .catch((error) => {
-                        // 沒帳號 -> 自動註冊
-                        if (error.code === 'auth/user-not-found') {
-                            console.log("帳號不存在，自動註冊...");
-                            
-                            auth.createUserWithEmailAndPassword(email, password)
-                                .then((cred) => {
-                                    // 寫入資料庫
-                                    return db.collection('users').doc(cred.user.uid).set({
-                                        email: email,
-                                        createdAt: new Date(),
-                                        role: 'member'
-                                    });
-                                })
-                                .then(() => {
-                                    alert("註冊並登入成功！");
-                                    resetButton(originalBtnText);
-                                })
-                                .catch((regError) => {
-                                    errorMsg.innerText = "註冊失敗: " + regError.message;
-                                    resetButton(originalBtnText);
-                                });
+const loginForm = document.getElementById('loginForm');
+const emailInput = document.getElementById('emailInput');
+const passwordInput = document.getElementById('passwordInput');
+const errorMsg = document.getElementById('error-msg');
+const loginSection = document.getElementById('login-section');
+const profileSection = document.getElementById('profile-section');
+const userEmailDisplay = document.getElementById('userEmailDisplay');
+const logoutBtn = document.getElementById('logoutBtn');
+const submitBtn = loginForm ? loginForm.querySelector('button') : null;
 
-                        } else if (error.code === 'auth/wrong-password') {
-                            errorMsg.innerText = "密碼錯誤！";
-                            resetButton(originalBtnText);
-                        } else {
-                            errorMsg.innerText = error.message;
-                            resetButton(originalBtnText);
-                        }
-                    });
-            } else {
-                errorMsg.innerText = "請輸入帳號密碼";
-            }
-        });
-    }
-
-    // ============================================
-    //  功能 2：登出
-    // ============================================
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', function() {
-            auth.signOut().then(() => alert("已登出"));
-        });
-    }
-
-    // ============================================
-    //  輔助函式
-    // ============================================
-    function showProfile(email) {
-        loginSection.style.display = 'none';
-        profileSection.style.display = 'block';
-        userEmailDisplay.innerText = email;
-        if(errorMsg) errorMsg.innerText = '';
-    }
-
-    function showLogin() {
-        loginSection.style.display = 'block';
-        profileSection.style.display = 'none';
-        if(emailInput) emailInput.value = '';
-        if(passwordInput) passwordInput.value = '';
-    }
-
-    function resetButton(text) {
-        if (submitBtn) {
-            submitBtn.innerText = text;
-            submitBtn.disabled = false;
-        }
+// --- 監聽登入狀態 ---
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        showProfile(user.email);
+    } else {
+        showLogin();
     }
 });
+
+// --- 登入/註冊邏輯 ---
+if (loginForm) {
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const email = emailInput.value.trim();
+        const password = passwordInput.value.trim();
+
+        if (!email || !password) {
+            errorMsg.innerText = "請輸入帳號密碼";
+            return;
+        }
+
+        const originalBtnText = submitBtn.innerText;
+        submitBtn.innerText = "處理中...";
+        submitBtn.disabled = true;
+        errorMsg.innerText = "";
+
+        try {
+            // 嘗試登入
+            await signInWithEmailAndPassword(auth, email, password);
+            alert("登入成功！");
+            resetButton(originalBtnText);
+            
+        } catch (error) {
+            // 沒帳號 -> 自動註冊
+            if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+                console.log("帳號不存在，自動註冊...");
+                
+                try {
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    // 寫入資料庫
+                    await setDoc(doc(db, "users", userCredential.user.uid), {
+                        email: email,
+                        createdAt: serverTimestamp(),
+                        role: "member"
+                    });
+                    alert("註冊成功並已登入！");
+                    resetButton(originalBtnText);
+
+                } catch (regError) {
+                    errorMsg.innerText = "註冊失敗: " + regError.message;
+                    resetButton(originalBtnText);
+                }
+
+            } else if (error.code === 'auth/wrong-password') {
+                errorMsg.innerText = "密碼錯誤！";
+                resetButton(originalBtnText);
+            } else {
+                errorMsg.innerText = error.message;
+                resetButton(originalBtnText);
+            }
+        }
+    });
+}
+
+// --- 登出 ---
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+        signOut(auth).then(() => alert("已登出"));
+    });
+}
+
+// --- 輔助函式 ---
+function showProfile(email) {
+    if(loginSection) loginSection.style.display = 'none';
+    if(profileSection) profileSection.style.display = 'block';
+    if(userEmailDisplay) userEmailDisplay.innerText = email;
+}
+
+function showLogin() {
+    if(loginSection) loginSection.style.display = 'block';
+    if(profileSection) profileSection.style.display = 'none';
+    if(emailInput) emailInput.value = '';
+    if(passwordInput) passwordInput.value = '';
+}
+
+function resetButton(text) {
+    if (submitBtn) {
+        submitBtn.innerText = text;
+        submitBtn.disabled = false;
+    }
+}
