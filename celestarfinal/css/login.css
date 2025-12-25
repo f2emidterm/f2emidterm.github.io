@@ -267,5 +267,131 @@ footer {
     margin-top: 10px;
 }
 
+/* ============================================
+   RWD: Tablet & Small Laptops
+   範圍: 601px ~ 1024px
+   ============================================ */
+@media screen and (min-width: 601px) and (max-width: 1024px) {
+    
+    /* 1. 調整工作區高度與內距 */
+    .login-workspace {
+        min-height: 70vh; /* 平板高度較小，不需要太高 */
+        padding: 40px;
+    }
 
+    /* 2. 登入卡片微調 */
+    .auth-card {
+        max-width: 380px; /* 稍微縮小一點點 */
+        padding: 35px;
+        box-shadow: 0 4px 12px rgba(174, 174, 222, 0.15);
+    }
 
+    /* 3. 彈跳視窗 (Modal) */
+    .modal-content {
+        width: 70%; /* 在平板上佔 70% 寬度 */
+        max-width: none; /* 覆蓋原本的 500px 限制 */
+    }
+
+    /* 4. Footer 調整 */
+    footer {
+        padding: 40px 20px;
+        text-align: center;
+    }
+}
+
+/* ============================================
+   RWD: Mobile Devices
+   範圍: 600px 以下
+   ============================================ */
+@media screen and (max-width: 600px) {
+
+    /* 1. 取消自訂游標 (手機無滑鼠) */
+    body, a, button, .icons span, .product-card {
+        cursor: auto; 
+    }
+
+    /* 2. 登入區塊佈局調整 */
+    .login-workspace {
+        /* 改為靠上對齊，並加上 padding-top */
+        /* 這樣鍵盤跳出來時，輸入框比較不會被遮住 */
+        align-items: flex-start; 
+        padding-top: 50px; 
+        padding-left: 15px;
+        padding-right: 15px;
+        min-height: auto; /* 手機上不需要強制撐開高度 */
+    }
+
+    /* 3. 登入卡片瘦身 */
+    .auth-card {
+        width: 100%; /* 寬度佔滿 */
+        max-width: 100%;
+        padding: 25px 20px; /* 內距縮小 */
+        box-shadow: none; /* 手機版通常去掉陰影比較乾淨，或留很淡 */
+        border: 2px dashed #AEAEDE; /* 維持邊框風格 */
+    }
+
+    .auth-title {
+        font-size: 20px; /* 標題縮小 */
+    }
+
+    /* 4. 輸入框與按鈕 */
+    .input-group input {
+        padding: 10px; /* 輸入框變扁一點 */
+        font-size: 16px; /* 防止 iOS 縮放 (字體 < 16px iOS 會自動放大) */
+    }
+
+    .auth-btn, .secondary-btn {
+        padding: 12px; /* 按鈕好按即可 */
+    }
+
+    /* 5. 彈跳視窗 (Modal) 手機版 */
+    .modal-content {
+        width: 92%; /* 幾乎佔滿螢幕 */
+        padding: 20px;
+        max-height: 80vh;
+        margin-top: 20px;
+    }
+
+    .modal-header h3 {
+        font-size: 18px;
+    }
+
+    .close-modal {
+        font-size: 32px; /* 叉叉大一點比較好點 */
+        padding: 5px;
+    }
+
+    /* 6. 訂單歷史列表優化 */
+    .order-card {
+        padding: 15px 10px;
+    }
+
+    .order-header {
+        flex-direction: column; /* 日期與狀態變垂直排列 */
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .order-items {
+        font-size: 13px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        padding-left: 5px;
+        border-left: 2px solid #F3F0F7; /* 增加一點層次感 */
+    }
+
+    .order-total {
+        font-size: 15px;
+        text-align: right;
+        padding-top: 5px;
+        border-top: 1px dashed #eee;
+    }
+
+    /* 7. Footer */
+    footer {
+        text-align: center;
+        padding: 30px 15px;
+        font-size: 10px;
+        line-height: 1.8;
+    }
+}
