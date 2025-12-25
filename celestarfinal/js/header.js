@@ -4,7 +4,7 @@ import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/fir
 
 document.addEventListener("DOMContentLoaded", () => {
     // ===========================
-    // Header 邏輯 (維持原樣)
+    // 1. Header 選單邏輯 (維持原樣)
     // ===========================
     const menuBtn = document.querySelector(".menu-btn");
     const mobileMenu = document.querySelector(".mobile-menu");
@@ -31,20 +31,57 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    const searchBtn = document.getElementById("searchBtn");
-    const searchBar = document.querySelector(".search-bar");
+    // ===========================
+    // 2. 搜尋框邏輯 (UI開關 + 🔥跳轉功能)
+    // ===========================
+    const searchBtn = document.getElementById("searchBtn"); // 放大鏡 icon
+    const searchBar = document.querySelector(".search-bar"); // 整個搜尋列區塊
 
     if (searchBtn && searchBar) {
+        // (1) 點擊放大鏡：開關搜尋框
         searchBtn.addEventListener("click", (e) => {
             e.stopPropagation();
             searchBar.classList.toggle("active");
+            // 打開搜尋框時，自動讓游標停在輸入框內
+            if(searchBar.classList.contains("active")){
+                const input = searchBar.querySelector("input");
+                if(input) input.focus();
+            }
             document.querySelector(".cart-dropdown")?.classList.remove("active");
         });
         searchBar.addEventListener("click", (e) => e.stopPropagation());
+
+        // 🔥 (2) 執行搜尋功能的邏輯 (寫在這裡！)
+        const searchInput = searchBar.querySelector("input");
+        const searchSubmitBtn = searchBar.querySelector("button"); // GO 按鈕
+
+        const performSearch = () => {
+            const query = searchInput.value.trim();
+            if (query) {
+                // 跳轉到 search.html 並帶上關鍵字參數
+                window.location.href = `search.html?q=${encodeURIComponent(query)}`;
+            }
+        };
+
+        if (searchSubmitBtn && searchInput) {
+            // 點擊 GO 按鈕
+            searchSubmitBtn.addEventListener("click", (e) => {
+                e.preventDefault(); // 防止表單預設提交
+                performSearch();
+            });
+
+            // 在輸入框按下 Enter 鍵
+            searchInput.addEventListener("keypress", (e) => {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    performSearch();
+                }
+            });
+        }
     }
 
     // ===========================
-    // 購物車邏輯
+    // 3. 購物車邏輯
     // ===========================
     const cartIcon = document.getElementById("cartIcon");
     const cartDropdown = document.querySelector(".cart-dropdown");
@@ -53,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const checkoutBtn = document.getElementById("checkoutBtn");
     const cartCountBadge = document.getElementById("cartCount");
 
-    // 1. 切換顯示
+    // 切換顯示
     if (cartIcon && cartDropdown) {
         cartIcon.addEventListener("click", (e) => {
             e.stopPropagation();
@@ -64,13 +101,13 @@ document.addEventListener("DOMContentLoaded", () => {
         cartDropdown.addEventListener("click", (e) => e.stopPropagation());
     }
 
-    // 2. 點擊外部關閉
+    // 點擊外部關閉
     document.addEventListener("click", () => {
         if(searchBar) searchBar.classList.remove("active");
         if(cartDropdown) cartDropdown.classList.remove("active");
     });
 
-    // 3. 渲染購物車
+    // 渲染購物車
     function renderCart() {
         const cart = JSON.parse(localStorage.getItem("shopCart")) || [];
         
@@ -121,7 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 4. 更新數量
+    // 更新數量
     function updateCartItem(index, isPlus) {
         let cart = JSON.parse(localStorage.getItem("shopCart")) || [];
         
@@ -144,10 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // ===========================
-    // 🔥 6. 結帳功能 (修改重點在這裡)
-    // ===========================
-    // ===========================
-    // 🔥 6. 結帳功能 (修復資料重複問題版)
+    // 4. 結帳功能
     // ===========================
     if (checkoutBtn) {
         checkoutBtn.addEventListener("click", async () => {
@@ -171,23 +205,17 @@ document.addEventListener("DOMContentLoaded", () => {
             // 3. 計算總價
             const total = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
             
-            // ==========================================
-            // ★ 關鍵修正：資料清洗 (Data Sanitization)
-            // 不要直接存 cart，我們手動建立一個乾淨的新陣列
-            // 這能確保 A 就是 A，B 就是 B，不會有殘留的 bug
-            // ==========================================
+            // 資料清洗
             const finalOrderItems = cart.map(item => {
                 return {
                     name: item.name,
-                    // 強制轉成數字，避免 "100" 字串導致計算錯誤
                     price: Number(item.price),
                     qty: Number(item.qty),
-                    // 如果有圖片網址就存，沒有就存空字串
                     img: item.img || "" 
                 };
             });
 
-            // 4. 製作確認清單文字
+            // 4. 確認清單
             let orderSummary = `您好! ${currentUser}\n準備購買:\n`;
             finalOrderItems.forEach(i => {
                 orderSummary += `- ${i.name} x${i.qty} ($${i.price * i.qty})\n`;
@@ -203,7 +231,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 checkoutBtn.disabled = true;
 
                 await addDoc(collection(db, "orders"), {
-                    items: finalOrderItems, // ★ 這裡改傳我們清洗過的乾淨資料
+                    items: finalOrderItems,
                     totalAmount: total,
                     orderBy: currentUser,
                     createdAt: serverTimestamp(),
@@ -229,8 +257,3 @@ document.addEventListener("DOMContentLoaded", () => {
     
     renderCart();
 });
-
-
-
-
-
