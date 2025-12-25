@@ -469,6 +469,11 @@ header {
         font-size: 16px;
     }
 
+    .search-bar{
+        right:6%;
+        padding:8px;
+    }
+
     .cart-badge{
         font-size: 10px !important;
     }
@@ -587,6 +592,7 @@ header {
         top: 60px;    /* 配合 Header 高度 */
     }
 }
+
 
 
 
