@@ -169,27 +169,25 @@ button,
 .edit-btn {
     position: absolute;
     bottom: 0;
-    right: -35px;         /* ★ 關鍵：往右推，不重疊 */
-    
+    right: -40px;
     width: 28px;
     height: 28px;
-    background-color: #AEAEDE;
+    background-color: #fff;
     border-radius: 50%;
-    border: 2px solid #fff;
-    color: #fff;
-    
+    border: 2px solid #ADAEDE;
+    color: #ADAEDE;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
     z-index: 10;
     transition: transform 0.2s;
 }
 
 .edit-btn:hover {
     transform: scale(1.1);
-    background-color: #9a9ad9;
+    background-color: #DFDCE9;
 }
 
 .profile-actions {
@@ -483,4 +481,5 @@ footer {
         padding: 30px 10px;
     }
 }
+
 
