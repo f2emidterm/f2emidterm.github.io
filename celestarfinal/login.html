@@ -88,22 +88,22 @@
             <div id="profile-section" class="auth-card" style="display: none;">
                 <div class="profile-header">
     
-                <div style="position: relative; display: inline-block;">
-                    
-                    <div class="avatar-circle" id="avatarContainer">
-                        <span class="material-symbols-outlined" id="defaultIcon">person</span>
-                        <img id="userAvatar" src="" alt="Avatar">
-                        <input type="file" id="uploadInput" accept="image/*">
-                        <div id="uploadLoading">Uploading...</div>
+                    <div class="avatar-wrapper">
+                        
+                        <div class="avatar-circle" id="avatarContainer">
+                            <span class="material-symbols-outlined" id="defaultIcon">person</span>
+                            <img id="userAvatar" src="" alt="Avatar">
+                            <input type="file" id="uploadInput" accept="image/*">
+                            <div id="uploadLoading">Uploading...</div>
+                        </div>
+                
+                        <button id="editAvatarBtn" class="edit-avatar-btn">
+                            <span class="material-symbols-outlined" style="font-size: 14px;">edit</span>
+                        </button>
+                
                     </div>
-            
-                    <button id="editAvatarBtn" class="edit-avatar-btn">
-                        <span class="material-symbols-outlined" style="font-size: 14px;">edit</span>
-                    </button>
-                </div>
-            
-                <h2 class="auth-title">HELLO!</h2>
-                <p id="userEmailDisplay" class="auth-subtitle">user@email.com</p>
+                    <h2 class="auth-title">HELLO!</h2>
+                    <p id="userEmailDisplay" class="auth-subtitle">user@email.com</p>
                 </div>
                 之前，加入這個新的放大視窗 ↓↓↓↓ -->
                 <div id="imageZoomModal" class="modal-overlay image-zoom-modal">
@@ -146,6 +146,7 @@
 
 
 </html>
+
 
 
 
