@@ -50,6 +50,7 @@ a, button, .icons span, .product-card {
     font-size: 18px;
     color: #3f4046;
     margin-bottom: 5px;
+    font-weight:bold;
 }
 
 .search-header p {
@@ -173,5 +174,6 @@ footer {
     padding: 0 30px;
   }
 }
+
 
 
