@@ -288,8 +288,8 @@ footer {
 
     /* 3. 彈跳視窗 (Modal) */
     .modal-content {
-        width: 70%; /* 在平板上佔 70% 寬度 */
-        max-width: none; /* 覆蓋原本的 500px 限制 */
+        width: 70%;
+        max-width: none; 
     }
 
     /* 4. Footer 調整 */
@@ -303,11 +303,6 @@ footer {
    RWD: Mobile Devices
    範圍: 600px 以下
    ============================================ */
-/* ...保留原本上面的所有 CSS (body 到 footer) ... */
-
-/* ============================================
-   極簡 RWD: 只做防爆版處理，維持原本設計風格
-   ============================================ */
 @media screen and (max-width: 600px) {
 
     /* 1. 全局容器設定：防止內容撐破螢幕 */
@@ -317,33 +312,31 @@ footer {
 
     /* 2. 登入區塊：維持原本置中，只縮小內距 */
     .login-workspace {
-        /* 維持原本的 Flex置中，不改成靠上 */
         min-height: 80vh; 
-        padding: 20px 10px; /* 左右留一點縫隙 */
+        padding: 20px 15px;
     }
 
-    /* 3. 卡片本體：寬度適應螢幕，但保留陰影與設計 */
+    /* 3. 卡片本體 */
     .auth-card {
         width: 100%;
-        max-width: 90%; /* 手機上佔 90% 寬度，看起來比較像原本的比例 */
+        max-width: 90%;
         margin: 0 auto;
-        padding: 30px 20px; /* 稍微減少內距，但不用太多 */
-        /* 保留原本的 box-shadow 和 border，不取消 */
+        padding: 30px 20px; 
     }
     
     /* 4. 輸入框：優化手機輸入體驗，但樣式不變 */
     .input-group input {
-        font-size: 16px; /* 關鍵：防止 iPhone 輸入時自動放大畫面 */
+        font-size: 16px;
     }
 
     /* 5. 按鈕：確保好點擊 */
     .auth-btn, .secondary-btn {
-        padding: 15px; /* 維持原本大小 */
+        padding: 15px; 
     }
 
     /* 6. 彈跳視窗 (Modal) */
     .modal-content {
-        width: 85%; /* 稍微寬一點 */
+        width: 75%; 
         max-height: 80vh;
         padding: 20px;
     }
@@ -359,5 +352,6 @@ footer {
         padding: 30px 10px;
     }
 }
+
 
 
