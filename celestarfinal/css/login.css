@@ -305,7 +305,6 @@ footer {
     /* 文字置中 */
     justify-content: center;
     align-items: center;
-    display: flex;      /* 配合 JS 的 display: flex 使用 */
     
     color: #333;
     font-size: 10px;
@@ -400,6 +399,7 @@ footer {
         padding: 30px 10px;
     }
 }
+
 
 
 
