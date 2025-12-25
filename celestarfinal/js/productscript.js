@@ -189,7 +189,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 console.error("Error adding order: ", error);
                 alert("Order failed. Please try again.");
             } finally {
-                buyBtn.textContent = "BUY NOW";
+                buyBtn.textContent = "直接購買";
                 buyBtn.disabled = false;
             }
         });
@@ -266,3 +266,4 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 });
+
