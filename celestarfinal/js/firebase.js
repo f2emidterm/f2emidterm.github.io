@@ -1,13 +1,11 @@
-// ============================================
-//  1. 引入 Firebase 功能 (使用統一版本)
-// ============================================
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+// js/firebase.js
 
-// ============================================
-//  2. 你的設定 (這裡只能出現一次)
-// ============================================
+// 1. 注意：這裡網址後面多了 "-compat"，這是救命關鍵！
+import firebase from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js";
+import "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js";
+import "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js";
+
+// 2. 你的設定
 const firebaseConfig = {
     apiKey: "AIzaSyBp1JpKRDAi0aJ-0-jlwyqP9uPQbbxzdOA",
     authDomain: "f2efinal-9e6f5.firebaseapp.com",
@@ -17,16 +15,14 @@ const firebaseConfig = {
     appId: "1:188709687038:web:175b00ef902418a33e5faf"
 };
 
-// ============================================
-//  3. 初始化與匯出
-// ============================================
+// 3. 初始化 (如果還沒初始化過才執行，防止報錯)
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
 
-// 啟動 Firebase
-const app = initializeApp(firebaseConfig);
+// 4. 建立變數 (這種舊版寫法，main.js 最喜歡)
+const auth = firebase.auth();
+const db = firebase.firestore();
 
-// 建立功能變數
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-// 將變數交出去給其他檔案使用
+// 5. 匯出給 login.js 用，同時 window.firebase 也能給全域用
 export { auth, db };
