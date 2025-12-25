@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", () => {
             finalOrderItems.forEach(i => {
                 orderSummary += `- ${i.name} x${i.qty} ($${i.price * i.qty})\n`;
             });
-            orderSummary += `\n總金額： $${total}`;
+            orderSummary += `\n總金額： $${total}\n\n是否確認下單？`;
 
             // 5. 使用者確認
             if(!confirm(orderSummary)) return; 
@@ -229,6 +229,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
     renderCart();
 });
+
 
 
 
