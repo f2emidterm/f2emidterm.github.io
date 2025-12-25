@@ -256,6 +256,7 @@ button,
     margin: 0 auto;
     padding: 40px 20px;
     align-items: start;
+    padding-top:70px;
 }
 
 /* --- Left: Sticker Panel --- */
@@ -884,6 +885,7 @@ footer {
         padding: 30px 15px 15px 15px;
     }
 }
+
 
 
 
