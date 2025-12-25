@@ -317,24 +317,57 @@ footer {
     display: none !important;
 }
 
+/* ============================================
+   Avatar Wrapper & Edit Button (頭像與編輯按鈕修正版)
+   ============================================ */
+
+/* 1. 外層容器：繼承原本 avatar-circle 的大小與位置設定 */
+.avatar-wrapper {
+    position: relative;
+    width: 80px;          /* 跟原本頭像一樣寬 */
+    height: 80px;         /* 跟原本頭像一樣高 */
+    margin: 0 auto 15px;  /* ★ 關鍵：原本的置中設定移來這裡 */
+}
+
+/* 2. 原本的頭像圈圈：現在只要填滿容器就好 */
+.avatar-circle {
+    /* 覆蓋原本的 margin，因為已經由 wrapper 控制了 */
+    margin: 0 !important; 
+    width: 100%;
+    height: 100%;
+    /* 確保這兩個屬性還在，維持形狀與裁切 */
+    position: relative;
+    overflow: hidden; 
+    /* 點擊放大游標 */
+    cursor: zoom-in;
+}
+
+/* 預設圖標時不要顯示放大游標 */
+.avatar-circle:has(#defaultIcon[style*="display: block"]) {
+    cursor: default;
+}
+
+/* 3. 編輯小按鈕：定位在容器的「右側外面」 */
 .edit-avatar-btn {
     position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 24px;
-    height: 24px;
+    bottom: 0;       /* 對齊底部 */
+    right: -35px;    /* ★ 關鍵：往右推 35px，完全離開圖片範圍 */
+    
+    width: 28px;     /* 稍微大一點點比較好按 */
+    height: 28px;
     border-radius: 50%;
-    background-color: #AEAEDE; /* 配合你的主題色 */
-    border: 2px solid #fff;    /* 白色邊框讓它跳出來 */
+    background-color: #AEAEDE;
+    border: 2px solid #fff;
     color: white;
+    
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    transition: transform 0.2s, background-color 0.2s;
-    padding: 0; /* 清除預設 padding */
-    z-index: 5; /* 確保在最上層 */
+    transition: transform 0.2s;
+    padding: 0;
+    z-index: 20;     /* 確保在最上層 */
 }
 
 .edit-avatar-btn:hover {
@@ -342,59 +375,33 @@ footer {
     transform: scale(1.1);
 }
 
-/* 2. 修改原本頭像容器的游標 */
-#avatarContainer {
-    /* 如果有圖片時，滑鼠變成放大鏡效果 (支援的瀏覽器) */
-    cursor: zoom-in; 
-}
-/* 如果是預設圖標狀態，就不要顯示放大鏡 */
-#avatarContainer:has(#defaultIcon[style*="display: block"]) {
-    cursor: default;
-}
-
-
-/* 3. 圖片放大視窗專用樣式 */
+/* 4. 圖片放大視窗樣式 (這段維持不變) */
 .image-zoom-modal {
-    background: rgba(0, 0, 0, 0.8); /* 背景深一點 */
+    background: rgba(0, 0, 0, 0.85);
 }
-
-/* 放大後的圖片 */
 .modal-image {
     margin: auto;
     display: block;
-    width: auto;
-    height: auto;
     max-width: 90%;
-    max-height: 90vh;
-    object-fit: contain; /* 保持比例完整顯示 */
+    max-height: 80vh;
+    object-fit: contain;
     border: 2px solid #fff;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
     animation: zoomIn 0.3s ease;
 }
-
 @keyframes zoomIn {
     from {transform:scale(0.8); opacity:0} 
     to {transform:scale(1); opacity:1}
 }
-
-/* 放大視窗的關閉按鈕 */
 .close-zoom {
     position: absolute;
-    top: 15px;
-    right: 35px;
+    top: 20px;
+    right: 40px;
     color: #f1f1f1;
     font-size: 40px;
     font-weight: bold;
-    transition: 0.3s;
     cursor: pointer;
-    z-index: 10;
-}
-
-.close-zoom:hover,
-.close-zoom:focus {
-    color: #AEAEDE;
-    text-decoration: none;
-    cursor: pointer;
+    z-index: 1001;
 }
 /* ============================================
    RWD: Tablet & Small Laptops
@@ -479,6 +486,7 @@ footer {
         padding: 30px 10px;
     }
 }
+
 
 
 
