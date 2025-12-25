@@ -268,6 +268,56 @@ footer {
 }
 
 /* ============================================
+   Avatar Upload Feature (頭像上傳功能樣式)
+   ============================================ */
+
+/* 1. 容器設定 */
+#avatarContainer {
+    position: relative; /* 讓內部的照片和 Loading 可以絕對定位 */
+    overflow: hidden;   /* 確保圖片不會超出格子 */
+    cursor: pointer;    /* 滑鼠移過去變手指 */
+    /* 注意：這裡不設定 border-radius，完全沿用你原本 .avatar-circle 的設定 */
+}
+
+/* 2. 照片設定 */
+#userAvatar {
+    width: 100%;        /* 寬度撐滿 */
+    height: 100%;       /* 高度撐滿 */
+    object-fit: cover;  /* 保持比例填滿，不會變形 */
+    display: none;      /* 預設隱藏 (由 JS 控制顯示) */
+}
+
+/* 3. 隱藏檔案輸入框 */
+#uploadInput {
+    display: none;
+}
+
+/* 4. 上傳中的 Loading 遮罩 */
+#uploadLoading {
+    display: none;      /* 預設隱藏 (由 JS 控制顯示) */
+    position: absolute; /* 蓋在最上面 */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8); /* 半透明白色背景 */
+    
+    /* 文字置中 */
+    justify-content: center;
+    align-items: center;
+    display: flex;      /* 配合 JS 的 display: flex 使用 */
+    
+    color: #333;
+    font-size: 10px;
+    font-weight: bold;
+    z-index: 10;
+}
+
+/* 特別覆蓋：當 Loading 隱藏時 */
+#uploadLoading[style*="display: none"] {
+    display: none !important;
+}
+/* ============================================
    RWD: Tablet & Small Laptops
    範圍: 601px ~ 1024px
    ============================================ */
@@ -350,6 +400,7 @@ footer {
         padding: 30px 10px;
     }
 }
+
 
 
 
