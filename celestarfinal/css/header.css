@@ -509,6 +509,10 @@ header {
         z-index: 2001;
     }
 
+    .menu-btn:hover {
+        transform: translateY(-50%) scale(1.1);
+    }
+
     .header-center {
         position: absolute;
         left: 50%;
@@ -603,6 +607,7 @@ header {
         padding:8px;
     }
 }
+
 
 
 
